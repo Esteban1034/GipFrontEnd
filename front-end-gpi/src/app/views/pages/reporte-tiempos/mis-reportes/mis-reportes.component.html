@@ -1,0 +1,119 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/proyectos">Proyectos</a></li>
+        <li class="breadcrumb-item"><a routerLink="/reporte-tiempo/horas-reportadas">Reportes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Mis reportes</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Mis Tiempos reportados</h6>
+                <p>Seleccione el rango de fechas para visualizar sus reportes. Tener en cuenta que el rango no pude ser mayor a 31 días</p>
+                <br>
+
+                <form (ngSubmit)="search()" [formGroup]="form">
+                    <div class="form-row">
+                        <div class="form-group col-3">
+                            <label for="fechaInicio">Fecha Inicio</label>
+                            <input type="date" 
+                            [(ngModel)]="fechaInicio"
+                            id="fechaInicio" 
+                            name="fechaInicio" 
+                            formControlName="fechaInicio" 
+                            class="form-control"
+                            [ngClass]="{'is-invalid': submitted && f.fechaInicio.errors}">
+                            <div class="invalid-feedback" *ngIf="submitted && f.fechaInicio.errors">
+                                <div *ngIf="f.fechaInicio.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-3">
+                            <label for="fechaFin">Fecha Fin</label>
+                            <input type="date"
+                            [(ngModel)]="fechaFin"
+                            id="fechaFin" 
+                            name="fechaFin" 
+                            class="form-control"
+                            formControlName="fechaFin"
+                            [ngClass]="{'is-invalid': submitted && f.fechaFin.errors}">
+                            <div class="invalid-feedback" *ngIf="submitted && f.fechaFin.errors">
+                                <div *ngIf="f.fechaFin.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                    <button type="button" class="btn btn-light ml-2" (click)="cancelBotton()">Cancelar</button>
+                </form>
+
+                <hr>
+                <div class="alert alert-info" role="alert" *ngIf="reportes.length == 0">
+                    No se encontraron Tiempos reportados para este usuario.
+                </div>
+                <div class="table-responsive" id="ex" *ngIf="reportes.length > 0">
+                    <div>
+                        <table class="table table-hover" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Proyecto</th>
+                                    <th scope="col">Actividad</th>
+                                    <th scope="col">Recurso</th>
+                                    <th scope="col">Horas</th>
+                                    <th scope="col">Estado</th>
+                                    <th scope="col" class="text-center">Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let r of reportes">
+                                    <td class="text-uppercase" scope="row">{{r.fecha | date : 'dd-MMM-yyyy'}}</td>
+                                    <td id="nombre_proyecto">{{r.proyecto.nombre}}-{{r.proyecto.descripcion}}</td>
+                                    <td id="actividad">{{r.actividad.actividad.actividad}}</td>
+                                    <td>{{r.empleado.nombre}}</td>
+                                    <td>{{r.horas}}</td>
+                                    <td>
+                                      <span class="badge" [ngClass]="{'badge-success': r.estado.id == 2, 'badge-danger': r.estado.id == 3, 'badge-warning': r.estado.id == 1}">{{r.estado.estado}}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a (click)="openDeleteModal(delete, r)" class="mdi mdi-24px mdi-delete-forever"></a>
+                                    </td>
+                                  </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<ng-template #delete let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminacion</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>¿Estas seguro de eliminar este reporte de tiempo?</p>
+    </div>
+    <div class="modal-footer">
+        <button id="btnModalDelete" type="submit" class="btn btn-danger" (click)="deleteReporte()">
+            Aceptar
+        </button>
+        <button id="btnModalCancelar" type="button" class="btn btn-light" aria-label="Close" (click)="d('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>

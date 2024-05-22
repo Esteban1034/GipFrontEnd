@@ -1,0 +1,234 @@
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+
+    .mat-table {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+        display: table;
+        border-collapse: collapse;
+        margin: 0px;
+    }
+
+    .mat-row,
+    .mat-header-row {
+        display: table-row;
+    }
+
+    .mat-cell,
+    .mat-header-cell {
+        word-wrap: initial;
+        display: table-cell;
+        padding: 0px 5px;
+        line-break: unset;
+        width: auto;
+        white-space: nowrap;
+        overflow: hidden;
+        vertical-align: middle;
+    }
+}
+
+.hide {
+    display: none;
+}
+
+#btnCrearFase {
+    width: 100%;
+}
+
+#btnCrearActividad {
+    width: 100%;
+    margin-top: 5px;
+}
+
+#btnSelectFase {
+    width: 100%;
+}
+
+#btnSearchActividadByFase {
+    margin-top: 5px;
+    width: 100%;
+}
+
+#btnClearSearchActividadByFase {
+    margin-top: 5px;
+    width: 100%;
+}
+
+#btnSearchEmpleadoByEspecialidad {
+    margin-top: 5px;
+    width: 100%;
+}
+
+#btnClearSearchEmpleadoByEspecialidad {
+    margin-top: 5px;
+    width: 100%;
+}
+
+#btnAddRecurso {
+    width: 100%;
+}
+
+#cardDisponibilidad {
+    margin-top: 5px;
+}
+
+#btnModalActAsigDelete {
+    width: 100%;
+}
+
+#btnModalActAsigCancelar {
+    width: 100%;
+}
+
+#btnModalRecursoDelete {
+    width: 100%;
+}
+
+#btnModalRecursoCancelar {
+    width: 100%;
+}
+
+#btnModalFechaDelete {
+    width: 100%;
+}
+
+#btnModalFechaCancelar {
+    width: 100%;
+}
+
+#btnModalFase {
+    width: 100%;
+}
+
+#btnModalActividad {
+    width: 100%;
+}
+
+#btnModalAdmonFase {
+    width: 100%;
+}
+
+#btnModalAdmonActividad {
+    width: 100%;
+}
+
+#btnAddActividadAsig {
+    width: 100%;
+}
+
+#btnCancelActividadAsig {
+    width: 100%;
+    margin-top: 5px;
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+    #btnCrearFase {
+        width: auto;
+    }
+
+    #btnCrearActividad {
+        width: auto;
+        margin-top: 0px;
+        margin-left: 5px;
+    }
+
+    #btnSelectFase {
+        width: auto;
+    }
+
+    #btnSearchActividadByFase {
+        margin-top: 0px;
+        width: auto;
+    }
+
+    #btnClearSearchActividadByFase {
+        margin-top: 0px;
+        margin-left: 5px;
+        width: auto;
+    }
+
+    #btnSearchEmpleadoByEspecialidad {
+        margin-top: 0px;
+        margin-left: 5px;
+        width: auto;
+    }
+
+    #btnClearSearchEmpleadoByEspecialidad {
+        margin-top: 0px;
+        margin-left: 5px;
+        width: auto;
+    }
+
+    #btnAddRecurso {
+        width: auto;
+    }
+
+    #btnModalActAsigDelete {
+        width: auto;
+    }
+
+    #btnModalActAsigCancelar {
+        width: auto;
+    }
+
+    #btnModalRecursoDelete {
+        width: auto;
+    }
+
+    #btnModalRecursoCancelar {
+        width: auto;
+    }
+
+    #btnModalFechaDelete {
+        width: auto;
+    }
+
+    #btnModalFechaCancelar {
+        width: auto;
+    }
+
+    #btnModalFase {
+        width: auto;
+    }
+
+    #btnModalActividad {
+        width: auto;
+    }
+
+    #btnModalAdmonFase {
+        width: auto;
+    }
+
+    #btnModalAdmonActividad {
+        width: auto;
+    }
+
+    #btnAddActividadAsig {
+        width: auto;
+    }
+
+    #btnCancelActividadAsig {
+        width: auto;
+        margin-top: 0px;
+    }
+
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+    #cardDisponibilidad {
+        margin-top: 0px;
+    }
+
+
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {}

@@ -1,0 +1,115 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/proyectos">Proyectos</a></li>
+        <li class="breadcrumb-item"><a routerLink="/reporte-tiempo/horas-reportadas">Reportes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Aprobar</li>
+    </ol>
+</nav>
+
+<div class="spinner-wrapper " style="display: none;" id="con_spinner" name="con_spinner">
+    <div class="spinner"></div>
+  </div>
+
+<div class="row" >
+    <div class="col-md-12 stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="dataTable-top" id="occ">
+            <h6 class="card-title">Aprobacion de Tiempos</h6>
+            <form action="" >
+                <div class="form-row">
+                    <div class="form-group col-sm-12 col-md-3">
+                        <label for="proyecto">Proyecto</label>
+                        <input [(ngModel)]="reporte.proyecto.nombre+'-'+reporte.proyecto.descripcion"
+                        id="proyecto" 
+                        name="proyecto" 
+                        type="text" 
+                        class="form-control" 
+                        [disabled]="true">
+                    </div>
+                    <div class="form-group col-sm-12 col-md-4">
+                        <label for="empleado">Recurso</label>
+                        <input [(ngModel)]="reporte.empleado.nombre" 
+                        id="empleado" 
+                        name="empleado" 
+                        type="text" 
+                        class="form-control" 
+                        [disabled]="true">
+                    </div>
+                    <div class="form-group col-sm-12 col-md-2">
+                        <label for="fecha">Fecha reporte</label>
+                        <input value="{{reporte.fecha}}"
+                        type="date" 
+                        name="fecha" 
+                        id="fecha" 
+                        class="form-control" 
+                        date-format="yyyy-MM-dd"
+                        [disabled]="true">
+                    </div>
+                    <div class="form-group col-sm-12 col-md-3">
+                        <label for="estado">Estado</label>
+                        <input [(ngModel)]="reporte.estado.estado"
+                        id="estado" 
+                        name="estado" 
+                        type="text" 
+                        class="form-control" 
+                        [disabled]="true">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-12 col-md-2">
+                        <label for="horas">Horas</label>
+                        <input [(ngModel)]="reporte.horas"
+                        id="horas"
+                        name="horas"
+                        type="text" 
+                        class="form-control"
+                        [disabled]="true">
+                    </div>
+                    <div class="form-group col-sm-12 col-md-4">
+                        <label for="actividad">Actividad</label>
+                        <input [(ngModel)]="reporte.actividad.actividad.actividad"
+                        id="actividad" 
+                        name="actividad" 
+                        type="text" 
+                        class="form-control" 
+                        [disabled]="true">
+                    </div>
+                    <div class="form-group col-sm-12 col-md-3">
+                        <label for="fechaInicio">Fecha Inicio</label>
+                        <input value="{{reporte.actividad.fechaInicio}}"
+                        id="fechaInicio" 
+                        name="fechaInicio" 
+                        type="date" 
+                        class="form-control" 
+                        [disabled]="true">
+                    </div>
+                    <div class="form-group col-sm-12 col-md-3">
+                        <label for="fechaFin">Fecha Fin</label>
+                        <input value="{{reporte.actividad.fechaFin}}"
+                        id="fechaFin" 
+                        name="fechaFin" 
+                        type="date" 
+                        class="form-control" 
+                        [disabled]="true">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <label for="justificacion">Observaciones</label>
+                        <textarea [(ngModel)]="reporte.justificacion"
+                        name="justificacion" 
+                        id="justificacion" 
+                        rows="10" 
+                        class="form-control"></textarea>
+                    </div>
+                </div>
+                <button id="btnAprobar" type="button" class="btn btn-success" (click)="aprobar()">Aprobar</button>
+                <button id="btnDevolver" type="button" class="btn btn-warning" (click)="devolver()">Devolver</button>
+                <button id="btnCancelar" routerLink="/reporte-tiempo/horas-reportadas" class="btn btn-light">Cancelar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

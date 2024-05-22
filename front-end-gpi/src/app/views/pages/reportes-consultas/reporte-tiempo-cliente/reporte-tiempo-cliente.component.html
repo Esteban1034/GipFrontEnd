@@ -1,0 +1,149 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Reportes</a></li>
+        <li class="breadcrumb-item">Clientes</li>
+        <li class="breadcrumb-item active" aria-current="page">Tiempos reportados</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Reporte Tiempos facturados clientes</h6>
+                <hr>
+                <div class="text-muted">Este reporte consulta las horas cotizadas, horas consumidas y porcentaje 
+                    entre el rango de fechas de creacion de proyecto y clientes seleccionados.</div>
+                <hr>
+                <form (ngSubmit)="search()" [formGroup]="form">
+                    <div class="form-row">
+                        <div class="form-group col-3"> 
+                            <label for="fechaInicio">Fecha Inicio</label>
+                            <input type="date" id="fechaInicio" class="form-control" name="fechaInicio" 
+                            formControlName="fechaInicio" [ngClass]="{'is-invalid': submitted && f.fechaInicio.errors}">
+                            <div class="invalid-feedback" *ngIf="submitted && f.fechaInicio.errors">
+                                <div *ngIf="f.fechaInicio.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-3">
+                            <label for="fechaFin">Fecha Fin</label>
+                            <input type="date" id="fechaFin" class="form-control" name="fechaFin" 
+                            formControlName="fechaFin" [ngClass]="{'is-invalid': submitted && f.fechaFin.errors}">
+                            <div class="invalid-feedback" *ngIf="submitted && f.fechaFin.errors">
+                                <div *ngIf="f.fechaFin.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-6 align-self-end d-flex justify-content-around">
+                            <a (click)="openAddClientesModal(addCliente)"
+                                class="text-primary font-weight-bold">
+                                <div *ngIf="clientesAgregados.length == 0">Seleccionar Clientes</div>  
+                                <div *ngIf="clientesAgregados.length == 1">{{clientesAgregados.length}} cliente seleccionado.</div>  
+                                <div *ngIf="clientesAgregados.length > 1">{{clientesAgregados.length}} clientes seleccionados.</div>  
+                            </a>
+                            <a (click)="quitarClientes()" class="font-weight-bold" placement="top" ngbTooltip="Quitar recursos" *ngIf="clientesAgregados.length > 0">
+                                X
+                            </a>
+                        </div>
+                    </div>
+                    <button [disabled]="!form.valid" type="submit" class="btn btn-primary">Aceptar</button>
+                    <button type="button" (click)="cancelarAgregarCliente()" class="btn btn-light ml-2">Cancelar</button>
+                    <hr *ngIf="errorMsj">
+                    <div class="text-danger" *ngIf="errorMsj">{{errorMsj}}</div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 grid-margin stretch-card" *ngIf="reportes.length > 0">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h6 class="card-title">Reporte completo</h6>
+                    </div>
+                    <div class="col">
+                        <button id="btnExportExcel" type="button" (click)="exportExcelReporteCompleto()" class="btn btn-success float-right">
+                            Exportar Excel
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-hover" id="table-reportes-completos">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Cliente</th>
+                                <th scope="col">Proyecto</th>
+                                <th scope="col">Fecha inicio</th>
+                                <th scope="col">Fecha fin</th>
+                                <th scope="col">Horas cotizadas</th>
+                                <th scope="col">Horas consumidas</th>
+                                <th scope="col">Porcentaje avance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let r of reportes">
+                                <th scope="row">{{r.cliente}}</th>
+                                <td id="nombre_proyecto">{{r.proyecto}}-{{r.proyectoB.descripcion}}</td>
+                                <td>{{r.fechaInicio | date:'dd/MM/yyyy'}}</td>
+                                <td>{{r.fechaFin | date:'dd/MM/yyyy'}}</td>
+                                <td>{{r.horasCotizadas}}</td>
+                                <td>{{r.horasConsumidas}}</td>
+                                <td>{{r.porcentajeAvance}}%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ADD RECURSO MODAL -->
+<ng-template #addCliente let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Agregar clientes</h4>
+        <button type="button" class="close" aria-label="Close" (click)="cancelAgregarClienteModal()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="alert text-danger border-danger mr-2 alert-dismissible fade show" role="alert" *ngIf="clientesAgregados.length == 0">
+            Debe seleccionar almenos un <strong>Cliente</strong> a la lista.
+          </div>
+        <div class="row">
+            <div class="col">
+                Clientes disponibles
+                <hr>
+                <div class="alert alert-secondary" role="alert" *ngIf="clientes.length > 0">
+                    <a class="font-weight-bold" (click)="seleccionarTodo()" placement="right" ngbTooltip="Seleccionar todos">SELECCIONAR TODO</a>
+                </div>
+                <div class="alert alert-secondary" role="alert" *ngFor="let c of clientes">
+                    <a class="font-weight-bold" (click)="agregarCliente(c)" placement="right" ngbTooltip="Agregar">{{c.nombre}}</a>
+                </div>
+            </div>
+            <div class="col">
+                Clientes agregados
+                <hr>
+                <div class="alert alert-success" role="alert" *ngIf="clientesAgregados.length > 0">
+                    <a class="font-weight-bold" (click)="quitarTodo()" placement="right" ngbTooltip="Quitar todos">QUITAR TODO</a>
+                </div>
+                <div class="alert alert-success" role="alert" *ngFor="let c of clientesAgregados">
+                    <a class="font-weight-bold" (click)="quitarCliente(c)" placement="right" ngbTooltip="Quitar">{{c.nombre}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a id="btnModalRecursoDelete" class="btn btn-primary" (click)="aceptarAgregarClienteModal()">
+            Aceptar
+        </a>
+        <button id="btnModalRecursoCancelar" type="button" class="btn btn-light" aria-label="Close"
+            (click)="cancelAgregarClienteModal()">
+            Cancelar
+        </button>
+    </div>
+</ng-template>

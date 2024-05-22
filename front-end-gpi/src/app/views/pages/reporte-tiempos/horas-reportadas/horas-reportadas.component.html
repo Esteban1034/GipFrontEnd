@@ -1,0 +1,117 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/proyectos">Proyectos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Reportes</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="dataTable-top">
+                    <h6 class="card-title">Reporte de Tiempos</h6>
+                </div>
+                <form (ngSubmit)="search()">
+                    <div class="container-fluid text-center border border-light-subtle">
+                        <div class="form-group row flex-column">
+                            <div class="row justify-content-around">
+                                <label class="justify-content-start">Proyecto</label>
+                                <label class="justify-content-center">Estado</label>
+                                <label class="justify-content-end">Recurso</label>
+                            </div>
+                            <div class="row justify-content-between mx-5">
+                                <div class="form-group w-25">
+                                    <select [(ngModel)]="proyecto" name="proyecto" id="proyecto" class="form-control">
+                                        <option [ngValue]="null" [disabled]="true" [hidden]="true">Seleccionar
+                                            opción
+                                        </option>
+                                        <option *ngFor="let p of proyectos" [ngValue]="p">
+                                            {{p.nombre}}-{{p.descripcion}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group w-25">
+                                    <select [(ngModel)]="estado" name="estado" id="estado" class="form-control">
+                                        <option [ngValue]="null" [disabled]="true" [hidden]="true">Seleccionar
+                                            opción
+                                        </option>
+                                        <option *ngFor="let e of estados" [ngValue]="e">{{e.estado}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group w-25">
+                                    <select [(ngModel)]="recurso" name="recurso" id="recurso" class="form-control">
+                                        <option [ngValue]="null" [disabled]="true" [hidden]="true">Seleccionar
+                                            opción
+                                        </option>
+                                        <option *ngFor="let r of recursos" [ngValue]="r">{{r.nombre}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mx-5 mb-4 justify-content-end">
+                            <button type="submit" id="btnSearch" class="btn btn-primary">Buscar</button>
+                            <button type="button" id="btnClear" (click)="cancelFilter()" class="btn btn-light">
+                                <i class="mdi mdi-filter-remove"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table table-hover" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th scope="col">Fecha Reporte</th>
+                                <th scope="col">Proyecto</th>
+                                <th scope="col">Recurso</th>
+                                <th scope="col">Horas</th>
+                                <th scope="col">Aprobado Por</th>
+                                <th scope="col">Fecha Aprobación</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col" class="text-center">Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let r of reportes">
+                                <td class="text-uppercase" scope="row">{{r.fecha | date : 'dd-MMM-yyyy'}}</td>
+                                <td class="w-50 text-wrap" id="nombre_proyecto">
+                                    {{r.proyecto.nombre}}-{{r.proyecto.descripcion}}</td>
+                                <td id="recurso">{{r.empleado.nombre}}</td>
+                                <td>{{r.horas}}</td>
+                                <td id="aprobador">{{r.aprobadorName}}</td>
+                                <td>{{r.fechaA | date : 'dd-MMM-yyyy'}}</td>
+                                <td>
+                                    <span class="badge"
+                                        [ngClass]="{'badge-success': r.estado.id == 2, 'badge-danger': r.estado.id == 3, 'badge-warning': r.estado.id == 1}">{{r.estado.estado}}</span>
+                                </td>
+                                <td class="text-center">
+                                    <a (click)="openDeleteModal(delete, r)" class="mdi mdi-24px mdi-delete-forever"></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #delete let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-tittle" id="modal-basic-tittle">Confirmar Eliminación</h4>
+        <button type="button" class="close" aria-label="close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>¿Está segudo de eliminar este reporte de tiempo?</p>
+    </div>
+    <div class="modal-footer">
+        <button id="btnModalDelete" type="submit" class="btn btn-danger" (click)="deleteReporte()">
+            Aceptar
+        </button>
+        <button id="btnModalCancelar" type="button" class="btn btn-light" aria-label="Close" (click)="d('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>

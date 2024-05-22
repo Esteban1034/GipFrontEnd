@@ -1,0 +1,519 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/proyectos">Project Status Report</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Crear PSR</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <form>
+                    <div class="row">
+                        <div class="col-12 col-sm">
+                            <h6 class="card-title">Administración Project Status Report</h6>
+                        </div>
+
+                        <div class="col-12 col-sm d-flex justify-content-end align-items-center">
+                            <button *ngIf="mostrarAgregarNotaSemanal" type="submit" class="btn btn-outline-primary" (click)="showNotaSemanalModal(notaSemanal)">
+                                Agregar nota semanal
+                            </button>
+                            <div style="margin-left: 10px;"></div>
+                            <button type="submit" class="btn btn-outline-primary" (click)="crearPsr()">Generar
+                                Informe
+                                Final PSR
+                            </button>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="form-group col-3">
+                            <label for="fechaInicioFiltro">Fecha Inicio</label>
+                            <input type="date" [(ngModel)]="fechaInicioFiltro" id="fechaInicioFiltro"
+                                name="fechaInicioFiltro" class="form-control" [max]="fechaHoy">
+                        </div>
+                        <div class="form-group col-3">
+                            <label for="fechaFinFiltro">Fecha Fin</label>
+                            <input type="date" [(ngModel)]="fechaFinFiltro" id="fechaFinFiltro" name="fechaFinFiltro"
+                                class="form-control" [max]="fechaHoy">
+                        </div>
+                        <div class="form-group col-3">
+                        </div>
+                        <div class="form-group col-3">
+                            <br>
+                            <mat-form-field id="inputSearch" class="inputFilter">
+                                <mat-label>Buscar</mat-label>
+                                <input matInput (keyup)="filtrar($event)" class="toolbar-search" style="width: 100%;">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" (click)="FiltrarProyectos()">Buscar</button>
+                    <button type="button" class="btn btn-light ml-2" (click)="limpiarFiltros()">Limpiar</button>
+                    <br>
+                    <br>
+                </form>
+                <div class="table-responsive">
+                    <table mat-table [dataSource]="dataSource" class="table-hover" style="width: 100%;" matSort
+                        (matSortChange)="sortData($event)">
+                        <ng-container matColumnDef="opciones1">
+                            <th mat-header-cell *matHeaderCellDef>¿Nota?</th>
+                            <td mat-cell *matCellDef="let proyecto" class="text-left">
+                                <a *ngIf="proyecto.checked" class="mdi mdi-22px mdi-check-circle"
+                                    ngbTooltip="Añadido"></a>
+                                <a *ngIf="!proyecto.checked" class="mdi mdi-22px mdi-checkbox-blank-circle-outline"
+                                    ngbTooltip="Sin añadir"></a>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="cliente">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <mat-label mat-sort-header class="text-center">
+                                    Cliente
+                                </mat-label>
+                                <mat-form-field *ngIf="clienteChecked"><br>
+                                    <mat-select id="clienteProyec" (selectionChange)="onSelectEstado($event)"
+                                        [(ngModel)]="limpiarFiltroCliente">
+                                        <mat-option *ngFor="let clien of client"
+                                            value="{{clien.id}}">{{clien.nombre}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </th>
+                            <td mat-cell *matCellDef="let proyecto" class="w-10 text-wrap"> {{proyecto.cliente}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nombre">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+                            <td mat-cell *matCellDef="let proyecto" id="nombre"
+                                style="vertical-align: middle; text-align: left;" class="w-20 text-wrap">
+                                {{proyecto.nombre}}-{{proyecto.descripcion}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="fecha_inicio">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">Fecha Inicio</th>
+                            <td mat-cell *matCellDef="let proyecto" id="fecha_inicio" class="text-center">
+                                {{ proyecto.fechaInicio | date : 'dd/MM/yyyy'}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="fecha_fin">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">Fecha Fin</th>
+                            <td mat-cell *matCellDef="let proyecto" id="fecha_fin" class="text-center">
+                                {{ proyecto.fechaFin | date : 'dd/MM/yyyy'}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="horas_aprobadas">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">Horas Aprobadas</th>
+                            <td mat-cell *matCellDef="let proyecto" id="horas_aprobadas" class="text-center">
+                                {{proyecto.horasPlaneadas}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="opciones">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">Opciones</th>
+                            <td mat-cell *matCellDef="let proyecto" class="text-center">
+                                <button class="btn btn-outline-primary" (click)="openXlModal(xlModal, proyecto.id)">
+                                    Ver planeación
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+                        <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #xlModal let-modal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Planeación Registrada</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeModalPlaneacion(salirSinGuardarNota)">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row justify-content-center">
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="table-responsive">
+                                    <h6 class="card-title">Proyecto</h6>
+                                    <table class="table-hover" style="width: 100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Cliente</th>
+                                                <th>Código</th>
+                                                <th>Nombre</th>
+                                                <th>Fecha Inicio</th>
+                                                <th>Fecha Fin</th>
+                                                <th class="text-center"># Horas Planeadas</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="w-20 text-wrap">
+                                                    {{ proyectoModal.cliente.nombre }}
+                                                </td>
+                                                <td class="w-10 text-wrap">
+                                                    {{ proyectoModal.codigo }}
+                                                </td>
+                                                <td class="w-30 text-wrap">
+                                                    {{ proyectoModal.nombre }} {{ proyectoModal.descripcion}}
+                                                </td>
+                                                <td class="text-uppercase">
+                                                    {{ proyectoModal.fechaInicio }}
+                                                </td>
+                                                <td class="text-uppercase">
+                                                    {{ proyectoModal.fechaFin }}
+                                                </td>
+                                                <td class="text-center text-uppercase">
+                                                    {{ proyectoModal.horasPlaneadas }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br />
+                                <div class="text-center mx-auto col-md-6">
+                                    <p>% Avance esperado</p>
+                                    <p class="mb-3">
+                                        <ngb-progressbar type="primary" [value]="porcentajeAvanceEsperado"
+                                            [showValue]="true"></ngb-progressbar>
+                                    </p>
+                                    <p>% Real a la fecha</p>
+                                    <p class="mb-3">
+                                        <ngb-progressbar type="success" [value]="porcentajeRealFecha"
+                                            [showValue]="true"></ngb-progressbar>
+                                    </p>
+                                    <p>% Desviación</p>
+                                    <p class="mb-3">
+                                        <ngb-progressbar type="danger" [value]="porcentajeDesviacion"
+                                            [showValue]="true"></ngb-progressbar>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <h6 class="card-title">Fases y Actividades</h6>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="table-responsive">
+                            <table id="dataTableExample" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Actividad</th>
+                                        <th>Fase</th>
+                                        <th>Fecha Inicio</th>
+                                        <th>Fecha Fin</th>
+                                        <th>Recursos Asignados</th>
+                                        <th>% Avance Esperado</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let a of actividadesAsig">
+                                        <td class="w-75 text-wrap">
+                                            {{ a.actividad.actividad }}
+                                        </td>
+                                        <td class="w-50 text-wrap">
+                                            {{ a.actividad.fase.fase }}
+                                        </td>
+                                        <td class="text-uppercase">
+                                            {{ a.fechaInicio | date : "dd-MMMM-yyyy" }}
+                                        </td>
+                                        <td class="text-uppercase">
+                                            {{ a.fechaFin | date : "dd-MMMM-yyyy" }}
+                                        </td>
+                                        <td class="text-center">
+                                            <a [ngClass]="{
+                            'text-danger font-weight-bold': !a.recursos
+                          }" class="mr-2" (click)="openRecursoModal(agregar_recurso, a.id)">
+                                                <span *ngIf="!a.recursos" class="mdi mdi-account-multiple-plus mdi-24px"
+                                                    placement="top" ngbTooltip="Asignar recursos"></span>
+                                                <span *ngIf="a.recursos" class="mdi mdi-account-multiple-plus mdi-24px"
+                                                    placement="top" ngbTooltip="Ver recursos"></span>
+                                            </a>
+                                        </td>
+                                        <td class="text-center w-50 text-wrap">{{a.porcentajeAvance}}%</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-sm d-flex justify-content-end align-items-center">
+            <a (click)="showNotasModal(notas)" class="btn btn-outline-primary" href="javascript:void(0);"
+                id="btnNuevoProyecto">Agregar nota</a>
+        </div>
+        <br />
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" (click)="GuardarPsrConNota()">
+            Guardar y regresar a PSR
+        </button>
+    </div>
+</ng-template>
+
+<!-- MODAL RECURSO ASIGNADO-->
+
+<ng-template #agregar_recurso let-c="close" let-d="dismiss" id="modalAsignarRecursos">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Recursos Asignados</h5>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <hr />
+            <!-- RECURSOS ASIGNADOS -->
+            <div class="row" *ngIf="empleadosAsig.length > 0">
+                <div class="col">
+                    <div class="text-center h5">RECURSOS ASIGNADOS</div>
+                    <div class="text-center h5" *ngIf="empAsignaciones.nombre != null">
+                        Asignación de <strong>{{ empAsignaciones.nombre }}</strong>
+                        <a (click)="hideAsignaciones()" class="ml-2" ngbTooltip="Cancelar" placement="right">
+                            <i class="mdi mdi-close-circle text-danger"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr *ngIf="empleadosAsig.length > 0" />
+            <div class="row" *ngIf="empleadosAsig.length > 0">
+                <div class="col" id="recursosAsignados">
+                    <div class="table-responsive">
+                        <table id="tabla-recursos" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th class="text-right">Fechas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let e of empleadosAsig">
+                                    <td>{{ e.nombre }}</td>
+                                    <td class="text-right">
+                                        <a (click)="detailsRecursoAsignado(e.id)">Fechas</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="col d-none" id="fechasAsignadasRecurso">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let fae of fechasAsigEmp">
+                                    <td class="text-uppercase">
+                                        {{ fae.fecha | date : "EEEE dd MMMM yyyy" }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #notaSemanal let-c="close" let-d="dismiss">
+        <div class="modal-header">
+            <h5 class="modal-title">NOTA SEMANAL</h5>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <form>
+        <div class="modal-body">
+            <div *ngIf="existeComentarioNotaSemanal" class="form-row">
+                <div class="form-group col-9">
+                    <span><b>{{session['nombre']}}</b> - {{fechaHoy | date:'dd/MM/yyyy'}}</span>
+                    <p [innerHTML]="convertirSaltosDeLinea(comentarioNotaSemanal)"></p>
+                    <br>
+                </div>
+                <div class="form-group col-3">
+                    <a (click)="editarNotaSemanal()" class="mdi mdi-24px mdi-pencil" ngbTooltip="Editar"></a>
+                    <a (click)="deleteNotaSemanal()" class="mdi mdi-24px mdi-delete-forever" ngbTooltip="Eliminar"></a>
+                </div>
+                <hr>
+            </div>
+            <div *ngIf="!existeComentarioNotaSemanal" class="form-row">
+                <div class="form-group col-12">
+                    <label for="notaGerente">Nueva nota: {{fechaHoy | date:'dd/MM/yyyy'}} </label>
+                    <br>
+                    <textarea maxlength="999" [(ngModel)]="comentarioNotaSemanal" name="notaGerente" id="notaGerente" rows="10"
+                        class="form-control"></textarea>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="modal-footer" *ngIf="!existeComentarioNotaSemanal">
+            <button type="submit" class="btn btn-primary" (click)="guardarComentarioSemanal()">Guardar</button>
+            <button type="button" class="btn btn-light ml-2" (click)="cancelBottonNotaSemanal()">Cancelar</button>
+        </div>
+        <div class="modal-footer" *ngIf="existeComentarioNotaSemanal">
+            <button type="button" class="btn btn-light ml-2" (click)="cancelBottonNotaSemanal()">Cerrar</button>
+        </div>
+    </form>
+
+</ng-template>
+
+
+
+
+
+<ng-template #notas let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <div class="form-row">
+            <div class="form-group col-11">
+                <p> <b>SEGUIMIENTO NOTA: </b>{{ proyectoModal.nombre }} {{ proyectoModal.descripcion}}</p>
+            </div>
+            <div class="form-group col-1">
+                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <form>
+        <div class="modal-body">
+            <div *ngIf="existeComentario" class="form-row">
+                <div class="form-group col-9">
+                    <span><b>{{session['nombre']}}</b> - {{fechaHoy | date:'dd/MM/yyyy'}}</span>
+                    <p [innerHTML]="convertirSaltosDeLinea(comentario)"></p>
+                    <br>
+                </div>
+                <div class="form-group col-3">
+                    <a (click)="editarNota()" class="mdi mdi-24px mdi-pencil" ngbTooltip="Editar"></a>
+                    <a (click)="deleteNota()" class="mdi mdi-24px mdi-delete-forever" ngbTooltip="Eliminar"></a>
+                </div>
+                <hr>
+            </div>
+            <div *ngIf="!existeComentario" class="form-row">
+                <div class="form-group col-12">
+                    <label for="notaGerente">Nueva nota: {{fechaHoy | date:'dd/MM/yyyy'}} </label>
+                    <br>
+                    <textarea maxlength="999" [(ngModel)]="comentario" name="notaGerente" id="notaGerente" rows="10"
+                        class="form-control"></textarea>
+                </div>
+            </div>
+            <div *ngIf="psrStatusHistLastTwo.length > 0" class="form-group col-12">
+                <p>Seguimiento Histórico:</p>
+                <br>
+                <ul>
+                    <li *ngFor="let psrComment of psrStatusHistLastTwo">
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <span *ngIf="!psrComment.comentarioGerencia"><b>{{ psrComment.empleado.nombre}}</b>
+                                    - {{psrComment.fechaCreacionStatus | date:'dd/MM/yyyy HH:mm'}}</span>
+                                <span *ngIf="psrComment.comentarioGerencia"><b>OBSERVACIÓN GERENCIA</b> -
+                                    {{psrComment.fechaCreacionStatus | date:'dd/MM/yyyy HH:mm'}}</span>
+                                <p [innerHTML]="convertirSaltosDeLinea(psrComment.comentario)"></p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="modal-footer" *ngIf="!existeComentario">
+            <button type="submit" class="btn btn-primary" (click)="guardarComentario()">Guardar</button>
+            <button type="button" class="btn btn-light ml-2" (click)="cancelBotton()">Cancelar</button>
+        </div>
+        <div class="modal-footer" *ngIf="existeComentario">
+            <button type="button" class="btn btn-light ml-2" (click)="cancelBotton()">Cerrar</button>
+        </div>
+    </form>
+
+</ng-template>
+
+<ng-template #exitPage let-c="close" let-d="dismiss" id="exitPage">
+    <div class="modal-header">
+        <h5 class="modal-title">Alerta</h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p class="text-center h7">¿Estás seguro de que quieres dejar esta página?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" (click)="c(true)">Confirmar</button>
+        <button type="button" class="btn btn-light" (click)="c(false)">Cancelar</button>
+    </div>
+</ng-template>
+
+<ng-template #salirSinGuardarNota let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Salir</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" id="idDeleteFechaAsig">
+        <p>¿Existen notas agregadas, estás seguro de salir sin guardar cambios?</p>
+    </div>
+    <div class="modal-footer">
+        <a id="btnModalFechaDelete" class="btn btn-primary" (click)="closeModalPlaneacionSinGuardar()">
+            Aceptar
+        </a>
+        <button id="btnModalFechaCancelar" type="button" class="btn btn-light" aria-label="Close"
+            (click)="d('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>

@@ -1,0 +1,703 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a routerLink="/clientes">Generación matriz tiempos</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            Trabajar con parámetros
+        </li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-sm">
+                        <h6 class="card-title">ASIGNACIÓN DE PARÁMETROS DE PROYECTO</h6>
+                    </div>
+                    <div>
+                        <button [disabled]="genInforme" class="btn btn-primary" (click)="openXlModal(xlModal)">
+                            Generar Informe
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="form-row">
+                    <div class="form-group col-sm-4 col-md-4">
+                        <label for="NombreMatriz">Nombre matriz:</label>
+                        <input [(ngModel)]="nombreMatriz" type="text" class="form-control" id="NombreMatriz"
+                            name="NombreMatriz" autocomplete="off"
+                            placeholder="Diligencie el nombre de la matriz a configurar" />
+                    </div>
+                    <div class="form-group col-sm-4 col-md-4">
+                        <label for="version">Versión:</label>
+                        <select [(ngModel)]="versionSeleccionada" name="version" (change)="nuevaVersion()" id="version"
+                            autocomplete="off" class="form-control" [disabled]="!nombreMatriz">
+                            <option [ngValue]="null" [disabled]="true" [hidden]="true" [selected]="true">Seleccionar
+                                opción</option>
+                            <option *ngFor="let v of versionesConfiguradas" [ngValue]="v"
+                                [attr.disabled]="v.id > versionDiligenciada ? true : null">{{ v.version }} </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="container" *ngIf="showTable">
+                    <br>
+                    <h5>Versión {{versionSeleccionada.version}}</h5>
+                    <br>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="w-10 text-wrap text-center">Sprints</th>
+                                <th class="w-10 text-wrap text-center">Duración sprints</th>
+                                <th class="w-10 text-wrap text-center">Total horas sprint</th>
+                                <th class="w-10 text-wrap text-center">Total horas recursos</th>
+                                <th class="w-10 text-wrap text-center">Asignacion de recursos</th>
+                                <th class="w-10 text-wrap text-center">Recursos asignados</th>
+                                <th class="w-10 text-wrap text-center">Eliminar</th>
+                                <th class="w-10 text-wrap text-center">Editar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let itemMatrizGeneral of matrizGeneral; let i = index">
+                                <tr *ngIf="validarVersion(itemMatrizGeneral)">
+                                    <td class="w-10 text-wrap text-center">
+                                        <span>
+                                            {{ itemMatrizGeneral.sprint }}
+                                        </span>
+                                    </td>
+                                    <td class="w-10 text-wrap text-center">
+                                        <select *ngIf="itemMatrizGeneral.editing"
+                                            [(ngModel)]="itemMatrizGeneral.duracionDiasSprint">
+                                            <option *ngFor="let duracion of opcionesDuracion" [ngValue]="duracion">{{
+                                                duracion }} días</option>
+                                        </select>
+                                        <span
+                                            *ngIf="itemMatrizGeneral.duracionDiasSprint > 0 && !itemMatrizGeneral.editing; else elseBlock2">
+                                            {{ itemMatrizGeneral.duracionDiasSprint}} días
+                                        </span>
+                                    </td>
+                                    <td class="w-10 text-wrap text-center"
+                                        *ngIf="itemMatrizGeneral.duracionDiasSprint  > 0; else elseBlock">
+                                        {{ itemMatrizGeneral.duracionDiasSprint * parametriaTiempoList.numeroHoras }}
+                                        horas
+                                    </td>
+                                    <td class="w-10 text-wrap text-center"
+                                        *ngIf="SprintPorcentaje[i] !== undefined; else elseBlock">
+                                        <ng-container
+                                            *ngIf="itemMatrizGeneral.sprint === SprintPorcentaje[i].sprint && itemMatrizGeneral.version.version === SprintPorcentaje[i].version && SprintPorcentaje[i].porcentaje > 0">
+                                            {{
+                                            redondearTiempo(SprintPorcentaje[i].porcentaje,itemMatrizGeneral.duracionDiasSprint,
+                                            parametriaTiempoList.numeroHoras ) + ' horas' }}
+                                        </ng-container>
+                                    </td>
+                                    <td class="w-10 text-wrap text-center">
+                                        <a (click)="openXlModal2(ASIGNACIONRECURSOBETA, itemMatrizGeneral)"
+                                            class="mdi mdi-account-multiple-plus mdi-24px" placement="top"
+                                            ngbTooltip="Asignar recursos"></a>
+                                    </td>
+                                    <td class="w-10 text-wrap text-center">
+                                        {{ itemMatrizGeneral.recursosAsignados }}
+                                    </td>
+                                    <td class="w-10 text-wrap text-center">
+                                        <a 
+                                            class="mdi mdi-24px mdi-delete-forever" ngbTooltip="Eliminar"
+                                            (click)="removeItemSprint(i, deleteSprint)">
+                                        </a>
+                                    </td>
+                                    <td class="w-10 text-wrap text-center">
+                                        <a *ngIf="itemMatrizGeneral.editing" class="mdi mdi-content-save mdi-24px"
+                                            ngbTooltip="Guardar" (click)="toggleEdit(i)"></a>
+                                        <a [class.disabled-button]="rowSave" *ngIf="!itemMatrizGeneral.editing"
+                                            class="mdi mdi-24px mdi-pencil" ngbTooltip="Editar"
+                                            (click)="toggleEdit(i)"></a>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                    <br>
+                    <button class="btn btn-primary" (click)="addRow()" [disabled]="rowSave"> + </button>
+                    <ng-template #elseBlock>
+                        <td class="w-10 text-wrap"> </td>
+                    </ng-template>
+                    <ng-template #elseBlock2>
+                        <span></span>
+                    </ng-template>
+                </div>
+
+
+                <!-- Modal -->
+                <ng-template #xlModal let-modal>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Informe Consolidado</h5>
+                        <button type="button" class="btn-close" (click)="modal.close('by: close icon')"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 grid-margin stretch-card" *ngFor="let version of versionesInforme">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="table-responsive">
+                                                    <h6 class="card-title">Version {{version.version}}</h6>
+                                                    <table class=" table table-hover" style="width: 100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="w-10 text-center">Meses</th>
+                                                                <th class="text-center">Costo Total Sprints</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="w-10 text-center">{{ (
+                                                                    mesesVersion(version.id)
+                                                                    /
+                                                                    30).toFixed(1) }}</td>
+                                                                <td class="text-uppercase text-center"> $
+                                                                    {{calcularTotalVersion(version.version).toLocaleString()}}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="table-responsive">
+                                                    <h6 class="card-title">Total planeación</h6>
+                                                    <table class="table table-hover" style="width: 100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="w-10 text-center">Meses</th>
+                                                                <th class="text-center">Costo Total Sprints</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="w-10 text-center">{{ ( mesesVersion() /
+                                                                    30).toFixed(1) }}</td>
+                                                                <td class="text-center"> $
+                                                                    {{totalPlaneacion.toLocaleString()}}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="table-responsive">
+                                                    <h6 class="card-title">Costo por Sprint</h6>
+                                                    <table class=" table table-hover" style="width: 100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="w-10 text-center">Sprint</th>
+                                                                <th class="w-10 text-center">Versión</th>
+                                                                <th class="text-center">Costo</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <ng-container
+                                                                *ngFor="let vs of matrizGeneral; let i = index">
+                                                                <tr>
+                                                                    <td class="w-10 text-center">{{ vs.sprint}}</td>
+                                                                    <td class="w-10 text-center">{{ vs.version.version
+                                                                        }}</td>
+                                                                    <td class="text-center"
+                                                                        *ngIf="costoTotalSprint[i].Sprint === vs.sprint && vs.version.version === costoTotalSprint[i].Version">
+                                                                        $ {{costoTotalSprint[i].Costo.toLocaleString()}}
+                                                                    </td>
+                                                                </tr>
+                                                            </ng-container>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="table-responsive">
+                                                    <h6 class="card-title">Resumen General</h6>
+                                                    <table class="table table-hover" style="width: 100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-center">Sprints</th>
+                                                                <th class="text-center">Versión</th>
+                                                                <th class="text-center">Duración días</th>
+                                                                <th class="text-center">Duración horas sprints</th>
+                                                                <th class="text-center">Duración horas recursos</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr *ngFor="let matriz of matrizGeneral; let i = index">
+                                                                <td class="w-10 text-wrap text-center">{{
+                                                                    matriz.sprint}}
+                                                                </td>
+                                                                <td class="w-10 text-wrap text-center">{{
+                                                                    matriz.version.version}}
+                                                                </td>
+                                                                <td class="w-20 text-wrap text-center">{{
+                                                                    matriz.duracionDiasSprint}} días</td>
+                                                                <td class="w-20 text-wrap text-center">{{
+                                                                    matriz.duracionDiasSprint
+                                                                    * parametriaTiempoList.numeroHoras
+                                                                    }} horas</td>
+                                                                <td class="w-20 text-wrap text-center">{{
+                                                                    redondearTiempo(SprintPorcentaje[i].porcentaje,matriz.duracionDiasSprint,
+                                                                    parametriaTiempoList.numeroHoras ) }} horas</td>
+                                                            </tr>
+                                                            <br>
+                                                            <tr>
+                                                                <td class="w-10 text-wrap text-center">
+                                                                    <strong>Totales</strong>
+                                                                </td>
+                                                                <td class="w-10 text-wrap text-center">
+                                                                </td>
+                                                                <td class="w-10 text-wrap text-center">
+                                                                    <strong>{{ sumaData() }} Días</strong>
+                                                                </td>
+                                                                <td class="w-10 text-wrap text-center">
+                                                                    <strong>{{ sumaDataHora() }} Horas</strong>
+                                                                </td>
+                                                                <td class="w-10 text-wrap text-center">
+                                                                    <strong>{{ sumaDataHoraRecurso() }} Horas</strong>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="container table-responsive">
+                                                    <h6 class="card-title">
+                                                        Cantidad de recursos por perfil por Sprint
+                                                    </h6>
+                                                    <div class="table-container">
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-center">Sprint</th>
+                                                                    <th class="text-center">Versión</th>
+                                                                    <ng-container *ngFor="let cargos of listaRecursos">
+                                                                        <th class="text-center">
+                                                                            <div>{{cargos.Especialidad}}</div>
+                                                                            <div>{{cargos.Cargo}}</div>
+                                                                        </th>
+                                                                    </ng-container>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <ng-container
+                                                                    *ngFor="let vs of matrizGeneral; let i = index">
+                                                                    <tr>
+                                                                        <td class="text-center">{{vs.sprint}}</td>
+                                                                        <td class="text-center">{{vs.version.version}}
+                                                                        </td>
+                                                                        <ng-container *ngFor="let car of listaRecursos">
+                                                                            <ng-container
+                                                                                *ngFor="let p of RecursosHora">
+                                                                                <td class="text-center"
+                                                                                    *ngIf="p.Sprint === vs.sprint && vs.version.version === p.Version && car.Cargo === p.Cargo && p.Especialidad === car.Especialidad">
+                                                                                    {{p.Porcentaje}}</td>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </tr>
+                                                                </ng-container>
+                                                                <br>
+                                                                <tr>
+                                                                    <td class="font-weight-bold text-center">Total</td>
+                                                                    <td class="text-center"></td>
+                                                                    <ng-container *ngFor="let car of listaRecursos">
+                                                                        <ng-container
+                                                                            *ngFor="let p of RecursosHoraTotal">
+                                                                            <td class="font-weight-bold text-center"
+                                                                                *ngIf="car.Cargo === p.Cargo && p.Especialidad === car.Especialidad">
+                                                                                {{p.Total.toLocaleString()}}</td>
+                                                                        </ng-container>
+                                                                    </ng-container>
+                                                                </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="container table-responsive">
+                                                    <h6 class="card-title">
+                                                        Cantidad de horas por recurso por Sprint
+                                                    </h6>
+                                                    <div>
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-center">Sprint</th>
+                                                                    <th class="text-center">Versión</th>
+                                                                    <ng-container *ngFor="let cargos of listaRecursos">
+                                                                        <th class="text-center">
+                                                                            <div>{{cargos.Especialidad}}</div>
+                                                                            <div>{{cargos.Cargo}}</div>
+                                                                        </th>
+                                                                    </ng-container>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <ng-container
+                                                                    *ngFor="let vs of matrizGeneral; let i = index">
+                                                                    <tr>
+                                                                        <td class="text-center">{{vs.sprint}}</td>
+                                                                        <td class="text-center">{{vs.version.version}}
+                                                                        </td>
+                                                                        <ng-container *ngFor="let car of listaRecursos">
+                                                                            <ng-container
+                                                                                *ngFor="let p of RecursosHora">
+                                                                                <td class="text-center"
+                                                                                    *ngIf="p.Sprint === vs.sprint && vs.version.version === p.Version && car.Cargo === p.Cargo && p.Especialidad === car.Especialidad">
+                                                                                    {{p.Horas}} Horas</td>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </tr>
+                                                                </ng-container>
+                                                                <br>
+                                                                <tr>
+                                                                    <td class="font-weight-bold text-center">Total</td>
+                                                                    <td class="text-center"></td>
+                                                                    <ng-container *ngFor="let car of listaRecursos">
+                                                                        <ng-container
+                                                                            *ngFor="let p of RecursosHoraTotal">
+                                                                            <td class="font-weight-bold text-center"
+                                                                                *ngIf="car.Cargo === p.Cargo && p.Especialidad === car.Especialidad">
+                                                                                {{p.TotalHoras}} Horas</td>
+                                                                        </ng-container>
+                                                                    </ng-container>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="container table-responsive">
+                                                    <h6 class="card-title">
+                                                        Costo total por especialidad de recurso
+                                                    </h6>
+                                                    <div>
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-wrap text-center">Sprint</th>
+                                                                    <th class="text-wrap text-center">Versión</th>
+                                                                    <ng-container *ngFor="let cargos of listaRecursos">
+                                                                        <th class="text-center">
+                                                                            <div>{{cargos.Especialidad}}</div>
+                                                                            <div>{{cargos.Cargo}}</div>
+                                                                        </th>
+                                                                    </ng-container>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <ng-container
+                                                                    *ngFor="let vs of matrizGeneral; let i = index">
+                                                                    <tr>
+                                                                        <td class="text-center">{{vs.sprint}}</td>
+                                                                        <td class="text-center">
+                                                                            {{vs.version.version}}</td>
+                                                                        <ng-container *ngFor="let car of listaRecursos">
+                                                                            <ng-container
+                                                                                *ngFor="let p of RecursosHora">
+                                                                                <td class="text-center"
+                                                                                    *ngIf="p.Sprint === vs.sprint && vs.version.version === p.Version && car.Cargo === p.Cargo && p.Especialidad === car.Especialidad">
+                                                                                    $ {{p.tarifaHora.toLocaleString()}}
+                                                                                </td>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </tr>
+                                                                </ng-container>
+                                                                <br>
+                                                                <tr>
+                                                                    <td class="font-weight-bold text-center">Total</td>
+                                                                    <td class="text-center"></td>
+                                                                    <ng-container *ngFor="let car of listaRecursos">
+                                                                        <ng-container
+                                                                            *ngFor="let p of RecursosHoraTotal">
+                                                                            <td class="font-weight-bold text-center"
+                                                                                *ngIf="car.Cargo === p.Cargo && p.Especialidad === car.Especialidad">$
+                                                                                {{p.TotalTarifa.toLocaleString()}}</td>
+                                                                        </ng-container>
+                                                                    </ng-container>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" (click)="modal.close('by: close button')">
+                            Seguir Editando
+                        </button>
+                        <button type="button" class="btn btn-primary" (click)="saveGeneracionTiempos()">
+                            Guardar en Historicos
+                        </button>
+                        <button type="button" class="btn btn-primary" (click)="generatePDF()">
+                            Exportar en PDF
+                        </button>
+                    </div>
+                </ng-template>
+
+                <!-- MODAL RECURSO ASIGNADO -->
+                <ng-template #ASIGNACIONRECURSOBETA let-modal let-d="dismiss">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Asignar recursos</h5>
+                        <button type="button" class="close" aria-label="Close"
+                            (click)="d('Cross click'); deleteRecursoVacio(); PorcentajeSprint()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container d-flex">
+                            <div class="d-flex w-30 mr-3">
+                                <button [disabled]="rowRecursoSave" class="text-center" class="btn btn-primary"
+                                    (click)="agregarRecursoBeta()">
+                                    Agregar Perfil
+                                </button>
+                            </div>
+                            <div class="d-flex w-75 align-items-end">
+                                <label for="horasSprint">
+                                    Horas Total Sprint
+                                    <span class="ml-1 font-weight-bold "> {{parametriaTiempoList.numeroHoras *
+                                        dias_sprint}} Horas </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="container-body mt-2">
+                            <table class="table" aria-describedby="Tabla Asignacion Recurso">
+                                <thead>
+                                    <tr>
+                                        <th class="w-30 col">Especialidad</th>
+                                        <th class="w-30 col">Perfil</th>
+                                        <th class="w-20 col text-center">Porcentaje</th>
+                                        <th class="w-10 col text-center">Eliminar</th>
+                                        <th class="w-10 col text-center">Editar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-container
+                                        *ngFor="let listSource of dataSourceAsignacionRecursoBeta; let i = index">
+                                        <tr
+                                            *ngIf="version_recurso === dataSourceAsignacionRecursoBeta[i].Version.sprint && version_matriz === dataSourceAsignacionRecursoBeta[i].Version.version.id">
+                                            <td class="text-center">
+                                                <form action="" *ngIf="dataSourceAsignacionRecursoBeta[i].Editar">
+                                                    <div class="select" id="select" (click)="activarEspecialidad()"
+                                                        [class.active]="selectEspecialidad">
+                                                        <div class="contenido-select">
+                                                            <p class="especialidad-selected"
+                                                                [ngbTooltip]="tituloEspecialidad">
+                                                                {{tituloEspecialidad}} </p>
+                                                        </div>
+                                                        <i *ngIf="!selectEspecialidad"
+                                                            class="mdi mdi-20px mdi-chevron-down"></i>
+                                                        <i *ngIf="selectEspecialidad"
+                                                            class="mdi mdi-20px mdi-chevron-up"></i>
+                                                    </div>
+                                                    <div class="opciones" [class.active]="selectEspecialidad">
+                                                        <ng-container *ngFor="let esp of especialidades">
+                                                            <option (click)="changeEspecialidad(esp, i)" [ngValue]="esp"
+                                                                class="especialidad">{{ esp.especialidad }} </option>
+                                                        </ng-container>
+                                                    </div>
+                                                </form>
+                                                <span *ngIf="!dataSourceAsignacionRecursoBeta[i].Editar"
+                                                    [ngbTooltip]="dataSourceAsignacionRecursoBeta[i].Especialidad.especialidad"
+                                                    class="especialidad-selected">
+                                                    {{ dataSourceAsignacionRecursoBeta[i].Especialidad != undefined ?
+                                                    dataSourceAsignacionRecursoBeta[i].Especialidad.especialidad : " "
+                                                    }}
+                                                </span>
+                                                <div
+                                                    *ngIf="dataSourceAsignacionRecursoBeta[i].Editar && dataSourceAsignacionRecursoBeta[i].Especialidad === undefined">
+                                                    <small class="input-required">Este campo es obligatorio</small>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <form action="" *ngIf="dataSourceAsignacionRecursoBeta[i].Editar">
+                                                    <div class="select" id="select" (click)="activarPerfil()"
+                                                        [class.active]="selectPerfil">
+                                                        <div class="contenido-select">
+                                                            <p class="perfil-selected" [ngbTooltip]="tituloPerfil">
+                                                                {{tituloPerfil}} </p>
+                                                        </div>
+                                                        <i *ngIf="!selectPerfil"
+                                                            class="mdi mdi-20px mdi-chevron-down"></i>
+                                                        <i *ngIf="selectPerfil" class="mdi mdi-20px mdi-chevron-up"></i>
+                                                    </div>
+                                                    <div class="opciones" [class.active]="selectPerfil">
+                                                        <ng-container *ngFor="let car of tiposRecursos">
+                                                            <option
+                                                                *ngIf="car.especialidad.especialidad === tituloEspecialidad"
+                                                                (click)="changePerfil(car, i)" [ngValue]="car"
+                                                                class="perfil">{{ car.perfil.perfil }} </option>
+                                                        </ng-container>
+                                                    </div>
+                                                </form>
+                                                <span *ngIf="!dataSourceAsignacionRecursoBeta[i].Editar"
+                                                    [ngbTooltip]="dataSourceAsignacionRecursoBeta[i].Perfil.perfil.perfil"
+                                                    class="perfil-selected">
+                                                    {{ dataSourceAsignacionRecursoBeta[i].Perfil != undefined ?
+                                                    dataSourceAsignacionRecursoBeta[i].Perfil.perfil.perfil : '' }}
+                                                </span>
+                                                <div
+                                                    *ngIf="dataSourceAsignacionRecursoBeta[i].Editar && dataSourceAsignacionRecursoBeta[i].Perfil === undefined">
+                                                    <small class="input-required">Este campo es obligatorio</small>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <input (keyup)="validarPorcentaje(i)" inputmode="numeric"
+                                                    *ngIf="dataSourceAsignacionRecursoBeta[i].Editar"
+                                                    [(ngModel)]="dataSourceAsignacionRecursoBeta[i].Porcentaje"
+                                                    type="number" class="form-control" min="0" max="100" step="5">
+                                                <span *ngIf="!dataSourceAsignacionRecursoBeta[i].Editar">
+                                                    {{ dataSourceAsignacionRecursoBeta[i].Porcentaje }} %
+                                                </span>
+                                                <div
+                                                    *ngIf="dataSourceAsignacionRecursoBeta[i].Editar && dataSourceAsignacionRecursoBeta[i].Porcentaje === null || dataSourceAsignacionRecursoBeta[i].Porcentaje === 0 || dataSourceAsignacionRecursoBeta[i].Porcentaje === '' ">
+                                                    <small class="input-required">Este campo es obligatorio y debe ser
+                                                        diferente de 0</small>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <a [class.disabled-button]="rowRecursoSave"
+                                                    class="mdi mdi-24px mdi-delete-forever ml-2" ngbTooltip="Eliminar"
+                                                    (click)="openDeleteModel(i, delete)"></a>
+                                            </td>
+                                            <td class="text-center">
+                                                <a [class.disabled-button]="rowRecursoSave"
+                                                    *ngIf="!dataSourceAsignacionRecursoBeta[i].Editar"
+                                                    class="mdi mdi-24px mdi-pencil" ngbTooltip="Editar"
+                                                    (click)="toggleEditRecurso(i)"></a>
+                                                <a *ngIf="dataSourceAsignacionRecursoBeta[i].Editar"
+                                                    class="mdi mdi-24px mdi-content-save" ngbTooltip="Guardar"
+                                                    (click)="toggleEditRecurso(i)"></a>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary"
+                            (click)="modal.close('by: close button'); deleteRecursoVacio(); PorcentajeSprint()"
+                            [disabled]="rowRecursoSave">Aceptar</button>
+                    </div>
+                </ng-template>
+            </div>
+            <ng-template #deleteSprint let-d="dismiss">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modal-basic-title">Confirmar eliminación</h4>
+                    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de eliminar este sprint?</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnModalDelete" type="submit" class="btn btn-danger" (click)="openDeleteRow()">
+                        Aceptar
+                    </button>
+                    <button id="btnModalCancelar" type="button" class="btn btn-light" aria-label="Close"
+                        (click)="d('Cross click')">
+                        Cancelar
+                    </button>
+                </div>
+            </ng-template>
+
+            <ng-template #delete let-d="dismiss">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modal-basic-title">Confirmar eliminación</h4>
+                    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de eliminar este recurso?</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnModalDelete" type="submit" class="btn btn-danger" (click)="removeItem()">
+                        Aceptar
+                    </button>
+                    <button id="btnModalCancelar" type="button" class="btn btn-light" aria-label="Close"
+                        (click)="d('Cross click')">
+                        Cancelar
+                    </button>
+                </div>
+            </ng-template>

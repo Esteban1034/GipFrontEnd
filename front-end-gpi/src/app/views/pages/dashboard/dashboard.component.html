@@ -1,0 +1,31 @@
+<!-- <nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item" *ngFor="let o of options">
+            <a routerLink="{o.link}">{{o.link}}</a>
+        </li>
+    </ol>
+</nav> -->
+<div class="card" style="padding: 10px;">
+
+    <span>Current Date: {{ currentDate.day }}/{{ currentDate.month }}/{{ currentDate.year }}</span>
+
+    <div class="d-block" id="logo">
+        <img src="assets/images/logo-its.png" alt="Logo ITS Solutions"
+            style="width: 50%; height: 50%; display: block; margin:auto; margin-top:50px"><br><br>
+    </div>
+
+    <div style="font-size: 15px;" class="card-body">
+        <h3>Bienvenido al Sistema de Gestión Interno de Proyectos (GIP).</h3>
+        <hr>
+        <p>El presente sistema tiene como propósito hacer gestión y seguimiento de proyectos. <br>
+            Está compuesto de los siguientes módulos:
+        </p>
+        <ul>
+            <li>Clientes</li>
+            <li>Recursos</li>
+            <li>Reporte Tiempos</li>
+            <li>Proyectos</li>
+        </ul>
+
+    </div>
+</div>

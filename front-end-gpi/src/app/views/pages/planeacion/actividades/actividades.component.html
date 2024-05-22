@@ -1,0 +1,142 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a routerLink="/proyectos">Proyectos</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Planeacion</li>
+        <li class="breadcrumb-item active" aria-current="page">Administración de Actividades</li>
+    </ol>
+</nav>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <h6 class="card-title">Administración de Actividades</h6>
+            </div>
+            <div class="col justify-content-end d-flex">
+                <a (click)="openAddActividadModal(actividad)" class="btn btn-outline-primary">Agregar actividad</a>
+            </div>
+        </div>
+        <hr>
+        <form *ngIf="actividadToEdit.id != null" [formGroup]="formEditActividad" (ngSubmit)="edit()">
+            <div class="form-row">
+                <div class="form-group col-sm-8 col-md">
+                    <input [(ngModel)]="actividadToEdit.actividad" name="actividadEdit" type="text" class="form-control"
+                        oninput="javascript:this.value=this.value.toUpperCase();" formControlName="actividadEdit"
+                        [ngClass]="{'is-invalid': submittedEA && fea.actividadEdit.errors}">
+                    <div class="invalid-feedback" *ngIf="submittedEA && fea.actividadEdit.errors">
+                        <div *ngIf="fea.actividadEdit.errors.required">
+                            Este campo es requerido
+                        </div>
+                        <div *ngIf="fea.actividadEdit.errors.minlength">
+                            Este campo debe tener como mínimo 3 caracteres.
+                        </div>
+                        <div *ngIf="fea.actividadEdit.errors.maxlength">
+                            Este campo debe tener como máximo 50 caracteres.
+                        </div>
+                        <div *ngIf="fea.actividadEdit.errors.pattern">
+                            No se aceptan números o caracteres especiales.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-sm-4 col-md">
+                    <select [(ngModel)]="actividadToEdit.fase.id"
+                        [ngClass]="{'is-invalid': submittedEA && fea.faseEdit.errors}" formControlName="faseEdit"
+                        name="faseEdit" id="faseEdit" class="form-control" autocomplete="off">
+                        <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
+                        <option *ngFor="let f of fases" [ngValue]="f.id">{{f.fase}}</option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submittedEA && fea.faseEdit.errors">
+                        <div *ngIf="fea.faseEdit.errors.required">
+                            Este campo es requerido
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-sm-12 col-md-auto">
+                    <button id="btnGuardar" type="submit" class="btn btn-primary">Guardar</button>
+                    <button id="btnCancelar" type="button" (click)="cancelar()" class="btn btn-light">Cancelar</button>
+                </div>
+            </div>
+        </form>
+        <hr *ngIf="actividadToEdit.id != null">
+        <div class="table-responsive">
+            <table class="table table-hover table-borderless">
+                <thead>
+                    <tr>
+                        <th scope="col">Actividad</th>
+                        <th scope="col" class="text-center">Editar</th>
+                        <th scope="col" class="text-center">Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let a of actividades">
+                        <td scope="row">{{a.actividad}}</td>
+                        <td class="text-center">
+                            <a (click)="loadActividad(a.id)" class="mdi mdi-24px mdi-pencil" placement="right"
+                                ngbTooltip="Editar"></a>
+                        </td>
+                        <td class="text-center">
+                            <a (click)="delete(a.id)" class="mdi mdi-24px mdi-delete-forever" placement="right"
+                                ngbTooltip="Eliminar"></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ADD ACTIVIDAD -->
+<ng-template #actividad let-c="close" let-d="dismiss">
+    <form [formGroup]="formNewActividad" (ngSubmit)="saveActividad()">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Nueva actividad base</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group col-12">
+                <label for="fase">Fase</label>
+                <select [(ngModel)]="newActividad.fase" [ngClass]="{'is-invalid': submittedNA && fna.fase.errors}"
+                    formControlName="fase" name="fase" id="fase" class="form-control" autocomplete="off">
+                    <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
+                    <option *ngFor="let f of fases" [ngValue]="f">{{f.fase}}</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submittedNA && fna.fase.errors">
+                    <div *ngIf="fna.fase.errors.required">
+                        Este campo es requerido
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-12">
+                <label for="actividad">Actividad</label>
+                <input [(ngModel)]="newActividad.actividad"
+                    [ngClass]="{'is-invalid': submittedNA && fna.actividad.errors}" formControlName="actividad"
+                    type="text" id="actividad" name="actividad" class="form-control" placeholder="Nombre Actividad"
+                    autocomplete="off" autofocus oninput="javascript:this.value=this.value.toUpperCase();" />
+                <div class="invalid-feedback" *ngIf="submittedNA && fna.actividad.errors">
+                    <div *ngIf="fna.actividad.errors.required">
+                        Este campo es requerido
+                    </div>
+                    <div *ngIf="fna.actividad.errors.minlength">
+                        Este campo debe tener como mínimo 3 caracteres.
+                    </div>
+                    <div *ngIf="fna.actividad.errors.maxlength">
+                        Este campo debe tener como máximo 50 caracteres.
+                    </div>
+                    <div *ngIf="fna.actividad.errors.pattern">
+                        No se aceptan números o caracteres especiales.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button id="btnModalActividad" type="submit" class="btn btn-primary">
+                Agregar
+            </button>
+        </div>
+    </form>
+</ng-template>

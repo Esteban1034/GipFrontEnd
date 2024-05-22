@@ -1,0 +1,79 @@
+// Extra small devices (portrait phones, less than 576px)
+// No media query for `xs` since this is the default in Bootstrap
+
+#btnGuardar {
+    width: 100%;
+}
+
+#btnEspecialidad {
+    width     : 100%;
+    margin-top: 5px;
+}
+
+#btnCancelar {
+    width     : 100%;
+    margin-top: 5px;
+}
+
+#btnModalEspecialidad {
+    width: 100%;
+}
+
+#btnModalRol {
+    width: 100%;
+}
+
+#btnModalCargo {
+    width: 100%;
+}
+
+#btnRol {
+    width: 100%;
+    margin-top: 5px;
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+    #btnGuardar {
+        width: auto;
+    }
+
+    #btnEspecialidad {
+        width      : auto;
+        margin-top : 0px;
+        margin-left: 5px;
+    }
+
+    #btnCancelar {
+        width      : auto;
+        margin-top : 0px;
+        margin-left: 5px;
+    }
+
+    #btnModalEspecialidad {
+        width: auto;
+    }
+
+    #btnModalCargo {
+        width: auto;
+    }
+
+    #btnRol {
+        width: auto;
+        margin-left: 5px;
+        margin-top: 0px;
+    }
+
+    #btnModalRol {
+        width: auto;
+    }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {}

@@ -1,0 +1,366 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/clientes">Parametrización matriz tiempos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Trabajar con parámetros</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center" id="occ">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <form [formGroup]="formParametrosGenerales">
+                    <div>
+                        <ul ngbNav #defaultNav="ngbNav" [(activeId)]="defaultNavActiveId" class="nav-tabs">
+                            <li [ngbNavItem]="1">
+                                <a ngbNavLink>Parámetros Generales</a>
+                                <ng-template ngbNavContent>
+                                    <br>
+                                    <h6 class="card-title">Parámetros Generales</h6>
+                                    <br>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm-12 col-md-4">
+                                            <label for="mesesMaximo">Número de meses</label>
+                                            <input [(ngModel)]="parametriaGeneralMatrizTiempo.mesesMaximo"
+                                                [ngClass]="{ 'is-invalid': submitted && f.mesesMaximo.errors }"
+                                                formControlName="mesesMaximo" type="number" class="form-control"
+                                                id="mesesMaximo" name="mesesMaximo" autocomplete="off"
+                                                placeholder="Número de meses máximo" min="0" />
+                                            <div class="invalid-feedback" *ngIf="submitted && f.mesesMaximo.errors">
+                                                <div *ngIf="f.mesesMaximo.errors.required">
+                                                    Este campo es requerido.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-sm-12 col-md-4">
+                                            <label for="sprintsMaximo">Número de sprints</label>
+                                            <input [(ngModel)]="parametriaGeneralMatrizTiempo.sprintsMaximo"
+                                                [ngClass]="{ 'is-invalid': submitted && f.sprintsMaximo.errors }"
+                                                formControlName="sprintsMaximo" type="number" class="form-control"
+                                                id="sprintsMaximo" name="mesesMaximo" autocomplete="off"
+                                                placeholder="Número de sprints máximo" min="0"/>
+                                            <div class="invalid-feedback" *ngIf="submitted && f.sprintsMaximo.errors">
+                                                <div *ngIf="f.sprintsMaximo.errors.required">
+                                                    Este campo es requerido.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-sm-12 col-md-4">
+                                            <label for="semanaSprintMaximo">Número de semanas sprints</label>
+                                            <input [(ngModel)]="parametriaGeneralMatrizTiempo.semanaSprintMaximo"
+                                                [ngClass]="{ 'is-invalid': submitted && f.semanaSprintMaximo.errors }"
+                                                formControlName="semanaSprintMaximo" type="number" class="form-control"
+                                                id="semanaSprintMaximo" name="mesesMaximo" autocomplete="off"
+                                                placeholder="Número de semanas máximo" min="0" max="4" />
+                                            <div class="invalid-feedback"
+                                                *ngIf="submitted && f.semanaSprintMaximo.errors">
+                                                <div *ngIf="f.semanaSprintMaximo.errors.required">
+                                                    Este campo es requerido.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+
+                                        <div class="form-group col-sm-12 col-md-4">
+                                            <label for="diaSprintMaximo">Número de días sprints</label>
+                                            <input [(ngModel)]="parametriaGeneralMatrizTiempo.diaSprintMaximo"
+                                                [ngClass]="{ 'is-invalid': submitted && f.diaSprintMaximo.errors }"
+                                                formControlName="diaSprintMaximo" type="number" class="form-control"
+                                                id="semanaSprintMaximo" name="mesesMaximo" autocomplete="off"
+                                                placeholder="Número de días máximo" min="0" />
+                                            <div class="invalid-feedback" *ngIf="submitted && f.diaSprintMaximo.errors">
+                                                <div *ngIf="f.diaSprintMaximo.errors.required">
+                                                    Este campo es requerido.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-sm-12 col-md-4">
+                                            <label for="recursosMaximo">Número de recursos</label>
+                                            <input [(ngModel)]="parametriaGeneralMatrizTiempo.recursosMaximo"
+                                                [ngClass]="{ 'is-invalid': submitted && f.recursosMaximo.errors }"
+                                                formControlName="recursosMaximo" type="number" class="form-control"
+                                                id="semanaSprintMaximo" name="mesesMaximo" autocomplete="off"
+                                                placeholder="Número de recursos máximo" min="0"/>
+                                            <div class="invalid-feedback" *ngIf="submitted && f.recursosMaximo.errors">
+                                                <div *ngIf="f.recursosMaximo.errors.required">
+                                                    Este campo es requerido.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-sm-12 col-md-4">
+                                            <label for="numeroHoras">Número de horas</label>
+                                            <input [(ngModel)]="parametriaGeneralMatrizTiempo.numeroHoras"
+                                                [ngClass]="{ 'is-invalid': submitted && f.numeroHoras.errors }"
+                                                formControlName="numeroHoras" type="number" class="form-control"
+                                                id="numeroHoras" name="numeroHoras" autocomplete="off"
+                                                placeholder="Número de horas laborales" min="0" max="8" />
+                                            <div class="invalid-feedback" *ngIf="submitted && f.numeroHoras.errors">
+                                                <div *ngIf="f.numeroHoras.errors.required">
+                                                    Este campo es requerido.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <button type="submit" id="btnGuardarCliente" class="btn btn-primary"
+                                        (click)='guardarParametrosGenerales()'>Guardar</button>
+                                    <button id="btnCancel" class="btn btn-light"
+                                        (click)="cancelBotton()">Cancelar</button>
+                                </ng-template>
+                            </li>
+                            <li [ngbNavItem]="2">
+                                <a ngbNavLink>Parámetros de Recursos</a>
+                                <ng-template ngbNavContent>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-12 col-sm">
+                                            <h6 class="card-title">PARÁMETROS DE RECURSOS</h6>
+                                        </div>
+                                        <div class="col-12 col-sm d-flex justify-content-end align-items-center">
+                                            <button type="submit" class="btn btn-outline-primary"
+                                                (click)="showAgregarPerfilModal(agregarPerfil)">
+                                                Agregar perfil
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div>
+                                        <div class="table-responsive">
+                                            <table mat-table [dataSource]="dataSource" class="table-hover" style="width: 100%;">
+                    
+                                                <ng-container matColumnDef="especialidad">
+                                                    <th mat-header-cell *matHeaderCellDef>Especialidad</th>
+                                                    <td mat-cell *matCellDef="let perfil"> {{perfil.especialidad}} </td>
+                                                </ng-container>
+                                                <ng-container matColumnDef="perfil">
+                                                    <th mat-header-cell *matHeaderCellDef>Perfil</th>
+                                                    <td mat-cell *matCellDef="let perfil"> {{perfil.perfil}} </td>
+                                                </ng-container>
+                                                <ng-container matColumnDef="tarifa_hora">
+                                                    <th mat-header-cell *matHeaderCellDef class="text-center">Tarifa actual por hora</th>
+                                                    <td mat-cell *matCellDef="let perfil" class="text-center">$ {{perfil.tarifaHora}}</td>
+                                                </ng-container>
+                    
+                                                <ng-container matColumnDef="tarifa_mensualidad">
+                                                    <th mat-header-cell *matHeaderCellDef class="text-center">Tarifa por mensualidad</th>
+                                                    <td mat-cell *matCellDef="let perfil" class="text-center">$ {{perfil.tarifaMensual}}</td>
+                                                </ng-container>     
+                                                
+                                                <ng-container matColumnDef="descripcion">
+                                                    <th mat-header-cell *matHeaderCellDef class="text-center">Descripción</th>
+                                                    <td mat-cell *matCellDef="let perfil" class="text-wrap text-center"> {{perfil.descripcion}} </td>
+                                                </ng-container>   
+                    
+                                                <ng-container matColumnDef="opciones">
+                                                    <th mat-header-cell *matHeaderCellDef class="text-center">Opciones</th>
+                                                    <td mat-cell *matCellDef="let perfil" class="text-center">
+                                                        <div>
+                                                            <a (click)="showEditarPerfilModal(mostrarModuloUpdate,perfil.id)" class="mdi mdi-24px mdi-pencil" ngbTooltip="Editar"></a>
+                                                            <a (click)="deleteModal(deletePerfil,perfil.id)"  class="mdi mdi-24px mdi-delete-forever"
+                                                                ngbTooltip="Eliminar"></a>
+                                                        </div>
+                                                    </td>
+                                                </ng-container>
+                    
+                                                <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+                                                <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </li>
+                        </ul>
+                        <div [ngbNavOutlet]="defaultNav" class="border border-top-0 p-3"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #agregarPerfil let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            Agregar Perfil
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <form [formGroup]="formParametrosRecursos">
+        <div class="modal-body">
+            <div class="form-row">
+                <div class="form-group col-sm-12 col-md-12">
+                    <label for="especialidad">Especialidad</label>
+                    <select [(ngModel)]="parametriaRecursosMatrizTiempo.especialidad" (change)="getListPerfiles(parametriaRecursosMatrizTiempo.especialidad.id)"
+                        [ngClass]="{'is-invalid': submitted && r.especialidad.errors}" formControlName="especialidad" name="especialidad"
+                        id="cargo" autocomplete="off" class="form-control">
+                        <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                        </option>
+                        <option *ngFor="let c of especialidades" [ngValue]="c">{{ c.especialidad }}</option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && r.especialidad.errors">
+                        <div *ngIf="r.especialidad.errors.required">
+                            Este campo es requerido.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-12 col-md-12">
+                    <label for="cargo">Perfil</label>
+                    <select [(ngModel)]="parametriaRecursosMatrizTiempo.perfil" 
+                        [ngClass]="{'is-invalid': submitted && r.cargo.errors}" formControlName="cargo" name="cargo"
+                        id="cargo" autocomplete="off" class="form-control">
+                        <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                        </option>
+                        <option *ngFor="let c of perfiles" [ngValue]="c">{{ c.perfil }}</option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && r.cargo.errors">
+                        <div *ngIf="r.cargo.errors.required">
+                            Este campo es requerido.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-12 col-md-12">
+                    <label for="tarifaHora">Tarifa por hora</label>
+                    <input [(ngModel)]="tarifaHoraFormateada" (input)="formatearTarifaHora(true)" (keydown)="validarNumeros($event)"
+                        [ngClass]="{ 'is-invalid': submitted && r.tarifaHora.errors }" formControlName="tarifaHora"
+                        type="text" class="form-control" id="tarifaHora" name="tarifaHora" autocomplete="off"
+                        placeholder="Tarifa por hora" min="0" />
+                    <div class="invalid-feedback" *ngIf="submitted && r.tarifaHora.errors">
+                        <div *ngIf="r.tarifaHora.errors.required">
+                            Este campo es requerido.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-12 col-md-12">
+                    <label for="tarifaMensual">Tarifa mensual</label>
+                    <input [(ngModel)]="tarifaMensualFormateada" (input)="formatearTarifaMensual(true)" (keydown)="validarNumeros($event)"
+                        [ngClass]="{ 'is-invalid': submitted && r.tarifaMensual.errors }"
+                        formControlName="tarifaMensual" type="text" class="form-control" id="tarifaMensual"
+                        name="tarifaMensual" autocomplete="off" placeholder="Tarifa mensual" currencyMask 
+                        min="0"/>
+                    <div class="invalid-feedback" *ngIf="submitted && r.tarifaMensual.errors">
+                        <div *ngIf="r.tarifaMensual.errors.required">
+                            Este campo es requerido.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <label for="descripcion">Descripción</label>
+                    <textarea [(ngModel)]="parametriaRecursosMatrizTiempo.descripcion"  [ngClass]="{ 'is-invalid': submitted && r.descripcion.errors }"
+                    type="text" id="descripcion" name="descripcion" formControlName="descripcion" class="form-control"
+                    autocomplete="off"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" (click)='guardarParametrosRecursos()'>Guardar</button>
+                <button type="button" class="btn btn-light ml-2" (click)='cancelarModalRecursos()'>Cancelar</button>
+            </div>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #mostrarModuloUpdate>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            Modificar Perfil
+        </h4>
+    </div>
+
+    <form [formGroup]="formParametrosRecursos">
+        <div class="modal-body">
+            <div class="form-row">
+                <div class="form-group col-sm-12 col-md-12">
+                    <label for="especialidad">Especialidad</label>
+                    <select [(ngModel)]="updateRecurso.especialidad" (change)="getListPerfiles(updateRecurso.especialidad.id)"
+                    [ngClass]="{'is-invalid': submitted && r.especialidad.errors}" formControlName="especialidad" name="especialidad"
+                    id="especialidad" autocomplete="off" class="form-control">
+                    <option [ngValue]="undefined" [disabled]="true" [hidden]="true"> {{especialidadRecurso.especialidad}}
+                    </option>
+                    <option *ngFor="let c of especialidades" [ngValue]="c">{{ c.especialidad }}</option>
+                </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-12 col-md-12">
+                    <label for="cargo">Perfil</label>
+                    <select [(ngModel)]="updateRecurso.perfil" 
+                    [ngClass]="{'is-invalid': submitted && r.cargo.errors}" formControlName="cargo" name="cargo"
+                    id="cargo" autocomplete="off" class="form-control">
+                    <option [ngValue]="undefined" [disabled]="true" [hidden]="true"> {{perfilRecurso.perfil}}
+                    </option>
+                    <option *ngFor="let c of perfiles" [ngValue]="c">{{ c.perfil }}</option>
+                </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-12 col-md-12">
+                    <label for="tarifaHora">Tarifa por hora</label>
+                    <input [(ngModel)]="tarifaHoraFormateada" (input)="formatearTarifaHora(false)" (keydown)="validarNumeros($event)"
+                        [ngClass]="{ 'is-invalid': submitted && r.tarifaHora.errors }" formControlName="tarifaHora"
+                        type="text" class="form-control" id="tarifaHora" name="tarifaHora" autocomplete="off"
+                        placeholder="Tarifa por hora" min="0" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-12 col-md-12">
+                    <label for="tarifaMensual">Tarifa mensual</label>
+                    <input [(ngModel)]="tarifaMensualFormateada" (input)="formatearTarifaMensual(false)" (keydown)="validarNumeros($event)"
+                        [ngClass]="{ 'is-invalid': submitted && r.tarifaMensual.errors }"
+                        formControlName="tarifaMensual" type="text" class="form-control" id="tarifaMensual"
+                        name="tarifaMensual" autocomplete="off" placeholder="Tarifa mensual" currencyMask 
+                        min="0"/>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <label for="descripcion">Descripción</label>
+                    <textarea [(ngModel)]="updateRecurso.descripcion"  [ngClass]="{ 'is-invalid': submitted && r.descripcion.errors }"
+                    type="text" id="descripcion" name="descripcion" formControlName="descripcion" class="form-control"
+                    autocomplete="off"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" (click)='updateParametrosRecursos()'>Guardar</button>
+                <button type="button" class="btn btn-light ml-2" (click)='cancelarModalRecursosUpdate()'>Cancelar</button>
+            </div>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #deletePerfil let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminación</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>¿Estás seguro de eliminar este perfil?</p>
+    </div>
+    <div class="modal-footer">
+        <button id="btnModalDelete" type="submit" class="btn btn-danger" (click)="deleteParametriaPerfil()">
+            Aceptar
+        </button>
+        <button id="btnModalCancelar" type="button" class="btn btn-light" aria-label="Close" (click)="d('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>

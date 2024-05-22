@@ -1,0 +1,180 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/proyectos/internos">Proyectos internos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Ver todos</li>
+    </ol>
+</nav>
+
+<div class="spinner-wrapper " style="display: none;" id="con_spinner" name="con_spinner">
+    <div class="spinner"></div>
+  </div>
+
+<div class="row" id="occ">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Nuevo Proyecto interno</h6>
+                <form [formGroup]="formNewProyecto" (ngSubmit)="guardarProyecto()">
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="codigo">Código</label>
+                            <input [(ngModel)]="proyecto.codigo" type="text" name="codigo" id="codigo" formControlName="codigo" class="form-control" placeholder="Codigo"
+                            [ngClass]="{'is-invalid': submittedNP && fnp.codigo.errors}">
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.codigo.errors">
+                                <div *ngIf="fnp.codigo.errors.required">Este campo es requerido.</div>
+                                <div *ngIf="fnp.codigo.errors.maxLength">Este campo permite maximo diez caracteres.</div>
+                                <div *ngIf="fnp.codigo.errors.pattern">Este campo solo permite numeros.</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6">
+                            <label for="cliente">Cliente</label>
+                            <select [(ngModel)]="proyecto.cliente" name="cliente" id="cliente" class="form-control" formControlName="cliente" 
+                            [ngClass]="{'is-invalid': submittedNP && fnp.cliente.errors}">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar opción</option>
+                                <option *ngFor="let c of clientes" [ngValue]="c">{{c.nombre}}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.cliente.errors">
+                                <div *ngIf="fnp.cliente.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="etapa">Tipo</label>
+                            <select [(ngModel)]="proyecto.etapa" name="etapa" id="etapa" class="form-control" formControlName="etapa" 
+                            [ngClass]="{'is-invalid': submittedNP && fnp.etapa.errors}">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar opción</option>
+                                <option *ngFor="let e of etapas" [ngValue]="e">{{e.etapa}}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.etapa.errors">
+                                <div *ngIf="fnp.etapa.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="fechaAprobacion">Fecha aprobación</label>
+                            <input [(ngModel)]="proyecto.fechaAprobacion" type="date" class="form-control" name="fechaAprobacion" id="fechaAprobacion" formControlName="fechaAprobacion"
+                            [ngClass]="{'is-invalid': submittedNP && fnp.fechaAprobacion.errors}">
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.fechaAprobacion.errors">
+                                <div *ngIf="fnp.fechaAprobacion.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="fechaInicio">Fecha inicio</label>
+                            <input [(ngModel)]="proyecto.fechaInicio" type="date" class="form-control" name="fechaInicio" id="fechaInicio" formControlName="fechaInicio"
+                            [ngClass]="{'is-invalid': submittedNP && fnp.fechaInicio.errors}">
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.fechaInicio.errors">
+                                <div *ngIf="fnp.fechaInicio.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="fechaFin">Fecha fin</label>
+                            <input [(ngModel)]="proyecto.fechaFin" type="date" class="form-control" name="fechaFin" id="fechaFin" formControlName="fechaFin"
+                            [ngClass]="{'is-invalid': submittedNP && fnp.fechaFin.errors}">
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.fechaFin.errors">
+                                <div *ngIf="fnp.fechaFin.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="tipo">Tipo</label>
+                            <select [(ngModel)]="proyecto.tipo" name="tipo" id="tipo" class="form-control" formControlName="tipo"
+                            [ngClass]="{'is-invalid': submittedNP && fnp.tipo.errors}">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar opción</option>
+                                <option *ngFor="let t of tipos" [ngValue]="t">{{t.tipo}}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.tipo.errors">
+                                <div *ngIf="fnp.tipo.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="componente">Componente</label>
+                            <select [(ngModel)]="proyecto.componente" name="componente" id="componente" class="form-control" formControlName="componente"
+                            [ngClass]="{'is-invalid': submittedNP && fnp.componente.errors}">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar opción</option>
+                                <option *ngFor="let c of componentes" [ngValue]="c">{{c.componente}}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.componente.errors">
+                                <div *ngIf="fnp.componente.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="estadoPropuesta">Estado propuesta</label>
+                            <select [(ngModel)]="proyecto.estadoPropuesta" name="estadoPropuesta" id="estadoPropuesta" class="form-control" formControlName="estadoProp"
+                            [ngClass]="{'is-invalid': submittedNP && fnp.estadoProp.errors}">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar opción</option>
+                                <option *ngFor="let ep of estadosProp" [ngValue]="ep">{{ep.estado}}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.estadoProp.errors">
+                                <div *ngIf="fnp.estadoProp.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="estadoProyecto">Estado proyecto</label>
+                            <select [(ngModel)]="proyecto.estadoProyecto" name="estadoProyecto" id="estadoProyecto" class="form-control" formControlName="estadoProy"
+                            [ngClass]="{'is-invalid': submittedNP && fnp.estadoProy.errors}">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar opción</option>
+                                <option *ngFor="let ep of estadosProy" [ngValue]="ep">{{ep.estado}}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.estadoProy.errors">
+                                <div *ngIf="fnp.estadoProy.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-6">
+                            <label for="directorIts">Director ITS</label>
+                            <select [(ngModel)]="proyecto.directorIts" name="directorIts" id="directorIts" class="form-control" formControlName="directorIts"
+                            [ngClass]="{'is-invalid': submittedNP && fnp.directorIts.errors}">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar opción</option>
+                                <option *ngFor="let d of directoresIts" [ngValue]="d">{{d.nombre}}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.directorIts.errors">
+                                <div *ngIf="fnp.directorIts.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6">
+                            <label for="lider">Lider</label>
+                            <select [(ngModel)]="proyecto.lider" name="lider" id="lider" class="form-control" formControlName="lider"
+                            [ngClass]="{'is-invalid': submittedNP && fnp.lider.errors}">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar opción</option>
+                                <option *ngFor="let l of lideres" [ngValue]="l">{{l.nombre}}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.lider.errors">
+                                <div *ngIf="fnp.lider.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label for="descripcion">Descripción</label>
+                            <input [(ngModel)]="proyecto.descripcion"
+                            [ngClass]="{'is-invalid': submittedNP && fnp.descripcion.errors}"
+                            type="text"
+                            id="descripcion"
+                            name="descripcion"
+                            formControlName="descripcion"
+                            class="form-control"
+                            autocomplete="off"
+                            oninput="javascript:this.value=this.value.toUpperCase();">
+                            <div class="invalid-feedback" *ngIf="submittedNP && fnp.descripcion.errors">
+                                <div *ngIf="fnp.descripcion.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                                <div *ngIf="fnp.descripcion.errors.maxlength">
+                                    Este campo debe tener como máximo 60 caracteres.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-12">
+                            <button id="btnGuardar" type="submit" class="btn btn-primary">Guardar</button>
+                            <button id="btnCancelar" routerLink="/proyectos/internos" class="btn btn-light">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

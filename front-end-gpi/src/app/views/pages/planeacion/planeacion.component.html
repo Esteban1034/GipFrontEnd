@@ -1,0 +1,917 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a routerLink="/proyectos">Proyectos</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Planeacion</li>
+    </ol>
+</nav>
+
+<ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+    <li [ngbNavItem]="1">
+        <a ngbNavLink>Datos Basicos</a>
+        <ng-template ngbNavContent>
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Datos Basicos <span class="font-weight-light">{{ proyecto.descripcion
+                            }}</span></h6>
+                    <form>
+                        <div class="form-row">
+
+                            <div class="form-group col-sm-12 col-md-4">
+                                <label for="cliente">Cliente</label>
+                                <select [disabled]="true" autocomplete="off" class="form-control">
+                                    <option>{{ proyecto.cliente.nombre }}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-3">
+                                <label for="codigo">Código Proyecto</label>
+                                <input [value]="proyecto.codigo" [disabled]="true" type="text" class="form-control" />
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-2">
+                                <label for="etapa">Tipo</label>
+                                <select [disabled]="true" class="form-control">
+                                    <option>{{ proyecto.etapa.etapa }}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-3">
+                                <label for="tipo">Tipo de Proyecto</label>
+                                <select class="form-control" [disabled]="true">
+                                    <option>{{ proyecto.tipo.tipo }}</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="form-row">
+
+                            <div class="form-group col-sm-12 col-md-5">
+                                <label for="nombre">Nombre</label>
+                                <input [value]="proyecto.nombre" type="text" class="form-control" [disabled]="true">
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-3">
+                                <label for="estadoPropuesta">Estado de Propuesta</label>
+                                <select [disabled]="true" class="form-control">
+                                    <option>{{ proyecto.estadoPropuesta.estado }}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-4">
+                                <label for="estadoProyecto">Estado de Proyecto</label>
+                                <select class="form-control" [disabled]="true">
+                                    <option>{{ proyecto.estadoProyecto.estado }}</option>
+                                </select>
+                            </div>
+
+
+                        </div>
+                        <div class="form-row" *ngIf="proyecto.etapa.etapa == 'CRN'">
+
+                            <div class="form-group col-sm-12 col-md-3">
+                                <label for="horasPlaneadas">Horas Aprobadas</label>
+                                <input [value]="proyecto.horasPlaneadas" type="text" class="form-control"
+                                    [disabled]="true" />
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-3">
+                                <label for="costo">Valor aprobado cliente</label>
+                                <input [value]="proyecto.costo | currency" type="text" class="form-control"
+                                    [disabled]="true">
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-2">
+                                <label for="componente">Componente</label>
+                                <select class="form-control" [disabled]="true">
+                                    <option>{{ proyecto.componente.componente }}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-4">
+                                <label for="lider">Líder de Proyecto</label>
+                                <select [disabled]="true" class="form-control">
+                                    <option>{{ proyecto.lider.nombre }}</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="form-row" *ngIf="proyecto.etapa.etapa == 'CRN'">
+
+                            <div class="form-group col-sm-12 col-md-4">
+                                <label for="fechaAprobacion">Fecha de Aprobación</label>
+                                <input [value]="proyecto.fechaAprobacion" type="date" [disabled]="true"
+                                    class="form-control" />
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-4">
+                                <label for="fechaInicio">Fecha de Inicio</label>
+                                <input [value]="proyecto.fechaInicio" type="date" class="form-control"
+                                    [disabled]="true" />
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-4">
+                                <label for="fechaFin">Fecha de Fin</label>
+                                <input [value]="proyecto.fechaFin" [disabled]="true" type="date" class="form-control" />
+                            </div>
+
+                        </div>
+                        <div class="form-row" *ngIf="proyecto.etapa.etapa == 'CRN'">
+
+                            <div class="form-group col-sm-12 col-md-6">
+                                <label for="directorClient">Director asignado Cliente</label>
+                                <input [value]="proyecto.directorClient" type="text" name="directorClient"
+                                    id="directorClient" class="form-control" [disabled]="true">
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-6">
+                                <label for="directorIts">Director asignado ITS</label>
+                                <select [disabled]="true" class="form-control">
+                                    <option>{{ proyecto.directorIts.nombre }}</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </ng-template>
+    </li>
+    <li [ngbNavItem]="2">
+        <a ngbNavLink>Planeacion</a>
+        <ng-template ngbNavContent>
+            <div class="row justify-content-center">
+                <div class="col-md-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <span *ngIf="proyecto.etapa.etapa === 'CRN'">Resumen Horas de</span>
+                                <span
+                                    [ngClass]="{'font-weight-bold' : proyecto.etapa.etapa === 'PRP', 'font-weight-light' : proyecto.etapa.etapa === 'CRN'}"
+                                    class="ml-1">{{proyecto.nombre}}-{{proyecto.descripcion}}</span>
+                            </h6>
+                            <div class="form-row" *ngIf="proyecto.etapa.etapa === 'CRN'">
+                                <div class="form-group col-sm-12 col-md-6">
+                                    <label>Fecha Inicio Proyecto</label>
+                                    <input [value]="proyecto.fechaInicio" type="date" [disabled]="true" type="date"
+                                        class="form-control" autocomplete="off" />
+                                </div>
+
+                                <div class="form-group col-sm-12 col-md-6">
+                                    <label>Fecha Fin Proyecto</label>
+                                    <input [value]="proyecto.fechaFin" type="date" [disabled]="true" type="date"
+                                        class="form-control" autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <div class="form-row" *ngIf="proyecto.etapa.etapa === 'CRN'">
+                                <div class="form-group col-sm-12 col-md-4">
+                                    <label for="horas-planeadas">Horas Aprobadas</label>
+                                    <input [(ngModel)]="proyecto.horasPlaneadas" type="text" name=""
+                                        id="horas-planeadas" class="form-control" disabled autocomplete="off" />
+                                </div>
+                                <div class="form-group col-sm-12 col-md-4">
+                                    <label for="horas-disponibles">Horas Disponibles</label>
+                                    <input [value]="proyecto.horasPlaneadas - proyecto.horasPropuesta" type="text"
+                                        name="" id="horas-disponibles" class="form-control" disabled
+                                        autocomplete="off" />
+                                </div>
+                                <div class="form-group col-sm-12 col-md-4">
+                                    <label for="total-horas">Horas Ejecutadas</label>
+                                    <input [(ngModel)]="totalHoras" type="text" name="" id="total-horas"
+                                        class="form-control" disabled autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <button id="btnCrearFase" type="button" class="btn btn-outline-primary" (click)="open(fase)"
+                                *ngIf="proyecto.etapa.etapa === 'CRN'">
+                                Crear Fase
+                            </button>
+                            <button id="btnCrearActividad" type="button" class="btn btn-outline-primary"
+                                (click)="open(actividad)">
+                                Crear actividad
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="spinner-wrapper " style="display: none;" id="con_spinner" name="con_spinner">
+                <div class="spinner"></div>
+            </div>
+
+            <div class="row" id="faseToPlan">
+                <div class="col-md-12 grid-margin strech-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Seleccione fase a planear</h6>
+                            <form [formGroup]="formSelectFase" (ngSubmit)="selectFase()">
+                                <div class="form-row">
+                                    <div class="form-group col-12">
+                                        <label for="fase">Fase</label>
+                                        <select [(ngModel)]="selectedFase"
+                                            [ngClass]="{'is-invalid': submittedSF && fsf.fase.errors}"
+                                            formControlName="fase" name="fase" id="fase" class="form-control"
+                                            autocomplete="off">
+                                            <option [ngValue]="null" [disabled]="true" [hidden]="true">Seleccionar
+                                                opción</option>
+                                            <option *ngFor="let f of fases" [ngValue]="f">{{f.fase}}</option>
+                                        </select>
+                                        <div class="invalid-feedback" *ngIf="submittedSF && fsf.fase.errors">
+                                            <div *ngIf="fsf.fase.errors.required">
+                                                Este campo es requerido
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary" id="btnSelectFase">Seleccionar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center d-none" id="actividadAsigToPlan">
+                <div class="col-md-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Actividades para la fase de <b
+                                    *ngIf="selectedFase">{{selectedFase.fase}}</b></h6>
+                            <form [formGroup]="formNewActividadAsig" (ngSubmit)="saveActividadAsig()">
+                                <div class="form-row">
+
+                                    <div class="form-group col-12">
+                                        <label for="actividad">Actividad</label>
+                                        <select [(ngModel)]="newActividadAsig.actividad"
+                                            [ngClass]="{'is-invalid': submittedFNAA && fnaa.actividad.errors}"
+                                            formControlName="actividad" name="actividad" class="form-control"
+                                            autocomplete="off">
+                                            <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar
+                                                opción</option>
+                                            <option *ngFor="let a of actividades" [ngValue]="a">{{a.actividad}}</option>
+                                        </select>
+                                        <div class="invalid-feedback" *ngIf="submittedFNAA && fnaa.actividad.errors">
+                                            <div *ngIf="fnaa.actividad.errors.required">
+                                                Este campo es requerido
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-row">
+
+                                    <div class="form-group col-sm-12 col-md-6">
+                                        <label for="fechaInicio">Fecha Inicio</label>
+                                        <input [(ngModel)]="newActividadAsig.fechaInicio"
+                                            [ngClass]="{'is-invalid': submittedFNAA && fnaa.fechaInicio.errors}"
+                                            formControlName="fechaInicio" type="date" name="fechaInicio"
+                                            class="form-control" autocomplete="off" />
+                                        <div class="invalid-feedback" *ngIf="submittedFNAA && fnaa.fechaInicio.errors">
+                                            <div *ngIf="fnaa.fechaInicio.errors.required">
+                                                Este campo es requerido
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-sm-12 col-md-6">
+                                        <label for="fechaFin">Fecha Fin</label>
+                                        <input [(ngModel)]="newActividadAsig.fechaFin"
+                                            [ngClass]="{'is-invalid': submittedFNAA && fnaa.fechaFin.errors}"
+                                            formControlName="fechaFin" type="date" name="fechaFin" class="form-control"
+                                            autocomplete="off" />
+                                        <div class="invalid-feedback" *ngIf="submittedFNAA && fnaa.fechaFin.errors">
+                                            <div *ngIf="fnaa.fechaFin.errors.required">
+                                                Este campo es requerido
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <small *ngIf="errorMsj">{{ errorMsj }}</small>
+                                </div>
+                                <button id="btnAddActividadAsig" type="submit" class="btn btn-primary mr-2">Añadir
+                                    Actividad</button>
+                                <button id="btnCancelActividadAsig" type="button" class="btn btn-light mr-2"
+                                    (click)="cancelActividadAsig()">Cancelar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <h6 class="card-title">Actividades Agregadas</h6>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <form [formGroup]="formSearchByFase" (ngSubmit)="searchActividadByFase()">
+                                        <div class="form-row">
+                                            <div class="col-sm col-md-1">Fase: </div>
+                                            <div class="col">
+                                                <select [(ngModel)]="faseSearch"
+                                                    [ngClass]="{'is-invalid': submittedFSBF && fsbf.faseSearch.errors}"
+                                                    formControlName="faseSearch" class="form-control" name="faseSearch"
+                                                    id="faseSearch" autocomplete="off">
+                                                    <option [ngValue]="null" [disabled]="true" hidden>Seleccionar opción
+                                                    </option>
+                                                    <option *ngFor="let f of fases" [ngValue]="f">{{f.fase}}</option>
+                                                </select>
+                                                <div class="invalid-feedback" *ngIf="fsbf.faseSearch.errors">
+                                                    <div *ngIf="fsbf.faseSearch.errors.required">
+                                                        Este campo es requerido
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <button type="submit" class="btn btn-outline-primary"
+                                                    id="btnSearchActividadByFase">Buscar</button>
+                                                <button type="button" class="btn btn-light"
+                                                    id="btnClearSearchActividadByFase" (click)="clear()" placement="top"
+                                                    ngbTooltip="Limpiar busqueda">
+                                                    <i class="mdi mdi-filter-remove"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="table-responsive">
+                                <table id="dataTableExample" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Actividad</th>
+                                            <th>Fase</th>
+                                            <th>Fecha Inicio</th>
+                                            <th>Fecha Fin</th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let a of actividadesAsig">
+                                            <td class="w-75 text-wrap">{{a.actividad.actividad}}</td>
+                                            <td class="w-50 text-wrap">{{a.actividad.fase.fase}}</td>
+                                            <td class="text-uppercase">{{a.fechaInicio | date : 'dd-MMMM-yyyy'}}</td>
+                                            <td class="text-uppercase">{{a.fechaFin | date : 'dd-MMMM-yyyy'}}</td>
+                                            <td>
+                                                <a [ngClass]="{'text-danger font-weight-bold': !a.recursos}"
+                                                    class="mr-2" (click)="openRecursoModal(agregar_recurso, a.id)">
+                                                    <span *ngIf="!a.recursos"
+                                                        class="mdi mdi-account-multiple-plus mdi-24px" placement="top"
+                                                        ngbTooltip="Asignar recursos"></span>
+                                                    <span *ngIf="a.recursos"
+                                                        class="mdi mdi-account-multiple-plus mdi-24px" placement="top"
+                                                        ngbTooltip="Ver recursos"></span>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a (click)="openDatesActividadModal(fechas_actividad, a)">
+                                                    <i class="mdi mdi-24px mdi-calendar-month-outline" placement="top"
+                                                        ngbTooltip="Ver Fechas Asignadas"></i>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a (click)="openEditActividadModal(editActividad, a.id)">
+                                                    <i class="mdi mdi-24px mdi-pencil" placement="top"
+                                                        ngbTooltip="Editar"></i>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a (click)="openModalDeleteActividadAsig(deleteActividadAsig, a.id)">
+                                                    <i class="mdi mdi-close text-danger mdi-18px" placement="top"
+                                                        ngbTooltip="Eliminar"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+
+                                <button id="btnCrearFase" type="button" class="btn btn-outline-primary"
+                                    (click)="refresh()">
+                                    Asignar planeación
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </li>
+</ul>
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+<!--MODAL ASIGNAR RECURSO -->
+
+<ng-template #agregar_recurso let-c="close" let-d="dismiss" id="modalAsignarRecursos">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Añadir Recurso</h5>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col">
+                    <form (ngSubmit)="searchRecursosByEspecialidad()">
+                        <div class="form-row">
+                            <div class="form-group col-sm-12 col-md-5">
+                                <input [(ngModel)]="nombreToSearch" name="nombreToSearch" type="text"
+                                    class="form-control" placeholder="BUSCAR POR NOMBRE RECURSO"
+                                    oninput="javascript:this.value=this.value.toUpperCase();">
+                            </div>
+                            <div class="form-group col-sm-12 col-md-5">
+                                <select [(ngModel)]="especialidadSelected" name="especialidadSelected"
+                                    id="especialidadSelected" class="form-control">
+                                    <option [ngValue]="null" [disabled]="true">BUSCAR POR ESPECIALIDAD</option>
+                                    <option *ngFor="let e of especialidades" [ngValue]="e">{{e.especialidad}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-auto">
+                                <button type="submit" class="btn btn-primary"
+                                    id="btnSearchEmpleadoByEspecialidad">Buscar</button>
+                                <button type="button" class="btn btn-light" id="btnClearSearchEmpleadoByEspecialidad"
+                                    (click)="clearRecursosByEspecialidad()" placement="top"
+                                    ngbTooltip="Limpiar busqueda">
+                                    <i class="mdi mdi-filter-remove"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <hr>
+            <!-- RECURSOS ASIGNADOS -->
+            <div class="row" *ngIf="empleadosAsig.length > 0">
+                <div class="col">
+                    <div class="text-center h5">RECURSOS ASIGNADOS</div>
+                    <div class="text-center h5" *ngIf="empAsignaciones.nombre != null">
+                        Asignación de <strong>{{empAsignaciones.nombre}}</strong>
+                        <a (click)="hideAsignaciones()" class=" ml-2" ngbTooltip="Cancelar" placement="right">
+                            <i class="mdi mdi-close-circle text-danger"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr *ngIf="empleadosAsig.length > 0">
+            <div class="row" *ngIf="empleadosAsig.length > 0">
+                <div class="col" id="recursosAsignados">
+
+                    <div class="table-responsive">
+                        <table id="tabla-recursos" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th class="text-right">Fechas</th>
+                                    <th class="text-right">Quitar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let e of empleadosAsig">
+                                    <td>{{e.nombre}}</td>
+                                    <td class="text-right">
+                                        <a (click)="detailsRecursoAsignado(e.id)">Fechas</a>
+                                    </td>
+                                    <td class="text-right">
+                                        <a (click)="openConfirmEmpAsig(deleteEmpAsig, e.id)">
+                                            <i class="mdi mdi-close text-danger" placement="left"
+                                                ngbTooltip="Quitar"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="col d-none" id="fechasAsignadasRecurso">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th class="text-right">Quitar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let fae of fechasAsigEmp">
+                                    <td class="text-uppercase">{{fae.fecha | date : 'EEEE dd MMMM yyyy'}}</td>
+                                    <td class="text-right">
+                                        <a (click)="openConfirmFechaAsig(deleteFechaAsig, fae.id)">
+                                            <i class="mdi mdi-close text-danger" placement="left"
+                                                ngbTooltip="Quitar"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            <!-- RECURSOS Y DISPONIBILIDAD -->
+            <div class="row">
+                <div class="col">
+                    <div class="text-center h5">RECURSOS DISPONIBLES</div>
+                    <div class="text-center h5" *ngIf="empDisponibilidad.nombre != null">
+                        Disponibilidad de <strong>{{empDisponibilidad.nombre}}</strong>
+                        <a (click)="hideDisponibilidad()" class=" ml-2" ngbTooltip="Cancelar" placement="right">
+                            <i class="mdi mdi-close-circle text-danger"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col" id="recursosDisponibles">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th class="text-right">Disponibilidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let e of empleados">
+                                    <td>{{e.nombre}}</td>
+                                    <td class="text-right">
+                                        <a class="mr-4" (click)="viewDisponibilidad(e.id)"
+                                            class="mdi mdi-calendar-clock mdi-24px" placement="left"
+                                            ngbTooltip="Asignar"></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="col d-none" id="disponibilidadRecurso">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th class="text-center">Asignar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let ra of newRecursosActividades">
+                                    <td class="text-uppercase">{{ra.fecha | date : 'EEEE dd MMMM yyyy'}}</td>
+                                    <td>
+                                        <input [(ngModel)]="ra.checked" type="checkbox" name="recurso_checkbox"
+                                            id="checked" class="form-control mr-4" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" (click)="addRecurso()" class="btn btn-primary">Asignar recurso</button>
+        </div>
+    </div>
+</ng-template>
+
+<!-- MODAL ADD FASE-->
+<ng-template #fase let-c="close" let-d="dismiss">
+    <form [formGroup]="formNewFase" (ngSubmit)="saveFase()">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Crear Nueva Fase</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group col-12">
+                <label for="fase">Fase</label>
+                <input [(ngModel)]="newFase.fase" [ngClass]="{'is-invalid': submittedNF && fnf.fase.errors}"
+                    formControlName="fase" type="text" id="fase" name="fase" class="form-control"
+                    placeholder="Nombre Fase" autocomplete="off"
+                    oninput="javascript:this.value=this.value.toUpperCase();" />
+                <div class="invalid-feedback" *ngIf="submittedNF && fnf.fase.errors">
+                    <div *ngIf="fnf.fase.errors.required">
+                        Este campo es requerido
+                    </div>
+                    <div *ngIf="fnf.fase.errors.minlength">
+                        Este campo debe tener como mínimo 3 caracteres.
+                    </div>
+                    <div *ngIf="fnf.fase.errors.maxlength">
+                        Este campo debe tener como máximo 25 caracteres.
+                    </div>
+                    <div *ngIf="fnf.fase.errors.pattern">
+                        No se aceptan números o caracteres especiales.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="btnModalAdmonFase" (click)="goToAdmonFases()" class="btn btn-light">Admon
+                Fases</button>
+            <button id="btnModalFase" type="submit" class="btn btn-primary">
+                Agregar
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<!-- MODAL ADD ACTIVIDAD -->
+<ng-template #actividad let-c="close" let-d="dismiss">
+    <form [formGroup]="formNewActividad" (ngSubmit)="saveActividad()">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Crear Nueva Actividad</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group col-12">
+                <label for="fase">Fase</label>
+                <select [(ngModel)]="newActividad.fase" [ngClass]="{'is-invalid': submittedNA && fna.fase.errors}"
+                    formControlName="fase" name="fase" id="fase" class="form-control" autocomplete="off">
+                    <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
+                    <option *ngFor="let f of fases" [ngValue]="f">{{f.fase}}</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submittedNA && fna.fase.errors">
+                    <div *ngIf="fna.fase.errors.required">
+                        Este campo es requerido
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-12">
+                <label for="actividad">Actividad</label>
+                <input [(ngModel)]="newActividad.actividad"
+                    [ngClass]="{'is-invalid': submittedNA && fna.actividad.errors}" formControlName="actividad"
+                    type="text" id="actividad" name="actividad" class="form-control" placeholder="Nombre Actividad"
+                    autocomplete="off" autofocus oninput="javascript:this.value=this.value.toUpperCase();" />
+                <div class="invalid-feedback" *ngIf="submittedNA && fna.actividad.errors">
+                    <div *ngIf="fna.actividad.errors.required">
+                        Este campo es requerido
+                    </div>
+                    <div *ngIf="fna.actividad.errors.minlength">
+                        Este campo debe tener como mínimo 3 caracteres.
+                    </div>
+                    <div *ngIf="fna.actividad.errors.maxlength">
+                        Este campo debe tener como máximo 50 caracteres.
+                    </div>
+                    <div *ngIf="fna.actividad.errors.pattern">
+                        No se aceptan números o caracteres especiales.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button id="btnModalAdmonActividad" type="button" (click)="goToAdminActividades()"
+                class="btn btn-light">Admon Actividades</button>
+            <button id="btnModalActividad" type="submit" class="btn btn-primary">
+                Agregar
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<!-- CONFIRM DELETE RECURSO MODAL -->
+<ng-template #deleteEmpAsig let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminacion</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" id="idDeleteEmpAsig">
+        <p>¿Estas seguro de eliminar este recurso asignado?</p>
+    </div>
+    <div class="modal-footer">
+        <a id="btnModalRecursoDelete" class="btn btn-danger" (click)="deleteEmplAsig()">
+            Aceptar
+        </a>
+        <button id="btnModalRecursoCancelar" type="button" class="btn btn-light" aria-label="Close"
+            (click)="d('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- CONFIRM DELETE FECHA MODAL -->
+<ng-template #deleteFechaAsig let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminacion</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" id="idDeleteFechaAsig">
+        <p>¿Estas seguro de eliminar este recurso asignado?</p>
+    </div>
+    <div class="modal-footer">
+        <a id="btnModalFechaDelete" class="btn btn-danger" (click)="deleteFechaAsignada()">
+            Aceptar
+        </a>
+        <button id="btnModalFechaCancelar" type="button" class="btn btn-light" aria-label="Close"
+            (click)="d('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- CONFIRM DELETE ACTIVIDAD ASIG MODAL -->
+<ng-template #deleteActividadAsig let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminacion</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" id="idDeleteActividadAsig">
+        <p>¿Estas seguro de eliminar esta actividad asignada?</p>
+    </div>
+    <div class="modal-footer">
+        <a id="btnModalActAsigDelete" class="btn btn-danger" (click)="deleteActAsig()">
+            Aceptar
+        </a>
+        <button id="btnModalActAsigCancelar" type="button" class="btn btn-light" aria-label="Close"
+            (click)="d('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- MODAL EDIT ACTIVIDAD-->
+<ng-template #editActividad let-c="close" let-d="dismiss">
+    <form (ngSubmit)="editarActividad()" [formGroup]="formEditActividad">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Editar Actividad</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Recuerde</strong> que al actualizar las fechas de la actividad se eliminará la planeación
+                que
+                esté fuera del nuevo rango de fechas seleccionadas.
+            </div>
+            <div class="form-group col-12">
+                <label for="actividad">Actividad</label>
+                <input [value]="actividadToEdit.actividad.actividad" [disabled]="true" type="text" id="actividad"
+                    name="actividad" class="form-control" />
+            </div>
+            <div class="form-group col-12">
+                <label for="fase">Fase</label>
+                <input [value]="actividadToEdit.actividad.fase.fase" [disabled]="true" type="text" id="fase" name="fase"
+                    class="form-control" />
+            </div>
+            <div class="form-group col-12">
+                <label for="fechaInicio">Fecha Inicio</label>
+                <input [(ngModel)]="actividadToEdit.fechaInicio"
+                    [ngClass]="{'is-invalid': submittedFEA && fea.fechaInicio.errors}" formControlName="fechaInicio"
+                    name="fechaInicio" type="date" id="fechaInicio" name="fechaInicio" class="form-control" />
+                <div class="invalid-feedback" *ngIf="submittedFEA && fea.fechaInicio.errors">
+                    <div *ngIf="fea.fechaInicio.errors.required">Este campo es requerido.</div>
+                </div>
+            </div>
+            <div class="form-group col-12">
+                <label for="fechaFin">Fecha Fin</label>
+                <input [(ngModel)]="actividadToEdit.fechaFin"
+                    [ngClass]="{'is-invalid': submittedFEA && fea.fechaFin.errors}" formControlName="fechaFin"
+                    name="fechaFin" type="date" id="fechaFin" name="fechaFin" class="form-control" />
+                <div class="invalid-feedback" *ngIf="submittedFEA && fea.fechaFin.errors">
+                    <div *ngIf="fea.fechaFin.errors.required">Este campo es requerido.</div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="btnModalFase" type="submit" class="btn btn-primary">
+                Guardar
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<!--MODAL FECHAS ACTIVIDAD -->
+<ng-template #fechas_actividad let-c="close" let-d="dismiss" id="modalFechasActividad">
+    <div class="modal-content" style="width: 900px;">
+        <div class="modal-header">
+            <h5 class="modal-title">Fehas Asignadas</h5>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <hr>
+            <!-- RECURSOS ASIGNADOS -->
+            <div class="alert alert-info fw-bold" role="alert" *ngIf="dataSourceFechasAsigRecursoActividad.length == 0">
+                No se encontraron Fechas Asignadas para la Actividad
+                <strong>{{actividadAsigForDates.actividad.actividad}}</strong>.
+            </div>
+            <div class="row" *ngIf="dataSourceFechasAsigRecursoActividad.length > 0">
+                <div class="col">
+                    <div class="text-center h5">FECHAS ASIGNADAS PARA LA ACTIVIDAD:</div>
+                    <div class="text-center h5" *ngIf="actividadAsigForDates.id != null">
+                        <strong>{{actividadAsigForDates.actividad.actividad}}</strong>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field id="inputSearch">
+                        <mat-label>Buscar</mat-label>
+                        <input matInput (keyup)="filtrar($event)" placeholder="Buscar">
+                    </mat-form-field>
+                </div>
+                <hr>
+            </div>
+            <div class="row" *ngIf="fechasAsigRecursoActividad.length > 0">
+                <div [ngClass]="{'hide': fechasAsigRecursoActividad.length == 0}" id="fechasRecursosAsignados">
+
+                    <div class="table-responsive">
+                        <table id="tabla-fechas" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Empleado</th>
+                                    <th>Cargo</th>
+                                    <th>Quitar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let fec of fechasAsigRecursoActividad">
+                                    <td class="text-uppercase">{{fec.fecha | date : 'EEEE dd MMMM yyyy'}}</td>
+                                    <td class="text-uppercase w-75 text-wrap">{{fec.empleado.nombre}}</td>
+                                    <td class="text-uppercase w-50 text-wrap">{{fec.empleado.cargo.cargo}}</td>
+                                    <td>
+                                        <a (click)="openConfirmFechaAsig(deleteFechaAsig, fec.id)">
+                                            <i class="mdi mdi-close text-danger" placement="left"
+                                                ngbTooltip="Quitar"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

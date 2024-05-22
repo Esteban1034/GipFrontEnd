@@ -1,0 +1,105 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/psr">Informes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Informe PSR</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-sm">
+                        <h6 class="card-title">Informes PSR</h6>
+                        <p>Seleccione el rango de fechas para visualizar sus informes.</p>
+                        <br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-3">
+                        <label for="fechaInicioFiltro">Fecha Inicio</label>
+                        <input type="date" id="fechaInicioFiltro" name="fechaInicioFiltro" class="form-control">
+                    </div>
+                    <div class="form-group col-3">
+                        <label for="fechaFinFiltro">Fecha Fin</label>
+                        <input type="date" id="fechaFinFiltro" name="fechaFinFiltro" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-6 grid-margin">
+                        <label for="filtroPersonalizado">Filtros personalizados</label>
+                        <div class="form-group">
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios"
+                                        value="option1" checked="">
+                                    <i class="input-frame"></i>
+                                    Cliente
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios"
+                                        value="option2">
+                                    <i class="input-frame"></i>
+                                    Proyecto
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios"
+                                        value="option3">
+                                    <i class="input-frame"></i>
+                                    Lider
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-6 grid-margin stretch-card text-center" *ngIf="!chart1DataReady">
+                        <div class="text-center">
+                            <div class="spinner-border text-secondary" role="status">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 grid-margin stretch-card" *ngIf="chart1DataReady">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Consolidado CRN</h3>
+
+                                <canvas baseChart [datasets]="lineChartData1" [labels]="lineChartLabels1"
+                                    [options]="lineChartOptions1" [colors]="lineChartColors1"
+                                    [legend]="lineChartLegend1" [chartType]="lineChartType1"
+                                    [plugins]="lineChartPlugins1">
+                                </canvas>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 grid-margin stretch-card text-center" *ngIf="!chart2DataReady">
+                        <div class="text-center">
+                            <div class="spinner-border text-secondary" role="status">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 grid-margin stretch-card" *ngIf="chart2DataReady">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Consolidado PRP</h3>
+
+                                <canvas baseChart [datasets]="lineChartData2" [labels]="lineChartLabels2"
+                                    [options]="lineChartOptions2" [colors]="lineChartColors2"
+                                    [legend]="lineChartLegend2" [chartType]="lineChartType2"
+                                    [plugins]="lineChartPlugins2">
+                                </canvas>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

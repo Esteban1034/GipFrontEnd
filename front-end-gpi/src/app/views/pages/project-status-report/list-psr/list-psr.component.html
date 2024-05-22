@@ -1,0 +1,337 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/psr">Project Status Report</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Consultar PSR</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-sm">
+                        <h6 class="card-title">PSR - PROJECT STATUS REPORT CONSULTA</h6>
+                    </div>
+                    <div  class="col-12 col-sm d-flex justify-content-end align-items-center">
+                        <button type="submit" class="btn btn-outline-primary" (click)="showNotaSemanalModal(notaSemanal)">
+                            Ver Notas Semanales
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-3">
+                        <label for="fechaInicioFiltro">Fecha Inicio</label>
+                        <input type="date" [(ngModel)]="fechaInicioFiltro" id="fechaInicioFiltro"
+                            name="fechaInicioFiltro" class="form-control" [max]="getToday()">
+                    </div>
+                    <div class="form-group col-3">
+                        <label for="fechaFinFiltro">Fecha Fin</label>
+                        <input type="date" [(ngModel)]="fechaFinFiltro" id="fechaFinFiltro" name="fechaFinFiltro"
+                            class="form-control" [max]="getToday()">
+                    </div>
+                    <div class="form-group col-3">
+                    </div>
+                    <div class="form-group col-3">
+                        <br>
+                        <mat-form-field id="inputSearch" class="inputFilter">
+                            <mat-label>Buscar</mat-label>
+                            <input matInput (keyup)="filtrar($event)" class="toolbar-search" style="width: 100%;">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <button type="submit" class="btn btn-primary" (click)="FiltrarPsr()">Buscar</button>
+                    <button type="button" class="btn btn-light ml-2" (click)="limpiarFiltros()">Limpiar</button>
+
+                    <div  class="col-12 col-sm d-flex justify-content-end align-items-center">
+                        <button type="submit" class="btn btn-outline-primary" (click)="actualizarTabla()">
+                           {{tituloBoton}}
+                        </button>
+                    </div>
+                </div>
+
+
+                <br>
+                <br>
+                <div>
+                    <div *ngIf="!mostrarHoras" class="table-responsive">
+                        <table mat-table [dataSource]="dataSource" class="table-hover" style="width: 100%;" matSort>
+                            <ng-container matColumnDef="opciones1">
+                                <th mat-header-cell *matHeaderCellDef>¿Validado?</th>
+                                <td class="text-center" mat-cell *matCellDef="let psr">
+                                    <a *ngIf="psr.checked" class="mdi mdi-22px mdi-check-circle"
+                                        ngbTooltip="Validado"></a>
+                                    <a *ngIf="!psr.checked" class="mdi mdi-22px mdi-checkbox-blank-circle-outline"
+                                        ngbTooltip="Sin validar"></a>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="nombreCliente">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Cliente </th>
+                                <td mat-cell *matCellDef="let psr"> {{psr.nombreCliente}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="nombre">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+                                <td mat-cell *matCellDef="let psr" style="vertical-align: middle; text-align: left;"
+                                    class="w-20 text-wrap"> {{psr.nombre}}-{{psr.descripcion}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="fecha_creacion_psr">
+                                <th mat-header-cell *matHeaderCellDef> Fecha creación</th>
+                                <td class="text-center" mat-cell *matCellDef="let psr"> {{psr.fechaCreacionPsr |
+                                    date:'dd/MM/yyyy'}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="avance_esperado">
+                                <th mat-header-cell *matHeaderCellDef> Avance Esperado </th>
+                                <td class="text-center" mat-cell *matCellDef="let psr">
+                                    {{psr.porcentajeAvanceEsperado}}% </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="avance_real">
+                                <th mat-header-cell *matHeaderCellDef> Avance Real </th>
+                                <td class="text-center" mat-cell *matCellDef="let psr"> {{psr.porcentajeAvanceReal}}%
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="desviacion">
+                                <th mat-header-cell *matHeaderCellDef> Desviación </th>
+                                <td class="text-center" mat-cell *matCellDef="let psr"> {{psr.porcentajeDesviacion}}%
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="opciones">
+                                <th mat-header-cell *matHeaderCellDef class="text-center">Opciones</th>
+                                <td mat-cell *matCellDef="let psr" class="text-center">
+                                    <button class="btn btn-outline-primary" (click)="showNotasModal(notas,psr)">
+                                        Notas Seguimiento
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+                            <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+                        </table>
+                    </div>
+
+
+                    <div *ngIf="mostrarHoras" class="table-responsive">
+                        <table mat-table [dataSource]="dataSource" class="table-hover" style="width: 100%;" matSort>
+                            <ng-container matColumnDef="opciones1">
+                                <th mat-header-cell *matHeaderCellDef>¿Validado?</th>
+                                <td class="text-center" mat-cell *matCellDef="let psr">
+                                    <a *ngIf="psr.checked" class="mdi mdi-22px mdi-check-circle"
+                                        ngbTooltip="Validado"></a>
+                                    <a *ngIf="!psr.checked" class="mdi mdi-22px mdi-checkbox-blank-circle-outline"
+                                        ngbTooltip="Sin validar"></a>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="nombreCliente">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Cliente </th>
+                                <td mat-cell *matCellDef="let psr"> {{psr.nombreCliente}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="nombre">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+                                <td mat-cell *matCellDef="let psr" style="vertical-align: middle; text-align: left;"
+                                    class="w-20 text-wrap"> {{psr.nombre}}-{{psr.descripcion}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="fecha_creacion_psr">
+                                <th mat-header-cell *matHeaderCellDef> Fecha creación</th>
+                                <td class="text-center" mat-cell *matCellDef="let psr"> {{psr.fechaCreacionPsr |
+                                    date:'dd/MM/yyyy'}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="horas_aprobadas">
+                                <th mat-header-cell *matHeaderCellDef> Horas Aprobadas</th>
+                                <td class="text-center" mat-cell *matCellDef="let psr">{{psr.horasAprobadas}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="horas_reales">
+                                <th mat-header-cell *matHeaderCellDef> Horas Reales </th>
+                                <td class="text-center" mat-cell *matCellDef="let psr"> {{psr.horasReales}}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="opciones">
+                                <th mat-header-cell *matHeaderCellDef class="text-center">Opciones</th>
+                                <td mat-cell *matCellDef="let psr" class="text-center">
+                                    <button class="btn btn-outline-primary" (click)="showNotasModal(notas,psr)">
+                                        Notas Seguimiento
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="columnas2"></tr>
+                            <tr mat-row *matRowDef="let row; columns: columnas2;"></tr>
+                        </table>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #notas let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <div class="form-row">
+            <div class="form-group col-11">
+                <p> <b>SEGUIMIENTO NOTA: </b>{{nombreProjectStatus}}</p>
+            </div>
+            <div class="form-group col-1">
+                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <form>
+        <div class="modal-body">
+            <div class="form-row">
+
+                <div *ngIf="!nuevoComentario" class="form-group col-12">
+                    <ul>
+                        <li *ngFor="let psrComment of psrStatus">
+                            <div class="form-row">
+                                <div class="form-group col-9">
+                                    <span *ngIf="!psrComment.comentarioGerencia"><b>{{ psrComment.empleado.nombre}}</b>
+                                        - {{psrComment.fechaCreacionStatus | date:'dd/MM/yyyy HH:mm'}}</span>
+                                    <span *ngIf="psrComment.comentarioGerencia"><b>OBSERVACIÓN GERENCIA</b> -
+                                        {{psrComment.fechaCreacionStatus | date:'dd/MM/yyyy HH:mm'}}</span>
+                                    <p [innerHTML]="convertirSaltosDeLinea(psrComment.comentario)"></p>
+                                </div>
+                                <div *ngIf="session['rol'] == 'ROL_DP' && psrComment.comentarioGerencia && psrComment.esComentarioMismoDia"
+                                    class="form-group col-3">
+                                    <a (click)="editarNota(psrComment.id)" class="mdi mdi-24px mdi-pencil"
+                                        ngbTooltip="Editar"></a>
+                                    <a (click)="deleteModal(deletePsr,psrComment.id)"
+                                        class="mdi mdi-24px mdi-delete-forever" ngbTooltip="Eliminar"></a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <hr>
+                </div>
+
+                <div *ngIf="psrStatusHistLastTwo.length > 0 && !nuevoComentario " class="form-group col-12">
+                    <p>Seguimiento Histórico:</p>
+                    <br>
+                    <ul>
+                        <li *ngFor="let psrComment of psrStatusHistLastTwo">
+                            <div class="form-row">
+                                <div class="form-group col-12">
+                                    <span *ngIf="!psrComment.comentarioGerencia"><b>{{ psrComment.empleado.nombre}}</b>
+                                        - {{psrComment.fechaCreacionStatus | date:'dd/MM/yyyy HH:mm'}}</span>
+                                    <span *ngIf="psrComment.comentarioGerencia"><b>OBSERVACIÓN GERENCIA</b> -
+                                        {{psrComment.fechaCreacionStatus | date:'dd/MM/yyyy HH:mm'}}</span>
+                                    <p [innerHTML]="convertirSaltosDeLinea(psrComment.comentario)"></p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div *ngIf="nuevoComentario" class="form-row">
+                <div class="form-group col-12">
+                    <label for="notaGerente">Nueva nota: {{fechaHoy | date:'dd/MM/yyyy'}} </label>
+                    <br>
+                    <textarea maxlength="999" [(ngModel)]="comentario" name="notaGerente" id="notaGerente" rows="10"
+                        class="form-control"></textarea>
+                </div>
+            </div>
+            <div *ngIf="nuevoComentario" class="modal-footer">
+                <button type="submit" class="btn btn-primary" (click)="guardarComentario()">Guardar</button>
+                <button type="button" class="btn btn-light ml-2" (click)="cancelBotton()">Cancelar</button>
+            </div>
+        </div>
+
+        <div *ngIf="session['rol'] == 'ROL_DP' && !nuevoComentario && !esComentarioMismoDia" class="modal-footer">
+            <button type="submit" class="btn btn-primary" (click)="nuevoComentario = true;">Agregar Observación</button>
+            <button type="button" class="btn btn-light ml-2" (click)="d('Cross click')">Cerrar</button>
+        </div>
+        <div *ngIf="(session['rol'] == 'ROL_GP' || esComentarioMismoDia) && !nuevoComentario" class="modal-footer">
+            <button type="button" class="btn btn-light ml-2" (click)="d('Cross click')">Cerrar</button>
+        </div>
+    </form>
+
+</ng-template>
+
+
+<ng-template #notaSemanal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h5 class="modal-title">NOTA SEMANAL</h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <form>
+        <div class="modal-body">
+            <div *ngIf="!nuevoComentarioSemanal"  class="form-group col-12">
+                <p>Notas Semanales</p>
+                <br>
+                <ul>
+                    <li *ngFor="let nota of notasSemanales">
+                        <div class="form-row">
+                            <div class="form-group col-8">
+                                <span><b>{{nota.empleado.nombre}}</b>
+                                    - {{nota.fechaCreacion | date:'dd/MM/yyyy'}}</span>
+                                <p *ngIf="!nota.esObservacion" [innerHTML]="convertirSaltosDeLinea(nota.comentario)"></p>
+                                <p *ngIf="nota.esObservacion" [innerHTML]="'Observación ' + (nota.fechaObservacion | date:'dd/MM/yyyy') + ': ' + convertirSaltosDeLinea(nota.comentario)"></p>
+                            </div>
+                            <div *ngIf="!nota.esObservacion" class="form-group col-4">
+                                <button type="submit" class="btn btn-primary" (click)="crearObservacion(nota)">Agregar Obs.</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div *ngIf="nuevoComentarioSemanal" class="form-row">
+                <div class="form-group col-12">
+                    <label for="notaGerente">Nueva nota: {{fechaHoy | date:'dd/MM/yyyy'}} </label>
+                    <br>
+                    <textarea [(ngModel)]="observacionNotaSemanal" name="notaGerente" id="notaGerente" rows="10"
+                    maxlength="999" class="form-control"></textarea>
+                </div>
+            </div>
+            <div *ngIf="nuevoComentarioSemanal" class="modal-footer">
+                <button type="submit" class="btn btn-primary" (click)="guardarObservacionNotaSemanal()">Guardar</button>
+                <button type="button" class="btn btn-light ml-2" (click)="cancelBotton()">Cancelar</button>
+            </div>
+
+        </div>
+
+        <div *ngIf="!nuevoComentarioSemanal" class="modal-footer">
+            <button type="button" class="btn btn-light ml-2" (click)="d('Cross click')">Cerrar</button>
+        </div>
+    </form>
+
+</ng-template>
+
+
+
+
+<ng-template #deletePsr let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminación</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>¿Estás seguro de eliminar este comentario?</p>
+    </div>
+    <div class="modal-footer">
+        <button id="btnModalDelete" type="submit" class="btn btn-danger" (click)="deleteNota()">
+            Aceptar
+        </button>
+        <button id="btnModalCancelar" type="button" class="btn btn-light" aria-label="Close" (click)="d('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>

@@ -1,0 +1,127 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/clientes">Clientes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Nuevo</li>
+    </ol>
+</nav>
+
+<div class="spinner-wrapper " style="display: none;" id="con_spinner" name="con_spinner">
+    <div class="spinner"></div>
+  </div>
+
+<div class="row justify-content-center" id="occ">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+
+                <h6 class="card-title">Cliente nuevo</h6>
+                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                    <div class="form-row">
+
+                        <div class="form-group col-sm-12 col-md-6">
+                            <label for="nomenclatura">Nomenclatura</label>
+                            <input [(ngModel)]="cliente.nomenclatura"
+                                [ngClass]="{ 'is-invalid': submitted && f.nomenclatura.errors }"
+                                formControlName="nomenclatura" type="text" minlength="2" maxlength="6"
+                                class="form-control" id="nomenclatura" name="nomenclatura" autocomplete="off"
+                                placeholder="Nomenclatura" oninput="javascript:this.value=this.value.toUpperCase();" />
+                            <div class="invalid-feedback" *ngIf="submitted && f.nomenclatura.errors">
+                                <div *ngIf="f.nomenclatura.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                                <div *ngIf="f.nomenclatura.errors.maxlength">
+                                    Este campo debe tener como máximo 6 caracteres.
+                                </div>
+                                <div *ngIf="f.nomenclatura.errors.minlength">
+                                    Este campo debe tener como mínimo 2 caracteres.
+                                </div>
+                                <div *ngIf="f.nomenclatura.errors.pattern">
+                                    No se aceptan números o caracteres especiales.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-6">
+                            <label for="sector">Sector Económico</label>
+                            <select [(ngModel)]="cliente.sector"
+                                [ngClass]="{'is-invalid': submitted && f.nombre.errors}" formControlName="sector"
+                                name="sector" id="sector" class="form-control" autocomplete="off">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let s of sectores" [ngValue]="s">{{ s.sector }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submitted && f.sector.errors">
+                                <div *ngIf="f.sector.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-row">
+
+                        <div class="form-group col-sm-12 col-md-5">
+                            <label for="nombre">Nombre Cliente</label>
+                            <input [(ngModel)]="cliente.nombre" [ngClass]="{'is-invalid': submitted && f.nombre.errors}"
+                                formControlName="nombre" type="text" minlength="2" maxlength="50" class="form-control"
+                                id="nombre" name="nombre" autocomplete="off" placeholder="Nombre Cliente"
+                                oninput="javascript:this.value=this.value.toUpperCase();" />
+                            <div class="invalid-feedback" *ngIf="submitted && f.nombre.errors">
+                                <div *ngIf="f.nombre.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                                <div *ngIf="f.nombre.errors.maxlength">
+                                    Este campo debe tener como máximo 50 caracteres.
+                                </div>
+                                <div *ngIf="f.nombre.errors.minlength">
+                                    Este campo debe tener como mínimo 2 caracteres.
+                                </div>
+                                <div *ngIf="f.nombre.errors.pattern">
+                                    No se aceptan números o caracteres especiales.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="nit">NIT</label>
+                            <input [(ngModel)]="cliente.nit" [ngClass]="{'is-invalid': submitted && f.nit.errors}"
+                                formControlName="nit" type="text" autocomplete="off" minlength="5" maxlength="20"
+                                class="form-control" id="nit" name="nit" placeholder="Nit" />
+                            <div class="invalid-feedback" *ngIf="submitted && f.nit.errors">
+                                <div *ngIf="f.nit.errors.maxlength">
+                                    Este campo debe tener como máximo 20 caracteres.
+                                </div>
+                                <div *ngIf="f.nit.errors.minlength">
+                                    Este campo debe tener como mínimo 5 caracteres.
+                                </div>
+                                <div *ngIf="f.nit.errors.pattern">
+                                    No se aceptan letras o caracteres especiales.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="gerenteCuenta">Gerente de Cuenta</label>
+                            <select [(ngModel)]="cliente.gerenteCuenta"
+                                [ngClass]="{'is-invalid': submitted && f.gerenteCuenta.errors}"
+                                formControlName="gerenteCuenta" name="gerenteCuenta" id="gerenteCuenta"
+                                class="form-control">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let d of directores" [ngValue]="d">{{ d.nombre }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submitted && f.gerenteCuenta.errors">
+                                <div *ngIf="f.gerenteCuenta.hasError('required')">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button type="submit" id="btnGuardarCliente" class="btn btn-primary">Guardar</button>
+                    <button routerLink="/clientes" id="btnCancel" class="btn btn-light">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,177 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Reportes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Tiempos reportados</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Reporte Tiempos reportados</h6>
+                <hr>
+                <div class="text-muted">Este reporte consulta las horas reportadas de cada recurso seleccionado
+                y actividad asignada ingresando rango de fechas del tiempo reportado.</div>
+                <hr>
+                <form (ngSubmit)="search()" [formGroup]="form">
+                    <div class="form-row">
+                        <div class="form-group col-3"> 
+                            <label for="fechaInicio">Fecha Inicio</label>
+                            <input type="date" id="fechaInicio" class="form-control" name="fechaInicio" 
+                            formControlName="fechaInicio" [ngClass]="{'is-invalid': submitted && f.fechaInicio.errors}">
+                            <div class="invalid-feedback" *ngIf="submitted && f.fechaInicio.errors">
+                                <div *ngIf="f.fechaInicio.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-3">
+                            <label for="fechaFin">Fecha Fin</label>
+                            <input type="date" id="fechaFin" class="form-control" name="fechaFin" 
+                            formControlName="fechaFin" [ngClass]="{'is-invalid': submitted && f.fechaFin.errors}">
+                            <div class="invalid-feedback" *ngIf="submitted && f.fechaFin.errors">
+                                <div *ngIf="f.fechaFin.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-6 align-self-end d-flex justify-content-around">
+                            <a (click)="openAddRecursosModal(addRecurso)"
+                                class="text-primary font-weight-bold">
+                                <div *ngIf="recursosAgregados.length == 0">Seleccionar Recursos</div>  
+                                <div *ngIf="recursosAgregados.length == 1">{{recursosAgregados.length}} recurso seleccionado.</div>  
+                                <div *ngIf="recursosAgregados.length > 1">{{recursosAgregados.length}} recursos seleccionados.</div>  
+                            </a>
+                            <a (click)="quitarRecursos()" class="font-weight-bold" placement="top" ngbTooltip="Quitar recursos" *ngIf="recursosAgregados.length > 0">
+                                X
+                            </a>
+                        </div>
+                    </div>
+                    <button [disabled]="!form.valid" type="submit" class="btn btn-primary">Aceptar</button>
+                    <button type="button" (click)="cancelarAgregarRecurso()" class="btn btn-light ml-2">Cancelar</button>
+                    <hr *ngIf="errorMsj">
+                    <div class="text-danger" *ngIf="errorMsj">{{errorMsj}}</div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 grid-margin stretch-card" *ngIf="reportesResumidos.length > 0">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h6 class="card-title">Reporte resumido</h6>
+                    </div>  
+                    <div class="col">
+                        <button id="btnExportExcel" type="button" (click)="exportExcelReporteResumido()" class="btn btn-success float-right">
+                            Exportar Excel
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-hover" id="table-reportes-resumidos">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Recurso</th>
+                                <th scope="col">Horas reportadas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let r of reportesResumidos">
+                                <th scope="row">{{r.recurso}}</th>
+                                <td>{{r.horas}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 grid-margin stretch-card" *ngIf="reportes.length > 0">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h6 class="card-title">Reporte completo</h6>
+                    </div>
+                    <div class="col">
+                        <button id="btnExportExcel" type="button" (click)="exportExcelReporteCompleto()" class="btn btn-success float-right">
+                            Exportar Excel
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-hover" id="table-reportes-completos">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Recurso</th>
+                                <th scope="col">Proyecto</th>
+                                <th scope="col">Horas reportadas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let r of reportes">
+                                <th scope="row">{{r.recurso}}</th>
+                                <td>{{r.proyecto}}-{{r.descripcion}}</td>
+                                <td>{{r.horas}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ADD RECURSO MODAL -->
+<ng-template #addRecurso let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Agregar recursos</h4>
+        <button type="button" class="close" aria-label="Close" (click)="cancelAgregarRecursoModal()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="alert text-danger border-danger mr-2 alert-dismissible fade show" role="alert" *ngIf="recursosAgregados.length == 0">
+            Debe seleccionar almenos un <strong>Recurso</strong> a la lista.
+          </div>
+        <div class="row">
+            <div class="col">
+                Recursos disponibles
+                <hr>
+                <label>Buscar por recurso</label>
+                <div class="form-group">
+                    <input class="form-control" autocomplete="off" oninput="javascript:this.value=this.value.toUpperCase();" type="text" [(ngModel)]="searchTextR" (keyup)="filtroRecursosDispo()" (keydown)="validarText($event)" placeholder="Ingrese el nombre del recurso">
+                </div>
+                <div class="alert alert-secondary" id="alert-add-recurso" role="alert" *ngIf="recursos.length > 0">
+                    <a class="font-weight-bold" (click)="seleccionarTodo()" placement="right" ngbTooltip="Seleccionar todos">SELECCIONAR TODO</a>
+                </div>
+                <div class="alert alert-secondary" id="alert-add-recurso" role="alert" *ngFor="let e of recursoFiltro" (click)="agregarRecurso(e)" ngbTooltip="Agregar">
+                    <a class="font-weight-bold"  placement="right">{{e.nombre}}</a>
+                </div>
+            </div>
+            <div class="col">
+                Recursos agregados
+                <hr>
+                <div class="alert alert-success" id="alert-add-recurso" role="alert" *ngIf="recursosAgregados.length > 0">
+                    <a class="font-weight-bold" (click)="quitarTodo()" placement="right" ngbTooltip="Quitar todos">QUITAR TODO</a>
+                </div>
+                <div class="alert alert-success" role="alert" *ngFor="let e of recursosAgregados" (click)="quitarRecurso(e)" ngbTooltip="Quitar">
+                    <a class="font-weight-bold" placement="right" >{{e.nombre}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a id="btnModalRecursoDelete" class="btn btn-primary" (click)="aceptarAgregarRecursoModal()">
+            Aceptar
+        </a>
+        <button id="btnModalRecursoCancelar" type="button" class="btn btn-light" aria-label="Close"
+            (click)="cancelAgregarRecursoModal()">
+            Cancelar
+        </button>
+    </div>
+</ng-template>

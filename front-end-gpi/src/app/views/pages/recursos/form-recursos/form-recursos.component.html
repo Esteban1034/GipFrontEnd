@@ -1,0 +1,340 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/recursos">Recursos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Nuevo</li>
+    </ol>
+</nav>
+
+<div class="spinner-wrapper " style="display: none;" id="con_spinner" name="con_spinner">
+    <div class="spinner"></div>
+</div>
+
+<div class="row justify-content-center" id="occ">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Recurso Nuevo</h6>
+                <form [formGroup]="recursoForm" (ngSubmit)="onSubmit()">
+                    <div class="form-row">
+
+                        <div class="form-group col-sm-12 col-md-7">
+                            <label for="nombre">Nombres y Apellidos</label>
+                            <input [(ngModel)]="empleado.nombre"
+                                [ngClass]="{'is-invalid': submitted && rf.nombre.errors}" formControlName="nombre"
+                                type="text" minlength="5" maxlength="50" class="form-control" id="nombre" name="nombre"
+                                autocomplete="off" placeholder="Nombres y Apellidos"
+                                oninput="javascript:this.value=this.value.toUpperCase();" />
+                            <div class="invalid-feedback" *ngIf="submitted && rf.nombre.errors">
+                                <div *ngIf="rf.nombre.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                                <div *ngIf="rf.nombre.errors.minlength">
+                                    Nombre debe contener como mínimo 5 caracteres.
+                                </div>
+                                <div *ngIf="rf.nombre.errors.maxlength">
+                                    Nombre debe contener como máximo 50 caracteres.
+                                </div>
+                                <div *ngIf="rf.nombre.errors.pattern">
+                                    No se aceptan caracteres especiales, puntos, comas o espacios al final.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-5">
+                            <label for="dependencia">Dependencia</label>
+                            <select [(ngModel)]="empleado.dependencia"
+                                [ngClass]="{'is-invalid': submitted && rf.dependencia.errors}"
+                                formControlName="dependencia" name="dependencia" id="dependencia" class="form-control"
+                                autocomplete="off">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let d of dependencias" [ngValue]="d">{{ d.dependencia }}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submitted && rf.dependencia.errors">
+                                <div *ngIf="rf.dependencia.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-7">
+                            <label for="email">Correo Electrónico</label>
+                            <input [(ngModel)]="empleado.email" [ngClass]="{'is-invalid': submitted && rf.email.errors}"
+                                formControlName="email" type="email" id="email" name="email" minlength="5"
+                                maxlength="50" autocomplete="off" class="form-control" placeholder="Correo Electrónico"
+                                oninput="javascript:this.value=this.value.toUpperCase();" />
+                            <div class="invalid-feedback" *ngIf="submitted && rf.email.errors">
+                                <div *ngIf="rf.email.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                                <div *ngIf="rf.email.errors.minlength">
+                                    Email debe contener como mínimo 5 caracteres.
+                                </div>
+                                <div *ngIf="rf.email.errors.maxlength">
+                                    Email debe contener como máximo 50 caracteres.
+                                </div>
+                                <div *ngIf="rf.email.errors.email">
+                                    No se reconoce como una dirección de correo válida.
+                                </div>
+                            </div>
+                            <small *ngIf="errorMsj">{{ errorMsj }}</small>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-5">
+                            <label for="cargo">Cargo
+                                <a (click)="open(carg)" placement="right" ngbTooltip="Agregar Cargo">
+                                    <i class="mdi mdi-plus"></i>
+                                </a>
+                            </label>
+                            <select [(ngModel)]="empleado.cargo"
+                                [ngClass]="{'is-invalid': submitted && rf.cargo.errors}" formControlName="cargo"
+                                name="cargo" id="cargo" autocomplete="off" class="form-control">
+                                <option [ngValue]="null" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let c of cargos" [ngValue]="c">{{ c.cargo }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submitted && rf.cargo.errors">
+                                <div *ngIf="rf.cargo.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr>
+                    <div class="row" *ngIf="empleado.cargo.id != 10">
+                        <div class="col-sm-12 col-md-6">
+                            <h6 class="card-title text-center text-danger" *ngIf="selectedEspecialidades.length == 0">NO
+                                hay especialidades agregadas</h6>
+                            <h6 class="card-title text-center" *ngIf="selectedEspecialidades.length > 0">Especialidades
+                                Agregadas</h6>
+                            <div class="table-responsive" *ngIf="selectedEspecialidades.length > 0">
+                                <table class="table table-hover table-borderless text-center">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Especialidad</th>
+                                            <th scope="col">Quitar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- index as i -->
+                                        <tr *ngFor="let e of selectedEspecialidades; let i = index">
+                                            <td>{{e.especialidad}}</td>
+                                            <td>
+                                                <a (click)="removeEspecialidad(i)">
+                                                    <i class="text-danger mdi mdi-close" placement="top"
+                                                        ngbTooltip="Quitar Especialidad"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <h6 class="card-title text-center text-danger" *ngIf="selectedRoles.length == 0">NO hay
+                                roles
+                                agregados</h6>
+                            <h6 class="card-title text-center" *ngIf="selectedRoles.length > 0">Roles Agregados</h6>
+                            <div class="table-responsive" *ngIf="selectedRoles.length > 0">
+                                <table class="table table-hover table-borderless text-center">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Rol</th>
+                                            <th scope="col">Quitar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let r of selectedRoles; let i = index">
+                                            <td>{{r.descripcion}}</td>
+                                            <td>
+                                                <a (click)="removeRol(i)">
+                                                    <i class="text-danger mdi mdi-close" placement="top"
+                                                        ngbTooltip="Quitar Rol"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <button type="submit" id="btnGuardar" class="btn btn-primary">Guardar</button>
+                    <a (click)="open(especialidad);" id="btnEspecialidad" class="btn btn-outline-primary"
+                        *ngIf="empleado.cargo.id != 10">Especialidad</a>
+                    <a (click)="open(rol);" id="btnRol" class="btn btn-outline-primary"
+                        *ngIf="empleado.cargo.id != 10">Rol</a>
+                    <!--
+                    <button id="btnRol" (click)="openRolModal(rol)" type="button"
+                        class="btn btn-outline-primary">Rol</button>
+                    -->
+                    <button routerLink="/recursos" id="btnCancelar" class="btn btn-light">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ADD ESPECIALIDAD-->
+<ng-template #especialidad let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            Añadir Especialidad
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="especialidadForm" (ngSubmit)="addEspecialidad()">
+        <div class="modal-body">
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <label for="especialidad">Especialidad</label>
+                    <select [(ngModel)]="newEspecialidad"
+                        [ngClass]="{'is-invalid': submittedEF && ef.especialidad.errors}" formControlName="especialidad"
+                        name="especialidad" id="especialidad" minlength="5" maxlength="50" class="form-control"
+                        autocomplete="off">
+                        <option [ngValue]="0" [disabled]="true" [hidden]="true">Seleccionar opción</option>
+                        <option *ngFor="let e of especialidades" [ngValue]="e">{{e.especialidad}}</option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submittedEF && ef.especialidad.errors">
+                        <div *ngIf="ef.especialidad.errors.required">
+                            Este campo es requerido.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button [disabled]="!especialidadForm.valid" id="btnModalEspecialidad" type="submit"
+                class="btn btn-primary">
+                Agregar
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<!-- MODAL ADD CARGO-->
+<ng-template #carg let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            Añadir Cargo
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="cargoForm" (ngSubmit)="saveCargo()">
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <label for="cargo">Cargo</label>
+                    <input [(ngModel)]="newCargo.cargo" [ngClass]="{'is-invalid': submittedC && cf.cargo.errors}"
+                        formControlName="cargo" type="text" name="cargo" class="form-control" autocomplete="off"
+                        oninput="javascript:this.value=this.value.toUpperCase();">
+                    <div class="invalid-feedback" *ngIf="submittedC && cf.cargo.errors">
+                        <div *ngIf="cf.cargo.errors.required">
+                            Este campo es requerido.
+                        </div>
+                        <div *ngIf="cf.cargo.errors.minlength">
+                            Este campo debe tener como mínimo 5 caracteres.
+                        </div>
+                        <div *ngIf="cf.cargo.errors.maxlength">
+                            Este campo debe tener como maximo 20 caracteres.
+                        </div>
+                        <div *ngIf="cf.cargo.errors.pattern">
+                            No se aceptan números o caracteres especiales..
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" id="btnModalCargo" class="btn btn-primary">
+                Agregar
+            </button>
+        </form>
+        <hr *ngIf="cargos.length > 0">
+
+        <div class="modal-body p-4" style="height: 280px;">
+            <table class="table table-hover table-borderless text-center" *ngIf="cargos.length > 0">
+                <thead>
+                    <tr>
+                        <th scope="col">Cargos</th>
+                        <th scope="col">Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let c of cargos">
+                        <td> {{c.cargo}} </td>
+                        <td>
+                            <a (click)="deleteModal(delete, c.id)">
+                                <i class="mdi mdi-close text-danger" placement="right" ngbTooltip="Quitar"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</ng-template>
+
+<!-- CONFIRM DELETE CARGO MODAL -->
+<ng-template #delete let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminaciòn</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>¿Estás seguro de eliminar este cargo?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="d('Cross click')">
+            Cancelar
+        </button>
+        <button type="submit" class="btn btn-danger" (click)="deleteCargo()">
+            Aceptar
+        </button>
+    </div>
+</ng-template>
+
+<!-- MODAL ADD ROLE-->
+<ng-template #rol let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            Añadir Rol
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="rolForm" (ngSubmit)="addRol()">
+        <div class="modal-body">
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <label for="rol">Rol</label>
+                    <select [(ngModel)]="newRol" [ngClass]="{'is-invalid': submittedR && rolF.rol.errors}"
+                        formControlName="rol" name="rol" id="rol" minlength="5" maxlength="50" class="form-control"
+                        autocomplete="off">
+                        <option [ngValue]="null" [disabled]="true">Seleccionar opción</option>
+                        <option *ngFor="let r of roles" [ngValue]="r">{{r.descripcion}}</option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submittedR && rolF.rol.errors">
+                        <div *ngIf="rolF.rol.errors.required">
+                            Este campo es requerido.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="btnModalRol" type="submit" class="btn btn-primary">
+                Agregar
+            </button>
+        </div>
+    </form>
+</ng-template>

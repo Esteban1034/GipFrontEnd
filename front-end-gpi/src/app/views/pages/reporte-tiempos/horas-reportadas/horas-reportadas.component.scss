@@ -1,0 +1,82 @@
+// Extra small devices (portrait phones, less than 576px)
+// No media query for `xs` since this is the default in Bootstrap
+
+ #nombre_proyecto, #aprobador, #recurso{
+    line-break: unset;
+    white-space: normal;
+}
+
+#btnNuevoProyecto {
+    width: 100%;
+}
+
+#inputSearch {
+    width: 100%;
+}
+
+#btnModalDelete {
+    width: 100%;
+}
+
+#btnModalCancelar {
+    width: 100%;
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+    #btnNuevoProyecto {
+        width: auto;
+    }
+
+    #inputSearch {
+        width: 40%;
+    }
+
+    #btnModalDelete {
+        width: auto;
+    }
+
+    #btnModalCancelar {
+        width: auto;
+    }
+}
+
+
+
+
+#btnSearch {
+   width: 100%;
+}
+
+#btnClear {
+   width: 100%;
+   margin-top: 5px;
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+   #btnSearch {
+      width: auto;
+   }
+   
+   #btnClear {
+      width: auto;
+      margin-top: 0px;
+      margin-left: 5px;
+   }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+
+}

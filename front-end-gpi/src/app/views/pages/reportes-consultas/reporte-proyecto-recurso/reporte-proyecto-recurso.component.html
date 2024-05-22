@@ -1,0 +1,152 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Reportes</a></li>
+        <li class="breadcrumb-item">Proyectos</li>
+        <li class="breadcrumb-item active" aria-current="page">Tiempos reportados</li>
+    </ol>
+</nav>
+
+<div class="spinner-wrapper " style="display: none;" id="con_spinner" name="con_spinner">
+    <div class="spinner"></div>
+  </div>
+
+<div class="row justify-content-center" id="occ">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Reporte proyecto recursos</h6>
+                <hr>
+                <div class="text-muted">Este reporte consulta los tiempos reportados de cada proyecto seleccionado y fecha del tiempo reportado
+                    entre el rango de fechas seleccionado mostrando total horas reportadas por cada empleado.</div>
+                <hr>
+                <form (ngSubmit)="search()" [formGroup]="form">
+                    <div class="form-row">
+                        <div class="form-group col-3"> 
+                            <label for="fechaInicio">Fecha Inicio</label>
+                            <input type="date" id="fechaInicio" class="form-control" name="fechaInicio" 
+                            formControlName="fechaInicio" [ngClass]="{'is-invalid': submitted && f.fechaInicio.errors}">
+                            <div class="invalid-feedback" *ngIf="submitted && f.fechaInicio.errors">
+                                <div *ngIf="f.fechaInicio.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-3">
+                            <label for="fechaFin">Fecha Fin</label>
+                            <input type="date" id="fechaFin" class="form-control" name="fechaFin" 
+                            formControlName="fechaFin" [ngClass]="{'is-invalid': submitted && f.fechaFin.errors}">
+                            <div class="invalid-feedback" *ngIf="submitted && f.fechaFin.errors">
+                                <div *ngIf="f.fechaFin.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-6 align-self-end d-flex justify-content-around">
+                            <a (click)="openAddProyectosModal(addProyecto)"
+                                class="text-primary font-weight-bold">
+                                <div *ngIf="proyectosAgregados.length == 0">Seleccionar proyectos</div>  
+                                <div *ngIf="proyectosAgregados.length == 1">{{proyectosAgregados.length}} proyecto seleccionado.</div>  
+                                <div *ngIf="proyectosAgregados.length > 1">{{proyectosAgregados.length}} proyectos seleccionados.</div>  
+                            </a>
+                            <a (click)="quitarProyectos()" class="font-weight-bold" placement="top" ngbTooltip="Quitar recursos" *ngIf="proyectosAgregados.length > 0">
+                                X
+                            </a>
+                        </div>
+                    </div>
+                    <button [disabled]="!form.valid" type="submit" class="btn btn-primary">Aceptar</button>
+                    <button type="button" (click)="cancelarAgregarProyecto()" class="btn btn-light ml-2">Cancelar</button>
+                    <hr *ngIf="errorMsj">
+                    <div class="text-danger" *ngIf="errorMsj">{{errorMsj}}</div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 grid-margin stretch-card" *ngIf="reportes.length > 0">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h6 class="card-title">Reporte completo</h6>
+                    </div>
+                    <div class="col">
+                        <button id="btnExportExcel" type="button" (click)="exportExcelReporteCompleto()" class="btn btn-success float-right">
+                            Exportar Excel
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-hover" id="table-reportes-completos">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Proyecto</th>
+                                <th scope="col">Recurso</th>
+                                <th scope="col">Horas reportadas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let r of reportes; let last = last">
+                                <th scope="row">{{ r.proyecto && r.descripcion ? r.proyecto + '-' + r.descripcion : '' }}</th>
+                                <td [ngStyle]="{'font-weight': last ? 'bold' : 'normal', 'text-align': last ? 'right' : 'left'}">{{r.recurso}}</td>
+                                <td>{{r.horasReportadas}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ADD RECURSO MODAL -->
+<ng-template #addProyecto let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Agregar proyectos</h4>
+        <button type="button" class="close" aria-label="Close" (click)="cancelAgregarClienteModal()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="alert text-danger border-danger mr-2 alert-dismissible fade show" role="alert" *ngIf="proyectosAgregados.length == 0">
+            Debe seleccionar almenos un <strong>proyecto</strong> a la lista.
+          </div>
+        <div class="row">
+            <div class="col">
+                Proyectos disponibles
+                <hr>
+                <label>Buscar por estado</label>
+                <div class="form-group">
+                    <select class="form-control" autocomplete="off" [(ngModel)]="estadoSelect" (change)="filtroProyectosDispo()">
+                        <option [ngValue]="undefined" [disabled]="true">Seleccionar estado</option>
+                        <option *ngFor="let e of estados" [ngValue]="e">{{e.estado}}</option>
+                    </select>
+                </div> 
+                <div class="alert alert-secondary" id="alert-add-recurso" role="alert" *ngIf="proyectos.length > 0">
+                    <a class="font-weight-bold" (click)="seleccionarTodo()" placement="right" ngbTooltip="Seleccionar todos">SELECCIONAR TODO</a>
+                </div>
+                <div class="alert alert-secondary" id="alert-add-recurso" role="alert" *ngFor="let p of proyectos" (click)="agregarProyecto(p)" ngbTooltip="Agregar">
+                    <label class="font-weight-bold"  placement="right" >{{p.nombre}}-{{p.descripcion}}</label>
+                </div>
+            </div>
+            <div class="col">
+                Proyectos agregados
+                <hr>
+                <div class="alert alert-success" id="alert-add-recurso" role="alert" *ngIf="proyectosAgregados.length > 0">
+                    <a class="font-weight-bold" (click)="quitarTodo()" placement="right" ngbTooltip="Quitar todos">QUITAR TODO</a>
+                </div>
+                <div class="alert alert-success" role="alert" *ngFor="let p of proyectosAgregados" (click)="quitarProyecto(p)" ngbTooltip="Quitar">
+                    <label class="font-weight-bold"  placement="right" >{{p.nombre}}-{{p.descripcion}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a id="btnModalRecursoDelete" class="btn btn-primary" (click)="aceptarAgregarClienteModal()">
+            Aceptar
+        </a>
+        <button id="btnModalRecursoCancelar" type="button" class="btn btn-light" aria-label="Close"
+            (click)="cancelAgregarClienteModal()">
+            Cancelar
+        </button>
+    </div>
+</ng-template>

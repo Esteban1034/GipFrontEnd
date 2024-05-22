@@ -1,0 +1,52 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a routerLink="/proyectos">Proyectos</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Planeacion</li>
+        <li class="breadcrumb-item active" aria-current="page">Administración de Fases</li>
+    </ol>
+</nav>
+
+<div class="card">
+    <div class="card-body">
+        <h6 class="card-title">Administración de Fases</h6>
+        <form *ngIf="faseToEdit.id != null" (ngSubmit)="edit()">
+            <div class="form-row">
+                <div class="form-group col-sm-12 col-md">
+                    <input [(ngModel)]="faseToEdit.fase" name="fase" type="text" class="form-control"
+                        oninput="javascript:this.value=this.value.toUpperCase();">
+                </div>
+                <div class="form-group col-sm-12 col-md-auto">
+                    <button id="btnGuardar" type="submit" class="btn btn-primary">Guardar</button>
+                    <button id="btnCancelar" type="button" (click)="cancelar()" class="btn btn-light">Cancelar</button>
+                </div>
+            </div>
+        </form>
+        <hr *ngIf="faseToEdit.id != null">
+        <div class="table-responsive">
+            <table class="table table-hover table-borderless">
+                <thead>
+                    <tr>
+                        <th scope="col">Fase</th>
+                        <th scope="col" class="text-center">Editar</th>
+                        <th scope="col" class="text-center">Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let f of fases">
+                        <td scope="row">{{f.fase}}</td>
+                        <td class="text-center">
+                            <a (click)="loadFase(f.id)" class="mdi mdi-24px mdi-pencil" placement="right"
+                                ngbTooltip="Editar"></a>
+                        </td>
+                        <td class="text-center">
+                            <a (click)="delete(f.id)" class="mdi mdi-24px mdi-delete-forever" placement="right"
+                                ngbTooltip="Eliminar"></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

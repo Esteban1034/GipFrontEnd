@@ -1,0 +1,104 @@
+<nav class="page-breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/recursos">Recursos</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Novedades</li>
+  </ol>
+</nav>
+  
+<div class="row">
+  <div class="col-md-12 stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col">
+            <h6 class="card-title">Administración de Novedades</h6>
+          </div>
+        </div>
+
+        <div>
+          <mat-form-field id="inputSearch">
+            <mat-label>Buscar</mat-label>
+            <input matInput (keyup)="filtrar($event)" placeholder="Buscar" />
+          </mat-form-field>
+          <div class="table-responsive">
+            <table
+              mat-table
+              [dataSource]="dataSource"
+              class="table-hover"
+              style="width: 100%"
+            >
+              <ng-container matColumnDef="novedad">
+                <th mat-header-cell *matHeaderCellDef>Novedad</th>
+                <td mat-cell *matCellDef="let n">
+                  {{ n.causa }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="fecha inicio">
+                <th mat-header-cell *matHeaderCellDef>Fecha Inicio</th>
+                <td class="text-uppercase" mat-cell *matCellDef="let n">
+                  {{ n.fechaInicio | date : 'dd-MMM-yyyy'}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="fecha fin">
+                <th mat-header-cell *matHeaderCellDef>Fecha Fin</th>
+                <td class="text-uppercase" mat-cell *matCellDef="let n">
+                  {{ n.fechaFin | date : 'dd-MMM-yyyy'}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="empleado">
+                <th mat-header-cell *matHeaderCellDef>Empleado</th>
+                <td mat-cell *matCellDef="let n">
+                  {{ n.empleado }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="eliminar">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let n" class="text-left">
+                  <a (click)="deleteModal(delete, n.id)" class="mdi mdi-24px mdi-delete-forever"></a>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+              <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<!-- CONFIRM DELETE MODAL -->
+<ng-template #delete let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Confirmar eliminacion</h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="d('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>¿Estas seguro de eliminar esta novedad?</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-light"
+      aria-label="Close"
+      (click)="d('Cross click')"
+    >
+      Cancelar
+    </button>
+    <button type="submit" class="btn btn-danger" (click)="deleteNovedad()">
+      Aceptar
+    </button>
+  </div>
+</ng-template>
+  

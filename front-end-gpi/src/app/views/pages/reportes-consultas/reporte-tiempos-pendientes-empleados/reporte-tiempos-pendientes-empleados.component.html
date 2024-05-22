@@ -1,0 +1,87 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Reportes</a></li>
+        <li class="breadcrumb-item">Clientes</li>
+        <li class="breadcrumb-item active" aria-current="page">Tiempos reportados</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Reporte Tiempos pendientes</h6>
+                <hr>
+                <div class="text-muted">Este reporte consulta los empleados que tienen reportes de tiempos pendientes
+                    dentro del rango de fechas seleccionado.</div>
+                <hr>
+                <form (ngSubmit)="search()" [formGroup]="form">
+                    <div class="form-row">
+                        <div class="form-group col-3">
+                            <label for="fechaInicio">Fecha Inicio</label>
+                            <input type="date" 
+                            [(ngModel)]="fechaInicio"
+                            id="fechaInicio" 
+                            name="fechaInicio" 
+                            formControlName="fechaInicio" 
+                            class="form-control"
+                            [ngClass]="{'is-invalid': submitted && f.fechaInicio.errors}">
+                            <div class="invalid-feedback" *ngIf="submitted && f.fechaInicio.errors">
+                                <div *ngIf="f.fechaInicio.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-3">
+                            <label for="fechaFin">Fecha Fin</label>
+                            <input type="date"
+                            [(ngModel)]="fechaFin"
+                            id="fechaFin" 
+                            name="fechaFin" 
+                            class="form-control"
+                            formControlName="fechaFin"
+                            [ngClass]="{'is-invalid': submitted && f.fechaFin.errors}">
+                            <div class="invalid-feedback" *ngIf="submitted && f.fechaFin.errors">
+                                <div *ngIf="f.fechaFin.errors.required">Este campo es requerido.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                    <button type="button" class="btn btn-light ml-2">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 grid-margin stretch-card" *ngIf="reportes.length > 0">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h6 class="card-title">Reporte completo</h6>
+                    </div>
+                    <div class="col">
+                        <button id="btnExportExcel" type="button" (click)="exportExcel()"
+                            class="btn btn-success float-right">
+                            Exportar Excel
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-hover" id="table-reportes">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Fecha</th>
+                                <th scope="col" class="text-center">Empleado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let r of reportes">
+                                <th scope="row" class="text-uppercase">{{r.fecha | date:'dd/MM/yyyy'}}</th>
+                                <td class="text-center">{{r.empleado.nombre}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

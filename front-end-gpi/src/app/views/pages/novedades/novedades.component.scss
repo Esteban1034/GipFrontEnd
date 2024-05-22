@@ -1,0 +1,54 @@
+// Extra small devices (portrait phones, less than 576px)
+// No media query for `xs` since this is the default in Bootstrap
+
+.table-responsive {
+    display   : block;
+    width     : 100%;
+    overflow-x: auto;
+
+    .mat-table {
+        width          : 100%;
+        max-width      : 100%;
+        margin-bottom  : 1rem;
+        display        : table;
+        border-collapse: collapse;
+        margin         : 0px;
+    }
+
+    .mat-row,
+    .mat-header-row {
+        display: table-row;
+    }
+
+    .mat-cell,
+    .mat-header-cell {
+        word-wrap     : initial;
+        display       : table-cell;
+        padding       : 0px 5px;
+        line-break    : unset;
+        width         : auto;
+        white-space   : nowrap;
+        overflow      : hidden;
+        vertical-align: middle;
+    }
+}
+
+#inputSearch {
+    width: 100%;
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+    #inputSearch {
+        width: 40%;
+    }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {}

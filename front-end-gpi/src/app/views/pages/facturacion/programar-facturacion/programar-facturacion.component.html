@@ -1,0 +1,244 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/proyectos">Proyectos</a></li>
+        <li class="breadcrumb-item"><a routerLink="/proyectos/facturacion/programar/{{proyecto.id}}">Facturacion</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Programar</li>
+    </ol>
+</nav>
+<div class="row" id="resumenCard">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Resumen de proyecto <b>{{proyecto.codigo}}</b></h6>
+                <div class="form-row">
+                    <div class="form-group col-sm-12 col-md-4">
+                        <label>Fecha Aprobación de Proyecto</label>
+                        <input type="date" class="form-control" [(ngModel)]="proyecto.fechaAprobacion" [disabled]=true>
+                    </div>
+                    <div class="form-group col-sm-12 col-md-4">
+                        <label>Fecha Inicio de Proyecto</label>
+                        <input type="date" class="form-control" [(ngModel)]="proyecto.fechaInicio" [disabled]=true>
+                    </div>
+                    <div class="form-group col-sm-12 col-md-4">
+                        <label>Fecha Fin de Proyecto</label>
+                        <input type="date" class="form-control" [(ngModel)]="proyecto.fechaFin" [disabled]=true>
+                    </div>
+                </div>   
+                <div class="form-row">
+                    <div class="form-group col-sm-12 col-md-4">
+                        <label for="costo-total" class="">Valor aprobado cliente</label>
+                        <input id="costo-total" type="text" class="form-control" placeholder="Costo total" disabled
+                            [ngModel]="proyecto.costo | currency"/>
+                    </div>
+                    <div class="form-group col-sm-12 col-md-4">
+                        <label for="valores-causados" class="">Valores causados sin I.V.A</label>
+                        <input [ngModel]="vlrSinIva | currency" id="valores-causados" type="text" class="form-control"
+                            placeholder="Valores causados" disabled />
+                    </div>
+                    <div class="form-group col-sm-12 col-md-4">
+                        <label for="valor-pendiente">Valor pendiente de Cobro</label>
+                        <input [ngModel]="vlrTotalPendiente | currency" id="valor-pendiente" type="text" class="form-control"
+                            placeholder="Valor pendiente" disabled />
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-12 col-sm">
+                        <h6 class="card-title">Cobros Registrados</h6>
+                    </div>
+                    <div class="col-12 col-sm d-flex justify-content-end align-items-center">
+                        <a id="btnAgregarCobro" class="btn btn-outline-primary mr-2" (click)="open(add)">Agregar
+                            cobro</a>
+                    </div>
+                </div>
+                <div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-light">
+                              <tr>
+                                <th scope="col">Porcentaje</th>
+                                <th scope="col">Precio</th>
+                                <th scope="col">Fecha planeada</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Fecha Pago</th>
+                                <th scope="col">Valor Pagado</th>
+                                <th scope="col">Pagar</th>
+                                <th scope="col">Eliminar</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let c of cobros">
+                                <th scope="row">{{c.porcentaje}}</th>
+                                <td>{{c.precio | currency}}</td>
+                                <td>{{c.fechaPlaneada | date:'dd/MM/yyyy'}}</td>
+                                <td>{{c.estado.estado}}</td>
+                                <td>
+                                    <div *ngIf="c.fechaPago != null">{{c.fechaPago | date:'dd/MM/yyyy'}}</div>
+                                    <div *ngIf="c.fechaPago == null">PENDIENTE</div>
+                                </td>
+                                <td>
+                                    <div *ngIf="c.valorPagado != null">{{c.valorPagado  | currency}}</div>
+                                    <div *ngIf="c.valorPagado == null">PENDIENTE</div>
+                                </td>
+                                <td>
+                                    <a (click)="pagarModal(edit, c)">Pagar</a>
+                                </td>
+                                <td>
+                                    <a (click)="deleteModal(delete, c)">Eliminar</a>    
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ADD COBRO -->
+<ng-template #add let-d="dismiss">
+    <form [formGroup]="formNewCobro" (ngSubmit)="saveCobro()">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Agregar Cobro</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group">
+                <label for="porcentaje">Porcentaje</label>
+                <input [(ngModel)]="cobro.porcentaje" [ngClass]="{'is-invalid': submittedNC && fnc.porcentaje.errors}"
+                    formControlName="porcentaje" min="1" max="100" minlength="1" maxlength="3" type="text"
+                    id="porcentaje" name="porcentaje" class="form-control" autocomplete="off" placeholder="Ingrese porcentaje"/>
+                <div class="invalid-feedback" *ngIf="submittedNC && fnc.porcentaje.errors">
+                    <div *ngIf="fnc.porcentaje.errors.required">
+                        Este campo es requerido.
+                    </div>
+                    <div *ngIf="fnc.porcentaje.errors.min">
+                        Este valor minimo es 1 (UNO).
+                    </div>
+                    <div *ngIf="fnc.porcentaje.errors.max">
+                        Este valor minimo es 100 (CIEN).
+                    </div>
+                    <div *ngIf="fnc.porcentaje.errors.minlength">
+                        Este campo debe tener como minimo 1 caracter.
+                    </div>
+                    <div *ngIf="fnc.porcentaje.errors.maxlength">
+                        Este campo debe tener como maximo 3 caracteres.
+                    </div>
+                    <div *ngIf="fnc.porcentaje.errors.pattern">
+                        Este campo no debe tener letras, espacio o caracteres especiales.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha-facturacion">Fecha a pagar</label>
+                <input [(ngModel)]="cobro.fechaPlaneada"
+                    [ngClass]="{'is-invalid': submittedNC && fnc.fechaPlaneada.errors}" formControlName="fechaPlaneada"
+                    type="date" name="fechaPlaneada" id="fechaPlaneada" class="form-control" autocomplete="off" />
+                <div class="invalid-feedback" *ngIf="submittedNC && fnc.fechaPlaneada.errors">
+                    <div *ngIf="fnc.fechaPlaneada.errors.required">
+                        Este campo es requerido.
+                    </div>
+                </div>
+            </div>
+            <small *ngIf="errorMsj">{{ errorMsj }}</small>
+            <div class="form-group">
+                <label for="valor">Valor a Recaudar</label>
+                <input [value]="getCosto(cobro, cobro.proyecto) | currency" type="text" name="valor" id="valor"
+                    class="form-control" autocomplete="off" [disabled]="true" />
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="btnModalAddCobro" type="submit" class="btn btn-primary">
+                Agregar
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<!-- CONFIRM DELETE MODAL -->
+<ng-template #delete let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminaciòn</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>¿Estás seguro de eliminar este cobro?</p>
+    </div>
+    <div class="modal-footer">
+        <button id="btnModalDelete" type="submit" class="btn btn-danger" (click)="deleteCobro()">
+            Aceptar
+        </button>
+        <button id="btnModalCancelar" type="button" class="btn btn-light" aria-label="Close" (click)="d('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>
+
+<!-- MODAL EDIT COBRO -->
+<ng-template #edit let-d="dismiss">
+    <form (ngSubmit)="pagarCobro()" [formGroup]="formPagarCobro">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Pagar Cobro</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="fecha-facturacion">Fecha a pagar</label>
+                <input [value]="cobroEdit.fechaPlaneada" [disabled]="true" type="date"
+                    name="fechaPlaneada" id="fechaPlaneadaEdit" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="valor">Valor a Recaudar</label>
+                <input type="text" [(ngModel)]="cobroEdit.valorPagar" [ngModelOptions]="{standalone: true}"
+                    class="form-control" autocomplete="off" [disabled]="true" />
+            </div>
+            <div class="form-group">
+                <label for="valor">Valor Pagado</label>
+                <input type="number" name="valorPagado" [(ngModel)]="cobroEdit.valorPagado" formControlName="valorPagado" class="form-control" autocomplete="off"
+                [ngClass]="{'is-invalid': submittedPC && fpc.valorPagado.errors}"/>
+                <div class="invalid-feedback" *ngIf="submittedPC && fpc.valorPagado.errors">
+                    <div *ngIf="fpc.valorPagado.errors.required">
+                        Este campo es requerido.
+                    </div>
+                    <div *ngIf="fpc.valorPagado.errors.min">
+                        Este valor minimo es 1 (UNO).
+                    </div>
+                    <div *ngIf="fpc.valorPagado.errors.minlength">
+                        Este campo debe tener como minimo 1 caracter.
+                    </div>
+                    <div *ngIf="fpc.valorPagado.errors.maxlength">
+                        Este campo debe tener como maximo 15 caracteres.
+                    </div>
+                    <div *ngIf="fpc.valorPagado.errors.pattern">
+                        Este campo no debe tener letras, espacio o caracteres especiales.
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="fechaPago">Fecha de Pago</label>
+                <input [(ngModel)]="cobroEdit.fechaPago" type="date" name="fechaPago" formControlName="fechaPago" id="fechaPagoEdit" required
+                    class="form-control" [ngClass]="{'is-invalid': submittedPC && fpc.fechaPago.errors}">
+                    <div class="invalid-feedback" *ngIf="submittedPC && fpc.fechaPago.errors">
+                        <div *ngIf="fpc.fechaPago.errors.required">
+                            Este campo es requerido.
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="btnEditCobro" type="submit" class="btn btn-primary">
+                Aceptar
+            </button>
+        </div>
+    </form>
+</ng-template>

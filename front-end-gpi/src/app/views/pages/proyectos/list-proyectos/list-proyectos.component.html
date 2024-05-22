@@ -1,0 +1,189 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/proyectos">Proyectos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Ver todos</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-sm">
+                        <h6 class="card-title">Administración de Proyectos</h6>
+                    </div>
+                    <div class="col-12 col-sm d-flex justify-content-end align-items-center">
+                        <a *ngIf="session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_DP'"
+                            class="btn btn-outline-primary" href="javascript:void(0);" id="btnNuevoProyecto"
+                            routerLink="/proyectos/nuevo">Nuevo Proyecto</a>
+                    </div>
+                </div>
+                <div>
+                    <mat-form-field id="inputSearch">
+                        <mat-label>Buscar</mat-label>
+                        <input matInput (keyup)="filtrar($event)" placeholder="Buscar">
+                    </mat-form-field>
+                    <br />
+                    <mat-checkbox class="checkfiltro" [(ngModel)]="checked" (change)="clearFiltro($event)">{{checked ?
+                        'Limpiar Filtro' : 'Filtrar:'}}</mat-checkbox>
+                    <div *ngIf="checked">
+                        <mat-grid-list cols="7" rowHeight="50px">
+                            <mat-grid-tile>
+                                <mat-checkbox [(ngModel)]="estadoChecked" class="checkestadoproyecto"
+                                    (change)="clearFiltroEstado($event)">Estado</mat-checkbox>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                                <mat-checkbox [(ngModel)]="clienteChecked" class="checkcliente"
+                                    (change)="clearFiltroCliente($event)">Cliente</mat-checkbox>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                                <mat-checkbox [(ngModel)]="etapaChecked" class="checketapa"
+                                    (change)="clearFiltroEtapa($event)">Etapa</mat-checkbox>
+                            </mat-grid-tile>
+                        </mat-grid-list>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table mat-table [dataSource]="dataSource" class="table-hover" style="width: 100%;" matSort
+                            (matSortChange)="sortData($event)">
+                            <ng-container matColumnDef="nombre">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px"> Nombre </th>
+                                <td class="w-50 text-wrap" mat-cell *matCellDef="let proyecto" id="nombre_proyecto">
+                                    {{proyecto.nombre}}-{{proyecto.descripcion}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="codigo">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px"> Código </th>
+                                <td mat-cell *matCellDef="let proyecto"> {{proyecto.codigo}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="estadoProyecto">
+                                <th mat-header-cell *matHeaderCellDef class="mdi mdi-15px">
+                                    <mat-label mat-sort-header>
+                                        Estado proyecto
+                                    </mat-label>
+                                    <mat-form-field *ngIf="estadoChecked"><br>
+                                        <mat-select id="estadProyec" (selectionChange)="onSelectEstado($event)"
+                                            [(ngModel)]="limpiarFiltroEstado">
+                                            <mat-option *ngFor="let estad of estadoProyec"
+                                                value="{{estad.id}}">{{estad.estado}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </th>
+                                <td mat-cell *matCellDef="let proyecto"> {{proyecto.estadoProyecto}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="cliente">
+                                <th mat-header-cell *matHeaderCellDef class="mdi mdi-15px">
+                                    <mat-label mat-sort-header>
+                                        Cliente
+                                    </mat-label>
+                                    <mat-form-field *ngIf="clienteChecked"><br>
+                                        <mat-select id="clienteProyec" (selectionChange)="onSelectEstado($event)"
+                                            [(ngModel)]="limpiarFiltroCliente">
+                                            <mat-option *ngFor="let clien of client"
+                                                value="{{clien.id}}">{{clien.nombre}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </th>
+                                <td mat-cell *matCellDef="let proyecto"> {{proyecto.cliente}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="etapa">
+                                <th mat-header-cell *matHeaderCellDef class="mdi mdi-15px">
+                                    <mat-label mat-sort-header>
+                                        Tipo
+                                    </mat-label>
+                                    <mat-form-field *ngIf="etapaChecked"><br>
+                                        <mat-select id="etapaProyec" (selectionChange)="onSelectEstado($event)"
+                                            [(ngModel)]="limpiarFiltroEtapa">
+                                            <mat-option *ngFor="let eta of etap"
+                                                value="{{eta.id}}">{{eta.etapa}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </th>
+                                <td mat-cell *matCellDef="let proyecto"> {{proyecto.etapa}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="creador">
+                                <th mat-header-cell *matHeaderCellDef class="mdi mdi-15px">
+                                    <mat-label>
+                                        Creador
+                                    </mat-label>
+                                </th>
+                                <td mat-cell *matCellDef="let proyecto"> {{proyecto.creador}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="fecha_creacion">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px"> Fecha
+                                    creación </th>
+                                <td mat-cell *matCellDef="let proyecto"> {{proyecto.fechaCreacion}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="planeacion">
+                                <th mat-header-cell *matHeaderCellDef></th>
+                                <td mat-cell *matCellDef="let proyecto" class="text-center">
+                                    <a *ngIf="session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_LP' || session['rol'] == 'ROL_DP' "
+                                        (click)="planeacionProyecto(proyecto.id)" class="mdi mdi-24px mdi-calendar-plus"
+                                        ngbTooltip="Planeación"></a>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="facturacion">
+                                <th mat-header-cell *matHeaderCellDef></th>
+                                <td mat-cell *matCellDef="let proyecto" class="text-center">
+                                    <a *ngIf="session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_DP'"
+                                        (click)="goToFacturacionProyecto(proyecto.id)"
+                                        class="mdi mdi-24px mdi-cart-outline" ngbTooltip="Facturación"></a>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="editar">
+                                <th mat-header-cell *matHeaderCellDef></th>
+                                <td mat-cell *matCellDef="let proyecto" class="text-center">
+                                    <a *ngIf="session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_DP'"
+                                        (click)="updateProyecto(proyecto.id)" class="mdi mdi-24px mdi-pencil"
+                                        ngbTooltip="Editar"></a>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="eliminar">
+                                <th mat-header-cell *matHeaderCellDef></th>
+                                <td mat-cell *matCellDef="let proyecto" class="text-center">
+                                    <a *ngIf="session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_DP'"
+                                        (click)="deleteModal(delete, proyecto.id)"
+                                        class="mdi mdi-24px mdi-delete-forever" ngbTooltip="Eliminar"></a>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+                            <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<ng-template #delete let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminacion</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>¿Estas seguro de eliminar este proyecto?</p>
+    </div>
+    <div class="modal-footer">
+        <button id="btnModalDelete" type="submit" class="btn btn-danger" (click)="deleteProyecto()">
+            Aceptar
+        </button>
+        <button id="btnModalCancelar" type="button" class="btn btn-light" aria-label="Close" (click)="d('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>

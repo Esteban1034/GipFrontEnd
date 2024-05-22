@@ -1,0 +1,73 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/proyectos/internos">Proyectos internos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Ver todos</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h6 class="card-title">Administración de Proyectos internos</h6>
+                    </div>
+                    <div class="col d-flex justify-content-end">
+                        <a routerLink="/proyectos/internos/nuevo" class="btn btn-outline-primary">Nuevo Proyecto</a>
+                    </div>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="thead-light">
+                          <tr>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Fecha Inicio</th>
+                            <th scope="col">Fecha Fin</th>
+                            <th scope="col">Editar</th>
+                            <th scope="col">Eliminar</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let p of proyectos">
+                            <th scope="row">{{p.nombre}}</th>
+                            <td>{{p.descripcion}}</td>
+                            <td class="text-uppercase">{{p.fechaInicio | date: 'dd-MMM-yyyy'}}</td>
+                            <td class="text-uppercase">{{p.fechaFin | date: 'dd-MMM-yyyy'}}</td>
+                            <td class="text-center">
+                                <a (click)="editar(p.id)" class="mdi mdi-24px mdi-pencil" ngbTooltip="Editar"></a>
+                            </td>
+                            <td class="text-center">
+                                <a (click)="openEliminarModal(delete, p.id)" class="mdi mdi-24px mdi-delete-forever" ngbTooltip="Eliminar"></a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<ng-template #delete let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminacion</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>¿Estas seguro de eliminar este proyecto?</p>
+    </div>
+    <div class="modal-footer">
+        <button id="btnModalDelete" type="submit" class="btn btn-danger" (click)="eliminar()">
+            Aceptar
+        </button>
+        <button id="btnModalCancelar" type="button" class="btn btn-light" aria-label="Close" (click)="d('Cross click')">
+            Cancelar
+        </button>
+    </div>
+</ng-template>

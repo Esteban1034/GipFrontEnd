@@ -1,0 +1,596 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/proyectos">Proyectos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Nuevo</li>
+    </ol>
+</nav>
+
+<div class="spinner-wrapper " style="display: none;" id="con_spinner" name="con_spinner">
+    <div class="spinner"></div>
+</div>
+
+<div class="row justify-content-center" id="occ">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Nuevo Proyecto</h6>
+                <form [formGroup]="formProyecto" (ngSubmit)="onSubmit()"
+                    *ngIf="proyecto.etapa.id == undefined || proyecto.etapa.id == 2">
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="cliente">Cliente</label>
+                            <select [(ngModel)]="proyecto.cliente"
+                                [ngClass]="{'is-invalid': submittedP && fp.cliente.errors}" id="cliente"
+                                autocomplete="off" class="form-control" name="cliente" formControlName="cliente">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar opción</option>
+                                <option *ngFor="let c of clientes" [ngValue]="c">{{ c.nombre }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.cliente.errors">
+                                <div *ngIf="fp.cliente.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="codigo">Código Proyecto</label>
+                            <input [(ngModel)]="proyecto.codigo"
+                                [ngClass]="{'is-invalid': submittedP && fp.codigo.errors}" type="text"
+                                class="form-control" id="codigo" maxlength="11" autocomplete="off"
+                                placeholder="Código de Proyecto" name="codigo" formControlName="codigo" />
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.codigo.errors">
+                                <div *ngIf="fp.codigo.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                                <div *ngIf="fp.codigo.errors.maxlength">
+                                    Este campo debe tener como máximo 10 caracteres.
+                                </div>
+                                <div *ngIf="fp.codigo.errors.pattern">
+                                    No se aceptan caracteres especiales, Letras o espacios al final.
+                                </div>
+                            </div>
+                            <small *ngIf="errorMsj">{{ errorMsj }}</small>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-2">
+                            <label for="etapa">Tipo</label>
+                            <select [(ngModel)]="proyecto.etapa.id"
+                                [ngClass]="{'is-invalid': submittedP && fp.etapa.errors}" id="etapa" autocomplete="off"
+                                name="etapa" formControlName="etapa" class="form-control">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar opción</option>
+                                <option *ngFor="let e of etapas" [ngValue]="e.id">{{ e.etapa }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.etapa.errors">
+                                <div *ngIf="fp.etapa.errors.required">
+                                    Este campo es requerido
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" name="nombre" id="nombre" class="form-control" disabled
+                                [value]="getNombreConcatForm()">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="tipo">Tipo de Proyecto
+                                <a (click)="openAddTipoModal(tipo)">
+                                    <i class="mdi mdi-plus" placement="right" ngbTooltip="Crear tipo proyecto"></i>
+                                </a>
+                            </label>
+                            <select [(ngModel)]="proyecto.tipo" [ngClass]="{'is-invalid': submittedP && fp.tipo.errors}"
+                                name="tipo" id="tipo" autocomplete="off" formControlName="tipo" class="form-control">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let t of tipos" [ngValue]="t">{{ t.tipo }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.tipo.errors">
+                                <div *ngIf="fp.tipo.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="estadoPropuesta">Estado de Propuesta</label>
+                            <select [(ngModel)]="proyecto.estadoPropuesta.id"
+                                [ngClass]="{'is-invalid': submittedP && fp.estadoPropuesta.errors}"
+                                name="estadoPropuesta" id="estadoPropuesta" autocomplete="off"
+                                formControlName="estadoPropuesta" class="form-control">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let e of estadosPropuesta" [ngValue]="e.id">{{ e.estado }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.estadoPropuesta.errors">
+                                <div *ngIf="fp.estadoPropuesta.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="estadoProyecto">Estado de Proyecto</label>
+                            <select [(ngModel)]="proyecto.estadoProyecto"
+                                [ngClass]="{'is-invalid': submittedP && fp.estadoProyecto.errors}" id="estadoProyecto"
+                                autocomplete="off" class="form-control" name="estadoProyecto"
+                                formControlName="estadoProyecto">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar estado</option>
+                                <option *ngFor="let e of estadosProyectoCRN" [ngValue]="e">{{ e.estado }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.estadoProyecto.errors">
+                                <div *ngIf="fp.estadoProyecto.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="horasPlaneadas">Horas Aprobadas</label>
+                            <input [(ngModel)]="proyecto.horasPlaneadas"
+                                [ngClass]="{'is-invalid': submittedP && fp.horasPlaneadas.errors}" type="text"
+                                class="form-control" id="horasPlaneadas" name="horasPlaneadas" minlength="1"
+                                maxlength="5" formControlName="horasPlaneadas" autocomplete="off"
+                                placeholder="Horas Aprobadas" />
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.horasPlaneadas.errors">
+                                <div *ngIf="fp.horasPlaneadas.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                                <div *ngIf="fp.horasPlaneadas.errors.minlength">
+                                    Este campo debe tener como máximo 1 caracter.
+                                </div>
+                                <div *ngIf="fp.horasPlaneadas.errors.maxlength">
+                                    Este campo debe tener como máximo 5 caracteres.
+                                </div>
+                                <div *ngIf="fp.horasPlaneadas.errors.pattern">
+                                    No se aceptan caracteres especiales, Letras o espacios al final.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="costo">Valor aprobado cliente</label>
+                            <input [(ngModel)]="proyecto.costo"
+                                [ngClass]="{'is-invalid': submittedP && fp.costo.errors}" name="costo" id="costo"
+                                formControlName="costo" autocomplete="off" placeholder="Costo del Proyecto"
+                                minlength="1" maxlength="12" class="form-control" mask="separator.2"
+                                thousandSeparator=".">
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.costo.errors">
+                                <div *ngIf="fp.costo.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                                <div *ngIf="fp.costo.errors.minlength">
+                                    Este campo debe tener como máximo 1 caracter.
+                                </div>
+                                <div *ngIf="fp.costo.errors.maxlength">
+                                    Este campo debe tener como máximo 10 caracteres.
+                                </div>
+                                <div *ngIf="fp.costo.errors.pattern">
+                                    No se aceptan caracteres especiales, Letras o espacios al final.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-2">
+                            <label for="componente">Componente
+                                <a (click)="openAddComponenteModal(componente)">
+                                    <i class="mdi mdi-plus" placement="right" ngbTooltip="Crear componente"></i>
+                                </a>
+                            </label>
+                            <select [(ngModel)]="proyecto.componente"
+                                [ngClass]="{'is-invalid': submittedP && fp.componente.errors}" id="componente"
+                                autocomplete="off" name="componente" formControlName="componente" class="form-control">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let comp of componentes" [ngValue]="comp">{{ comp.componente }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.componente.errors">
+                                <div *ngIf="fp.componente.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="lider">Líder de Proyecto</label>
+                            <select [(ngModel)]="proyecto.lider"
+                                [ngClass]="{'is-invalid': submittedP && fp.lider.errors}" id="lider" autocomplete="off"
+                                name="lider" formControlName="lider" class="form-control">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let li of lideres" [ngValue]="li">{{ li.nombre }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.lider.errors">
+                                <div *ngIf="fp.lider.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-6">
+                            <label for="fechaAprobacion">Fecha de Aprobación</label>
+                            <input [(ngModel)]="proyecto.fechaAprobacion"
+                                [ngClass]="{'is-invalid': submittedP && fp.fechaAprobacion.errors}" type="date"
+                                id="fechaAprobacion" name="fechaAprobacion" formControlName="fechaAprobacion"
+                                autocomplete="off" class="form-control" />
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.fechaAprobacion.errors">
+                                <div *ngIf="fp.fechaAprobacion.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-6">
+                            <label for="fechaInicio">Fecha de Inicio</label>
+                            <input [(ngModel)]="proyecto.fechaInicio"
+                                [ngClass]="{'is-invalid': submittedP && fp.fechaInicio.errors}" type="date"
+                                name="fechaInicio" formControlName="fechaInicio" id="fechaInicio" autocomplete="off"
+                                class="form-control" />
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.fechaInicio.errors">
+                                <div *ngIf="fp.fechaInicio.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-6">
+                            <label for="directorClient">Director asignado cliente</label>
+                            <input [(ngModel)]="proyecto.directorClient" type="text" class="form-control"
+                                id="directorClient" autocomplete="off" placeholder="Director asignado cliente"
+                                name="directorClient" formControlName="directorClient"
+                                oninput="javascript:this.value=this.value.toUpperCase();" />
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-6">
+                            <label for="directorIts">Director asignado ITS</label>
+                            <select [(ngModel)]="proyecto.directorIts"
+                                [ngClass]="{'is-invalid': submittedP && fp.directorIts.errors}" name="directorIts"
+                                id="directorIts" formControlName="directorIts" autocomplete="off" class="form-control">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let di of directoresIts" [ngValue]="di">{{ di.nombre }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.directorIts.errors">
+                                <div *ngIf="fp.directorIts.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label for="descripcion">Descripción</label>
+                            <input [(ngModel)]="proyecto.descripcion"
+                                [ngClass]="{'is-invalid': submittedP && fp.descripcion.errors}" type="text"
+                                id="descripcion" name="descripcion" formControlName="descripcion" class="form-control"
+                                autocomplete="off" oninput="javascript:this.value=this.value.toUpperCase();">
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.descripcion.errors">
+                                <div *ngIf="fp.descripcion.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                                <div *ngIf="fp.descripcion.errors.maxlength">
+                                    Este campo debe tener como máximo 60 caracteres.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-12">
+                            <button id="btnGuardar" type="submit" class="btn btn-primary">Guardar</button>
+                            <button id="btnCancelar" routerLink="/proyectos" class="btn btn-light">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+
+                <form [formGroup]="formProyectoPRP" (ngSubmit)="onSubmit()" *ngIf="proyecto.etapa.id == 1">
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="cliente">Cliente</label>
+                            <select [(ngModel)]="proyecto.cliente"
+                                [ngClass]="{'is-invalid': submittedP && fpPRP.cliente.errors}" id="cliente"
+                                autocomplete="off" class="form-control" name="cliente" formControlName="cliente">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar opción</option>
+                                <option *ngFor="let c of clientes" [ngValue]="c">{{ c.nombre }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fpPRP.cliente.errors">
+                                <div *ngIf="fpPRP.cliente.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="codigo">Código Proyecto</label>
+                            <input [(ngModel)]="proyecto.codigo"
+                                [ngClass]="{'is-invalid': submittedP && fpPRP.codigo.errors}" type="text"
+                                class="form-control" id="codigo" maxlength="11" autocomplete="off"
+                                placeholder="Código de Proyecto" name="codigo" formControlName="codigo">
+                            <div class="invalid-feedback" *ngIf="submittedP && fpPRP.codigo.errors">
+                                <div *ngIf="fpPRP.codigo.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                                <div *ngIf="fpPRP.codigo.errors.maxlength">
+                                    Este campo debe tener como máximo 10 caracteres.
+                                </div>
+                                <div *ngIf="fpPRP.codigo.errors.pattern">
+                                    No se aceptan caracteres especiales, Letras o espacios al final.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-2">
+                            <label for="etapa">Tipo</label>
+                            <select [(ngModel)]="proyecto.etapa.id"
+                                [ngClass]="{'is-invalid': submittedP && fpPRP.etapa.errors}" id="etapa"
+                                autocomplete="off" name="etapa" formControlName="etapa" class="form-control">
+                                <option [ngValue]="undefined" [disabled]="true">Seleccionar opción</option>
+                                <option *ngFor="let e of etapas" [ngValue]="e.id">{{ e.etapa }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fpPRP.etapa.errors">
+                                <div *ngIf="fpPRP.etapa.errors.required">
+                                    Este campo es requerido
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" name="nombre" id="nombre" class="form-control" disabled
+                                [value]="getNombreConcatForm()">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="tipo">Tipo de Proyecto
+                                <a (click)="openAddTipoModal(tipo)">
+                                    <i class="mdi mdi-plus" placement="right" ngbTooltip="Crear tipo proyecto"></i>
+                                </a>
+                            </label>
+                            <select [(ngModel)]="proyecto.tipo"
+                                [ngClass]="{'is-invalid': submittedP && fpPRP.tipo.errors}" name="tipo" id="tipo"
+                                autocomplete="off" formControlName="tipo" class="form-control">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let t of tipos" [ngValue]="t">{{ t.tipo }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fpPRP.tipo.errors">
+                                <div *ngIf="fpPRP.tipo.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="estadoPropuesta">Estado de Propuesta</label>
+                            <select [(ngModel)]="proyecto.estadoPropuesta.id"
+                                [ngClass]="{'is-invalid': submittedP && fpPRP.estadoPropuesta.errors}"
+                                name="estadoPropuesta" id="estadoPropuesta" autocomplete="off"
+                                formControlName="estadoPropuesta" class="form-control">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let e of estadosPropuesta" [ngValue]="e.id">{{ e.estado }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fpPRP.estadoPropuesta.errors">
+                                <div *ngIf="fpPRP.estadoPropuesta.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="estadoProyecto">Estado de Proyecto</label>
+                            <select [(ngModel)]="proyecto.estadoProyecto"
+                                [ngClass]="{'is-invalid': submittedP && fpPRP.estadoProyecto.errors}"
+                                name="estadoProyecto" id="estadoProyecto" autocomplete="off"
+                                formControlName="estadoProyecto" class="form-control">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let e of estadosProyectoPRP" [ngValue]="e">{{ e.estado }}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fpPRP.estadoProyecto.errors">
+                                <div *ngIf="fpPRP.estadoProyecto.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label for="descripcion">Descripción</label>
+                            <input [(ngModel)]="proyecto.descripcion"
+                                [ngClass]="{'is-invalid': submittedP && fpPRP.descripcion.errors}" type="text"
+                                id="descripcion" name="descripcion" formControlName="descripcion" class="form-control"
+                                autocomplete="off" oninput="javascript:this.value=this.value.toUpperCase();">
+                            <div class="invalid-feedback" *ngIf="submittedP && fpPRP.descripcion.errors">
+                                <div *ngIf="fpPRP.descripcion.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                                <div *ngIf="fpPRP.descripcion.errors.maxlength">
+                                    Este campo debe tener como máximo 60 caracteres.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-12">
+                            <button id="btnGuardar" type="submit" class="btn btn-primary">Guardar</button>
+                            <button id="btnCancelar" routerLink="/proyectos" class="btn btn-light">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ADD TIPO PROYECTO -->
+<ng-template #tipo let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            Añadir Tipo
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="formTipo" (ngSubmit)="saveTipo()">
+            <div class="form-row">
+
+                <div class="form-group col-12">
+                    <label for="tipo">Tipo</label>
+                    <input [(ngModel)]="nuevoTipo.tipo" [ngClass]="{'is-invalid': submittedT && ft.tipo.errors}"
+                        formControlName="tipo" type="text" name="tipo" id="tipo" class="form-control" autocomplete="off"
+                        oninput="javascript:this.value=this.value.toUpperCase();">
+                    <div class="invalid-feedback" *ngIf="submittedT && ft.tipo.errors">
+                        <div *ngIf="ft.tipo.errors.required">
+                            Este campo es requerido.
+                        </div>
+                        <div *ngIf="ft.tipo.errors.minlength">
+                            Este campo debe tener como minimo 2 caracteres.
+                        </div>
+                        <div *ngIf="ft.tipo.errors.minlength">
+                            Este campo debe tener como máximo 15 caracteres.
+                        </div>
+                        <div *ngIf="ft.tipo.errors.pattern">
+                            Este campo no debe contener numeros o caracteres especiales.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <button id="btnModalTipo" type="submit" class="btn btn-primary">
+                Agregar
+            </button>
+        </form>
+        <hr>
+
+        <div class="modal-body p-4">
+            <table class="table table-hover table-borderless text-center" *ngIf="tipos.length > 0">
+                <thead>
+                    <tr>
+                        <th scope="col">Tipos</th>
+                        <th scope="col">Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let t of tipos">
+                        <td> {{t.tipo}} </td>
+                        <td>
+                            <a (click)="openRemoveTipoModal(deleteTipo, t.id)">
+                                <i class="mdi mdi-close text-danger" placement="right" ngbTooltip="Quitar"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</ng-template>
+
+<!-- CONFIRM DELETE MODAL TIPOS-->
+<ng-template #deleteTipo let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminaciòn</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>¿Estás seguro de eliminar este Tipo?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="d('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-danger" (click)="removeTipo()">
+            Aceptar
+        </button>
+    </div>
+</ng-template>
+
+<!-- MODAL ADD COMPONENTE PROYECTO -->
+<ng-template #componente let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            Añadir Componente
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="formComponente" (ngSubmit)="saveComponente()">
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <label for="componente">Componentes</label>
+                    <input [(ngModel)]="newComponente.componente"
+                        [ngClass]="{'is-invalid': submittedC && fc.componente.errors}" formControlName="componente"
+                        type="text" minlength="2" maxlength="15" name="componente" class="form-control"
+                        autocomplete="off" oninput="javascript:this.value=this.value.toUpperCase();">
+                    <div class="invalid-feedback" *ngIf="submittedC && fc.componente.errors">
+                        <div *ngIf="fc.componente.errors.required">
+                            Este campo es requerido.
+                        </div>
+                        <div *ngIf="fc.componente.errors.minlength">
+                            Este campo debe tener como minimo 2 caracteres.
+                        </div>
+                        <div *ngIf="fc.componente.errors.minlength">
+                            Este campo debe tener como máximo 15 caracteres.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="btnModalComponente" type="submit" class="btn btn-primary">
+                Agregar
+            </button>
+        </form>
+        <hr *ngIf="componentes.length > 0">
+
+        <div class="modal-body p-4">
+            <table class="table table-hover table-borderless text-center" *ngIf="componentes.length > 0">
+                <thead>
+                    <tr>
+                        <th scope="col">Componentes</th>
+                        <th scope="col">Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let c of componentes">
+                        <td> {{c.componente}} </td>
+                        <td>
+                            <a (click)="openRemoveComponenteModal(deleteComponente, c.id)">
+                                <i class="mdi mdi-close text-danger" placement="right" ngbTooltip="Quitar"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</ng-template>
+
+<!-- CONFIRM DELETE MODAL TIPOS -->
+<ng-template #deleteComponente let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminaciòn</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>¿Estás seguro de eliminar este Componente?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="d('Cross click')">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-danger" (click)="removeComponente()">
+            Aceptar
+        </button>
+    </div>
+</ng-template>

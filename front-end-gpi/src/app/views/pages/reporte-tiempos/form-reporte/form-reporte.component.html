@@ -1,0 +1,200 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/proyectos">Proyectos</a></li>
+        <li class="breadcrumb-item"><a routerLink=".">Reportes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Nuevo</li>
+    </ol>
+</nav>
+<div class="spinner-wrapper " style="display: none;" id="con_spinner" name="con_spinner">
+    <div class="spinner"></div>
+</div>
+
+<div class="row justify-content-center" id="occ">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <span>Nuevo reporte de Tiempo </span>
+                    <span *ngIf="proyecto.id != null" class="font-weight-light">para el proyecto </span>
+                    <span *ngIf="proyecto.id != null" class="font-weight-light">{{ proyecto.nombre }}-{{
+                        proyecto.descripcion }}</span>
+                </h6>
+                <div class="alert alert-info fw-bold" role="alert" *ngIf="proyectos.length == 0">
+                    No se encontraron Reportes Asignados.
+                </div>
+                <form [formGroup]="formProyecto" (ngSubmit)="selectProyecto()" id="selectProyecto"
+                    *ngIf="proyectos.length > 0">
+                    <div class="form-row">
+
+                        <div class="form-group col-12">
+                            <label for="proyecto">Proyecto</label>
+                            <select [(ngModel)]="proyecto" [ngClass]="{'is-invalid': submittedP && fp.proyecto.errors}"
+                                name="proyecto" formControlName="proyecto" id="proyecto" class="form-control"
+                                autocomplete="off">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let p of proyectos" [ngValue]="p">{{ p.nombre }}-{{ p.descripcion }}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedP && fp.proyecto.errors">
+                                <div *ngIf="fp.proyecto.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" id="btnSelectProyecto" class="btn btn-light">Seleccionar</button>
+                </form>
+                <form [formGroup]="formReporte" (ngSubmit)="saveReporte()" id="formReporte">
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-6">
+                            <label for="actividad">Actividad</label>
+                            <select [(ngModel)]="reporte.actividad"
+                                [ngClass]="{'is-invalid': submittedR && fr.actividad.errors}" name="actividad"
+                                id="actividad" formControlName="actividad" class="form-control" autocomplete="off">
+                                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción
+                                </option>
+                                <option *ngFor="let a of actividades" [ngValue]="a">{{ a.actividad.actividad }}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submittedR && fr.actividad.errors">
+                                <div *ngIf="fr.actividad.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="fecha">Fecha de Reporte</label>
+                            <input [(ngModel)]="reporte.fecha" [ngClass]="{'is-invalid': submittedR && fr.fecha.errors}"
+                                name="fecha" formControlName="fecha" type="date" id="fecha" class="form-control"
+                                autocomplete="off" (change)="validarHorasDiaReporte()">
+                            <div class="invalid-feedback" *ngIf="submittedR && fr.fecha.errors">
+                                <div *ngIf="fr.fecha.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-3">
+                            <label for="horas">Horas</label>
+                            <input [(ngModel)]="reporte.horas" [ngClass]="{'is-invalid': submittedR && fr.horas.errors}"
+                                type="text" name="horas" formControlName="horas" id="horas" class="form-control"
+                                minlength="1" maxlength="2" placeholder="Horas a reportar">
+                            <div style="font-size: 80%;color: #dc3545;" *ngIf="horasReportadasDia>0">
+                                <div>
+                                    Este día ya tiene horas reportadas: {{horasReportadasDia}} - Horas disponibles: {{8-horasReportadasDia}}
+                                </div>
+                            </div>
+                            <div class="invalid-feedback" *ngIf="submittedR && fr.horas.errors">
+                                <div *ngIf="fr.horas.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                                <div *ngIf="fr.horas.errors.pattern">
+                                    No se aceptan letras y caracteres especiales.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button [disabled]="!formReporte.valid" type="submit" id="btnGuardar"
+                        class="btn btn-primary">Guardar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-light"
+                        (click)="cancelReporte()">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <ul ngbNav #defaultNav="ngbNav" [(activeId)]="defaultNavActiveId" class="nav-tabs">
+                    <li [ngbNavItem]="1">
+                        <a ngbNavLink>Tiempos Pendientes</a>
+                        <ng-template ngbNavContent>
+                            <br>
+                            <h6 class="card-title">Tiempos pendientes por reportar {{mesAnioActual}}</h6>
+                            <hr>
+                            <div class="alert alert-info" role="alert" *ngIf="reportesPendientes.length == 0">
+                                No se encontraron Reportes Pendientes.
+                            </div>
+                            <div class="table-responsive" *ngIf="reportesPendientes.length > 0">
+                                <table class="table table-hover table-borderless text-center">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Fecha</th>
+                                            <th scope="col">Proyecto</th>
+                                            <th scope="col">Actividad</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let r of reportesPendientes">
+                                            <th class="text-uppercase">
+                                                <a (click)="completeForm(r)" class="text-decoration-none">{{ r.fecha |
+                                                    date :
+                                                    'dd-MMM-yyyy'}}</a>
+                                            </th>
+                                            <td>{{ r.proyecto.nombre }}-{{ r.proyecto.descripcion
+                                                }}</td>
+                                            <td>{{ r.actividad.actividad.actividad }}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                        <a ngbNavLink>Tiempos Reportados</a>
+                        <ng-template ngbNavContent>
+                            <br>
+                            <h6 class="card-title">Mis reportes {{mesAnioActual}}</h6>
+                            <hr />
+                            <div class="alert alert-info" role="alert" *ngIf="tiemposReportados.length == 0">
+                                No se encontraron Reportes Pendientes de Aprobación.
+                            </div>
+                            <div class="table-responsive" *ngIf="tiemposReportados.length > 0">
+                                <table class="table table-hover table-borderless text-center">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Fecha</th>
+                                            <th scope="col">Proyecto</th>
+                                            <th scope="col">Actividad</th>
+                                            <th scope="col">Horas Reportadas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let r of tiemposReportados">
+                                            <th class="text-uppercase">{{ r.fecha | date : 'dd-MMM-yyyy'}}</th>
+                                            <td class="w-50 text-wrap">{{ r.proyecto.nombre }}-{{ r.proyecto.descripcion
+                                                }}</td>
+                                            <td class="w-50 text-wrap">{{ r.actividad.actividad.actividad }}</td>
+                                            <td>{{ r.horas }}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </ng-template>
+                    </li>
+                </ul>
+                <div [ngbNavOutlet]="defaultNav" class="border border-top-0 p-3"></div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
