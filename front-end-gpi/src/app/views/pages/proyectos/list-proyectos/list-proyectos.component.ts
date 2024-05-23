@@ -250,7 +250,9 @@ export class ListProyectoComponent implements OnInit {
             case 'fecha_creacion': {
                 const dateA = a.fechaCreacion.split('/');
                 const dateB = b.fechaCreacion.split('/');
-                return this.compare(Number(dateA[2] + dateA[1] + dateA[0]), Number(dateB[2] + dateB[1] + dateB[0]), orden);
+                const formattedDateA = Number(dateA[2] + dateA[1].padStart(2, '0') + dateA[0].padStart(2, '0'));
+                const formattedDateB = Number(dateB[2] + dateB[1].padStart(2, '0') + dateB[0].padStart(2, '0'));
+                return this.compare(formattedDateA, formattedDateB, orden);
             }
             default: return 0;
         }
