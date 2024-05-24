@@ -227,6 +227,19 @@ export const MENU_DP: MenuItem[] = [
                         link: '/psr/consultar'
                     }
                 ]
+            },
+            {
+                label: 'estimacion-tiempos',
+                subItems: [
+                    {
+                        label: 'estimaciones',
+                        link: '/estimacion-tiempos/estimaciones/estimaciones'
+                    },
+                    {
+                        label: 'Mantenimiento Peso Hora',
+                        link: '/estimacion-tiempos/mant-peso-hora/mantph'
+                    }
+                ]
             }
         ]
     },
@@ -505,6 +518,8 @@ export const MENU_LP: MenuItem[] = [
             }
         ]
     },
+
+    
     {
         label: 'Reportes',
         isTitle: true
