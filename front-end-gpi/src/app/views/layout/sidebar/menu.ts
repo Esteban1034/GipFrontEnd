@@ -238,6 +238,10 @@ export const MENU_DP: MenuItem[] = [
                     {
                         label: 'Mantenimiento Peso Hora',
                         link: '/estimacion-tiempos/mant-peso-hora/mantph'
+                    },
+                    {
+                        label: 'Unidad programación',
+                        link: '/estimacion-tiempos/mant-unidad-programacion/form-mantUP'
                     }
                 ]
             }
