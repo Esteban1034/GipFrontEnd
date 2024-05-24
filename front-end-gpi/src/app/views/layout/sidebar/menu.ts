@@ -232,16 +232,16 @@ export const MENU_DP: MenuItem[] = [
                 label: 'Estimación Tiempos',
                 subItems: [
                     {
-                        label: 'estimaciones',
-                        link: '/estimacion-tiempos/estimaciones/estimaciones'
+                        label: 'Estimaciones',
+                        link: '/estimacion-tiempos/estimaciones'
                     },
                     {
                         label: 'Mantenimiento Peso Hora',
-                        link: '/estimacion-tiempos/mant-peso-hora/mantph'
+                        link: '/estimacion-tiempos/mant-peso-hora'
                     },
                     {
-                        label: 'Unidad programación',
-                        link: '/estimacion-tiempos/mant-unidad-programacion/form-mantUP'
+                        label: 'Unidad Programación',
+                        link: '/estimacion-tiempos/mant-unidad-programacion'
                     }
                 ]
             }
