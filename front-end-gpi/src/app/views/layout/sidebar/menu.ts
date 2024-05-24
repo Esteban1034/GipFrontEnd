@@ -229,7 +229,7 @@ export const MENU_DP: MenuItem[] = [
                 ]
             },
             {
-                label: 'estimacion-tiempos',
+                label: 'Estimación Tiempos',
                 subItems: [
                     {
                         label: 'estimaciones',
