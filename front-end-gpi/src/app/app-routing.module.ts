@@ -38,7 +38,7 @@ import { ParametriaMatrizTiempos } from './views/pages/parametria-matriz-tiempos
 import { GeneracionMatrizTiempos } from './views/pages/parametria-matriz-tiempos/generacion-matriz-tiempos/generacion-matriz-tiempos.component';
 import { GenracionInfotmesHistoricos } from './views/pages/parametria-matriz-tiempos/infomes-historicos/generacion-informes-historicos.component';
 import { ExitGuard } from './views/pages/project-status-report/exit.guard';
-import { estimaciones } from './views/pages/estimacion-tiempos/estimaciones/estimaciones';
+import { estimaciones } from './views/pages/estimacion-tiempos/estimaciones/estimaciones.component';
 
 const routes: Routes = [
     { path: 'auth', loadChildren: () => import('./views/pages/auth/auth.module').then(m => m.AuthModule) },
