@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ClienteService } from '../../../../service/cliente.service';
 import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { Cliente } from 'src/app/model/cliente';
-import { Proyecto } from 'src/app/Model/proyecto';
+import { MatSort, Sort } from '@angular/material/sort';
 
 @Component({
     selector: 'app-list-clientes',
@@ -13,20 +13,20 @@ import { Proyecto } from 'src/app/Model/proyecto';
     styleUrls: ['./list-clientes.component.scss']
 })
 export class ListClientesComponent implements OnInit {
-
+    
     clientes: Cliente[] = [];
-    dataSource = new MatTableDataSource();
+    dataSource: MatTableDataSource<Cliente>; // Corregido aquí
     idToDelete: number;
-
     session = localStorage.getItem("session");
+
+    @ViewChild(MatSort) sort: MatSort; // Agregado aquí
+
+    columnas: string[] = ['nomenclatura', 'nombre', 'sector', 'estado', 'editar', 'eliminar'];
 
     constructor(private clienteService: ClienteService,
         private modalService: NgbModal,
         private router: Router,
         private toastr: ToastrService) { }
-
-
-    columnas: string[] = ['nomenclatura', 'nombre', 'sector', 'estado', 'editar', 'eliminar'];
 
     ngOnInit(): void {
         this.session = JSON.parse(this.session);
@@ -47,7 +47,8 @@ export class ListClientesComponent implements OnInit {
     getClientes() {
         this.clienteService.getClientesList().subscribe(data => {
             this.clientes = data;
-            this.dataSource = new MatTableDataSource(this.castListObjectToStringList(this.clientes));
+            this.dataSource = new MatTableDataSource(this.clientes);
+            this.dataSource.sort = this.sort; // Asigna MatSort aquí
         }, error => console.log(error));
     }
 
@@ -60,7 +61,6 @@ export class ListClientesComponent implements OnInit {
         this.idToDelete = id;
     }
 
-    
     deleteCliente() {
         this.clienteService.deleteCliente(this.idToDelete).subscribe(data => {
             this.idToDelete = undefined;
@@ -74,25 +74,29 @@ export class ListClientesComponent implements OnInit {
         });
     }
 
-    castListObjectToStringList(listaObj: Cliente[]) {
-        let listString: ClienteString[] = [];
+    sortData(event: Sort) {
+        const data = this.clientes.slice(); // Cambiado aquí
+        if (!event.active || event.direction === '') {
+            this.dataSource.data = data;
+            return;
+        }
 
-        listaObj.forEach(obj => {
-            let string: ClienteString = new ClienteString();
-            string.id = obj.id;
-            string.nomenclatura = obj.nomenclatura;
-            string.nombre = obj.nombre;
-            string.fechaCreacion = obj.fechaCreacion.toString();
-            string.estado = obj.estado.estado;
-            string.sector = obj.sector.sector;
-            string.gerenteCuenta = obj.gerenteCuenta.nombre;
-
-            listString.push(string);
+        this.dataSource.data = data.sort((a, b) => {
+            const isAsc = event.direction === 'asc';
+            switch (event.active) {
+                case 'nomenclatura': return this.compare(a.nomenclatura, b.nomenclatura, isAsc);
+                case 'nombre': return this.compare(a.nombre, b.nombre, isAsc);
+                case 'sector': return this.compare(a.sector.sector, b.sector.sector, isAsc);
+                case 'estado': return this.compare(a.estado.estado, b.estado.estado, isAsc);
+        
+                default: return 0;
+            }
         });
-
-        return listString;
     }
 
+    compare(a: string | number, b: string | number, isAsc: boolean) {
+        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    }
 }
 
 export class ClienteString {

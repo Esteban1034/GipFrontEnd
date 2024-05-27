@@ -47,6 +47,9 @@
                     <div class="table-responsive">
                         <table mat-table [dataSource]="dataSource" class="table-hover" style="width: 100%;" matSort
                             (matSortChange)="sortData($event)">
+
+
+                            
                             <ng-container matColumnDef="nombre">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px"> Nombre </th>
                                 <td class="w-50 text-wrap" mat-cell *matCellDef="let proyecto" id="nombre_proyecto">

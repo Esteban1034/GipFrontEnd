@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { EmpleadoService } from 'src/app/service/empleado.service';
 import { MatTableDataSource } from '@angular/material/table';
@@ -7,6 +7,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Empleado } from 'src/app/model/empleado';
 import { RecursoActividadService } from 'src/app/service/recurso-actividad.service';
 import { RecursoActividad } from 'src/app/model/recurso-actividad';
+import { MatSort, Sort } from '@angular/material/sort';
+
 @Component({
     selector: 'app-list-recursos',
     templateUrl: './list-recursos.component.html',
@@ -14,8 +16,8 @@ import { RecursoActividad } from 'src/app/model/recurso-actividad';
 })
 export class ListRecursosComponent implements OnInit {
 
-    empleados: Empleado[];
-    dataSource = new MatTableDataSource();
+    empleados: Empleado[] = [];
+    dataSource = new MatTableDataSource<Empleado>();
     idToDelete: number = undefined;
 
     empleadoForDates: Empleado = new Empleado();
@@ -24,6 +26,8 @@ export class ListRecursosComponent implements OnInit {
     modalShowDatesActividad: NgbModalRef;
     modalConfirmFechaAsig: NgbModalRef;
     idDeleteRecursoActividad: number = undefined;
+
+    @ViewChild(MatSort) sort: MatSort;
 
     dateOptions: Intl.DateTimeFormatOptions = {
         weekday: "long",
@@ -44,7 +48,8 @@ export class ListRecursosComponent implements OnInit {
     ngOnInit(): void {
         this.session = JSON.parse(this.session);
 
-        if (this.session['rol'] != 'ROL_ADMIN' && this.session['rol'] != 'ROL_GP' && this.session['rol'] != 'ROL_LP' && this.session['rol'] != 'ROL_DP') {
+        if (this.session['rol'] != 'ROL_ADMIN' && this.session['rol'] != 'ROL_GP' && 
+            this.session['rol'] != 'ROL_LP' && this.session['rol'] != 'ROL_DP') {
             this.router.navigate(['/error']);
             return;
         }
@@ -53,20 +58,45 @@ export class ListRecursosComponent implements OnInit {
     }
 
     filtrar(event: Event) {
-        console.log(this.dataSource);
         const filtro = (event.target as HTMLInputElement).value;
-        console.log(filtro);
         this.dataSource.filter = filtro.trim().toLowerCase();
     }
 
     private getEmpleados() {
         this.empleadoService.getEmpleadosList().subscribe(data => {
-            data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1));
+            data.sort((a, b) => a.nombre.localeCompare(b.nombre));
             this.empleados = data;
-            this.dataSource = new MatTableDataSource(this.castListObjectToStringList(this.empleados));
+
+            // Usa data directamente para MatTableDataSource
+            this.dataSource = new MatTableDataSource(this.empleados);
+            this.dataSource.sort = this.sort;
+
+            // Si necesitas la lista transformada para otro propósito, mantenla en una propiedad separada
+            const transformedData = this.castListObjectToStringList(this.empleados);
+            // Puedes hacer algo con transformedData aquí si es necesario
         }, error => console.log(error));
     }
+    sortData(event: Sort) {
+        const data = this.empleados.slice();
+        if (!event.active || event.direction === '') {
+            this.dataSource.data = data;
+            return;
+        }
 
+        this.dataSource.data = data.sort((a, b) => {
+            const isAsc = event.direction === 'asc';
+            switch (event.active) {
+                case 'nombre': return this.compare(a.nombre, b.nombre, isAsc);
+                case 'cargo': return this.compare(a.cargo.cargo, b.cargo.cargo, isAsc);
+                case 'dependencia': return this.compare(a.dependencia.dependencia, b.dependencia.dependencia, isAsc);
+                default: return 0;
+            }
+        });
+    }
+
+    compare(a: string | number, b: string | number, isAsc: boolean) {
+        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    }
 
     updateEmpleado(id: number) {
         this.router.navigate(['recursos/editar/', id]);
@@ -84,7 +114,6 @@ export class ListRecursosComponent implements OnInit {
             this.getEmpleados();
             this.toastr.warning('Recurso eliminado correctamente!');
         }, error => {
-            //this.toastr.error(error.message);
             this.modalService.dismissAll();
             console.log(error.error);
         });
@@ -177,4 +206,3 @@ export class EmpleadoString {
     estado: string;
     especialidad: string;
 }
-

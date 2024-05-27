@@ -14,8 +14,7 @@
                         <h6 class="card-title">Administración de Clientes</h6>
                     </div>
                     <div class="col-12 col-sm d-flex justify-content-end align-items-center" *ngIf="session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_DP'">
-                        <a class="btn btn-outline-primary" id="btnNuevoCliente" routerLink="/clientes/nuevo">Nuevo
-                            Cliente</a>
+                        <a class="btn btn-outline-primary" id="btnNuevoCliente" routerLink="/clientes/nuevo">Nuevo Cliente</a>
                     </div>
                 </div>
                 <div>
@@ -23,28 +22,33 @@
                         <mat-label>Buscar</mat-label>
                         <input matInput (keyup)="filtrar($event)" placeholder="Buscar">
                     </mat-form-field>
-                    <div class="table-responsive">
-                        <table mat-table [dataSource]="dataSource" class="table-hover">
+                  
 
+                    <div class="table-responsive">
+                        <table mat-table [dataSource]="dataSource" class="table-hover" style="width: 100%;" matSort (matSortChange)="sortData($event)">
                             <ng-container matColumnDef="nomenclatura">
-                                <th mat-header-cell *matHeaderCellDef> Nomenclatura </th>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px"> Nomenclatura </th>
                                 <td mat-cell *matCellDef="let cliente"> {{cliente.nomenclatura}} </td>
                             </ng-container>
-
+                        
                             <ng-container matColumnDef="nombre">
-                                <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px"> Nombre </th>
                                 <td mat-cell *matCellDef="let cliente"> {{cliente.nombre}} </td>
                             </ng-container>
-
+                        
                             <ng-container matColumnDef="sector">
-                                <th mat-header-cell *matHeaderCellDef> Sector </th>
-                                <td mat-cell *matCellDef="let cliente"> {{cliente.sector}} </td>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px"> Sector </th>
+                                <td mat-cell *matCellDef="let cliente"> {{cliente.sector.sector}} </td>
                             </ng-container>
-
+                        
                             <ng-container matColumnDef="estado">
-                                <th mat-header-cell *matHeaderCellDef> Estado </th>
-                                <td mat-cell *matCellDef="let cliente"> {{cliente.estado}} </td>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px"> Estado </th>
+                                <td mat-cell *matCellDef="let cliente"> {{cliente.estado.estado}} </td>
                             </ng-container>
+                        
+                            <!-- Agrega más ng-containers según tus columnas -->
+                        
+                        
 
                             <div>
                                 <ng-container matColumnDef="editar">
@@ -75,13 +79,13 @@
 <!-- CONFIRM DELETE MODAL -->
 <ng-template #delete let-d="dismiss">
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminacion</h4>
+        <h4 class="modal-title" id="modal-basic-title">Confirmar eliminación</h4>
         <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
-        <p>¿Estas seguro de eliminar este cliente?</p>
+        <p>¿Estás seguro de eliminar este cliente?</p>
     </div>
     <div class="modal-footer">
         <button id="btnModalDelete" type="submit" class="btn btn-danger" (click)="deleteCliente()">
@@ -92,3 +96,4 @@
         </button>
     </div>
 </ng-template>
+

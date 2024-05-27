@@ -27,33 +27,33 @@
                         <mat-label>Buscar</mat-label>
                         <input matInput (keyup)="filtrar($event)" placeholder="Buscar" />
                     </mat-form-field>
+
                     <div class="table-responsive">
-                        <table mat-table [dataSource]="dataSource" class="table-hover" style="width: 100%">
-                            <ng-container matColumnDef="nombre">
-                                <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                        <table mat-table [dataSource]="dataSource" class="table-hover" style="width: 100%;" matSort (matSortChange)="sortData($event)">                            <ng-container matColumnDef="nombre">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px">Nombre</th>
                                 <td mat-cell *matCellDef="let empleado">
                                     {{ empleado.nombre }}
                                 </td>
                             </ng-container>
 
                             <ng-container matColumnDef="cargo">
-                                <th mat-header-cell *matHeaderCellDef>Cargo</th>
-                                <td class="w-50 text-wrap" *matCellDef="let empleado">
-                                    {{ empleado.cargo }}
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px">Cargo</th>
+                                <td mat-cell *matCellDef="let empleado">
+                                    {{ empleado.cargo.cargo }}
                                 </td>
                             </ng-container>
 
                             <ng-container matColumnDef="dependencia">
-                                <th mat-header-cell *matHeaderCellDef>Dependencia</th>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px">Dependencia</th>
                                 <td class="w-50 text-wrap" mat-cell *matCellDef="let empleado">
-                                    {{ empleado.dependencia }}
+                                    {{ empleado.dependencia.dependencia }}
                                 </td>
                             </ng-container>
 
                             <ng-container matColumnDef="estado">
                                 <th mat-header-cell *matHeaderCellDef>Estado</th>
                                 <td mat-cell *matCellDef="let empleado">
-                                    {{ empleado.estado }}
+                                    {{ empleado.estado.estado }}
                                 </td>
                             </ng-container>
 
