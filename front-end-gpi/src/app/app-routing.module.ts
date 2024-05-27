@@ -37,6 +37,7 @@ import { InformePsrComponent } from './views/pages/informes/informe-psr/informe-
 import { ParametriaMatrizTiempos } from './views/pages/parametria-matriz-tiempos/parametria-matriz-tiempos.component';
 import { GeneracionMatrizTiempos } from './views/pages/parametria-matriz-tiempos/generacion-matriz-tiempos/generacion-matriz-tiempos.component';
 import { GenracionInfotmesHistoricos } from './views/pages/parametria-matriz-tiempos/infomes-historicos/generacion-informes-historicos.component';
+import { GestionRol } from './views/pages/gestion-usuario-rol/gestion-rol/gestion-rol.component';
 import { ExitGuard } from './views/pages/project-status-report/exit.guard';
 
 const routes: Routes = [
@@ -70,6 +71,9 @@ const routes: Routes = [
             },
             {
                 path: 'recursos/novedades', component: NovedadesComponent
+            },
+            {
+                path: 'gestion-rol', component: GestionRol
             },
             {
                 path: 'reporte-tiempo/nuevo', component: FormReporteComponent

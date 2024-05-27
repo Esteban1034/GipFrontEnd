@@ -2,11 +2,11 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Renderer2, Inj
 import { DOCUMENT } from '@angular/common';
 
 import MetisMenu from 'metismenujs/dist/metismenujs';
-
-import { MENU_ADMIN, MENU_GP, MENU_LP, MENU_USER, MENU_DP, ROL_QA} from './menu';
 import { MenuItem } from './menu.model';
 import { Router, NavigationEnd } from '@angular/router';
 import { LoginService } from 'src/app/service/login.service';
+import { MenuService } from 'src/app/service/menu.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sidebar',
@@ -23,10 +23,11 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   @ViewChild('sidebarToggler') sidebarToggler: ElementRef;
 
   menuItems = [];
+  menuItems2 = [];
   @ViewChild('sidebarMenu') sidebarMenu: ElementRef;
 
 
-  constructor(@Inject(DOCUMENT) private document: Document, private renderer: Renderer2, router: Router, private loginService: LoginService) {
+  constructor(@Inject(DOCUMENT) private document: Document, private renderer: Renderer2, router: Router, private loginService: LoginService, private menuService: MenuService) {
     router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
 
@@ -47,47 +48,38 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    /**
-     * "ROL_ADMIN"
-     * "ROL_GP"
-     * "ROL_LP"
-     * "ROL_USER"
-     */
-    //let rol = localStorage.getItem('rol');
+
     let session = localStorage.getItem('session');
     session = JSON.parse(session);
-    
-    switch (session["rol"]) {
-      case "ROL_ADMIN":
-        this.menuItems = MENU_ADMIN;
-        break;
-      case "ROL_GP":
-        this.menuItems = MENU_GP;
-        break;
-      case "ROL_LP":
-        this.menuItems = MENU_LP;
-        break;
-      case "ROL_USER":
-        this.menuItems = MENU_USER;
-          break;
-      case "ROL_DP":
-        this.menuItems = MENU_DP;
-          break; 
-    }
 
-    /**
-     * Sidebar-folded on desktop (min-width:992px and max-width: 1199px)
-     */
-    const desktopMedium = window.matchMedia('(min-width:992px) and (max-width: 1199px)');
-    desktopMedium.addListener(this.iconSidebar);
-    this.iconSidebar(desktopMedium);
+
+    this.menuService.getMenu(session["id"]).pipe(finalize(() => {
+
+      const desktopMedium = window.matchMedia('(min-width:992px) and (max-width: 1199px)');
+      desktopMedium.addListener(this.iconSidebar);
+      this.iconSidebar(desktopMedium);
+      setTimeout(() => {
+        new MetisMenu(this.sidebarMenu.nativeElement);
+        this._activateMenuDropdown();
+      }, 1000);
+
+    })
+    ).subscribe(
+      response => {
+        this.menuItems = response;
+      }, err => {
+      }
+    )
   }
+
+
+  
 
   ngAfterViewInit() {
     // activate menu item
-    new MetisMenu(this.sidebarMenu.nativeElement);
+    //new MetisMenu(this.sidebarMenu.nativeElement);
 
-    this._activateMenuDropdown();
+   // this._activateMenuDropdown();
   }
 
   /**
