@@ -38,7 +38,9 @@ import { ParametriaMatrizTiempos } from './views/pages/parametria-matriz-tiempos
 import { GeneracionMatrizTiempos } from './views/pages/parametria-matriz-tiempos/generacion-matriz-tiempos/generacion-matriz-tiempos.component';
 import { GenracionInfotmesHistoricos } from './views/pages/parametria-matriz-tiempos/infomes-historicos/generacion-informes-historicos.component';
 import { ExitGuard } from './views/pages/project-status-report/exit.guard';
-import { estimaciones } from './views/pages/estimacion-tiempos/estimaciones/estimaciones.component';
+import { Estimaciones_Iseries } from './views/pages/estimacion-tiempos/estimaciones/estimaciones.component';
+import { mantenimiento_peso } from './views/pages/estimacion-tiempos/mantenimiento-peso-hora/mantenimiento-peso-hora.component';
+import { Mantenimiento_unidadprogramacion } from './views/pages/estimacion-tiempos/mantenimiento-unidad-programacion/mantenimiento-unidad-programacion.component';
 
 const routes: Routes = [
     { path: 'auth', loadChildren: () => import('./views/pages/auth/auth.module').then(m => m.AuthModule) },
@@ -158,7 +160,13 @@ const routes: Routes = [
                 path: 'generacion-informes-historicos', component: GenracionInfotmesHistoricos
             },
             {
-                path: 'estimacion-tiempos/estimaciones', component: estimaciones
+                path: 'estimacion tiempos/estimaciones', component: Estimaciones_Iseries
+            },
+            {
+                path: 'estimacion tiempos/mant-peso-hora', component: mantenimiento_peso
+            },
+            {
+                path: 'estimacion tiempos/mant-unidad-programacion', component: Mantenimiento_unidadprogramacion
             },
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
         ]

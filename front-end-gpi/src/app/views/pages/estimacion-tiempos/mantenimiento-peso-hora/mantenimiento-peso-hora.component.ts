@@ -7,11 +7,11 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 
 @Component({
-    selector: 'app-estimaciones',
-    templateUrl: './estimaciones.html',
-    styleUrls: ['./estimaciones.scss']
+    selector: 'app-mantenimiento_peso-hora',
+    templateUrl: './mantenimiento-peso-hora.component.html',
+    styleUrls: ['./mantenimiento-peso-hora.component.scss']
 })
-export class estimaciones implements OnInit {
+export class mantenimiento_peso implements OnInit {
     ngOnInit(): void {
         throw new Error('Method not implemented.');
     }

@@ -62,7 +62,9 @@ import { InformePsrComponent } from './views/pages/informes/informe-psr/informe-
 import { ParametriaMatrizTiempos } from './views/pages/parametria-matriz-tiempos/parametria-matriz-tiempos.component';
 import { GeneracionMatrizTiempos } from './views/pages/parametria-matriz-tiempos/generacion-matriz-tiempos/generacion-matriz-tiempos.component';
 import { GenracionInfotmesHistoricos } from './views/pages/parametria-matriz-tiempos/infomes-historicos/generacion-informes-historicos.component';
-import { estimaciones } from './views/pages/estimacion-tiempos/estimaciones/estimaciones.component';
+import { Estimaciones_Iseries } from './views/pages/estimacion-tiempos/estimaciones/estimaciones.component';
+import { mantenimiento_peso } from './views/pages/estimacion-tiempos/mantenimiento-peso-hora/mantenimiento-peso-hora.component';
+import { Mantenimiento_unidadprogramacion} from './views/pages/estimacion-tiempos/mantenimiento-unidad-programacion/mantenimiento-unidad-programacion.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -104,7 +106,9 @@ registerLocaleData(localeEs, 'es');
         ParametriaMatrizTiempos,
         GeneracionMatrizTiempos,
         GenracionInfotmesHistoricos,
-        estimaciones
+        Estimaciones_Iseries,
+        mantenimiento_peso,
+        Mantenimiento_unidadprogramacion
     ],
     imports: [
         BrowserModule,
