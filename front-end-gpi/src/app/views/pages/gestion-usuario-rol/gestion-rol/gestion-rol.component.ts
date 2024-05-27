@@ -47,8 +47,8 @@ export class GestionRol implements OnInit {
   session = localStorage.getItem('session');
 
   ngOnInit(): void {
-    //this.submenus.push(new Submenu())
-    //this.listarRoles()
+    this.submenus.push(new Submenu())
+    this.listarRoles()
   }
 
   listarRoles() {
