@@ -60,6 +60,7 @@ import { ChartsModule } from 'ng2-charts';
 import { NgApexchartsModule } from "ng-apexcharts";
 import { InformePsrComponent } from './views/pages/informes/informe-psr/informe-psr.component';
 import { ParametriaMatrizTiempos } from './views/pages/parametria-matriz-tiempos/parametria-matriz-tiempos.component';
+import { GestionRol } from './views/pages/gestion-usuario-rol/gestion-rol/gestion-rol.component';
 import { GeneracionMatrizTiempos } from './views/pages/parametria-matriz-tiempos/generacion-matriz-tiempos/generacion-matriz-tiempos.component';
 import { GenracionInfotmesHistoricos } from './views/pages/parametria-matriz-tiempos/infomes-historicos/generacion-informes-historicos.component';
 
@@ -99,6 +100,7 @@ registerLocaleData(localeEs, 'es');
         ReporteTiemposPendientesEmpleadosComponent,
         CrearPsrComponent,
         ListPsrComponent,
+        GestionRol,
         InformePsrComponent,
         ParametriaMatrizTiempos,
         GeneracionMatrizTiempos,

@@ -231,6 +231,16 @@ export const MENU_DP: MenuItem[] = [
         ]
     },
     {
+            label: 'Gestión Usuario Roles',
+            icon: 'compass',
+            subItems: [
+                {
+                    label: 'Gesionar Roles',
+                    link: '/gestion-rol'
+                }
+            ]
+    },
+    {
         label: 'Reporte tiempos',
         icon: 'compass',
         subItems: [
