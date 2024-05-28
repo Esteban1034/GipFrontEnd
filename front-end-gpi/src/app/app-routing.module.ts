@@ -38,7 +38,7 @@ import { ParametriaMatrizTiempos } from './views/pages/parametria-matriz-tiempos
 import { GeneracionMatrizTiempos } from './views/pages/parametria-matriz-tiempos/generacion-matriz-tiempos/generacion-matriz-tiempos.component';
 import { GenracionInfotmesHistoricos } from './views/pages/parametria-matriz-tiempos/infomes-historicos/generacion-informes-historicos.component';
 import { ExitGuard } from './views/pages/project-status-report/exit.guard';
-import { Estimaciones_Iseries } from './views/pages/estimacion-tiempos/estimaciones/estimaciones.component';
+import { EstimacionesTiempoComponent } from './views/pages/estimacion-tiempos/estimaciones/estimaciones.component';
 import { mantenimiento_peso } from './views/pages/estimacion-tiempos/mantenimiento-peso-hora/mantenimiento-peso-hora.component';
 import { Mantenimiento_unidadprogramacion } from './views/pages/estimacion-tiempos/mantenimiento-unidad-programacion/mantenimiento-unidad-programacion.component';
 import { formularioDatosBasicos } from './views/pages/estimacion-tiempos/datosBasicos/datosBasicos.component';
@@ -160,7 +160,7 @@ const routes: Routes = [
                 path: 'generacion-informes-historicos', component: GenracionInfotmesHistoricos
             },
             {
-                path: 'estimacion tiempos/estimaciones', component: Estimaciones_Iseries
+                path: 'estimacion tiempos/estimaciones', component: EstimacionesTiempoComponent
             },
             {
                 path: 'estimacion tiempos/mant-peso-hora', component: mantenimiento_peso
