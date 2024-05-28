@@ -39,6 +39,7 @@ export class GestionRol implements OnInit {
   nroPaginas = 10;
   selectedTipolId: number = 0;
   dataSource = null;
+  rolEdit: boolean = false;
   @ViewChild(MatSort) sort: MatSort
 
   constructor(private gestionUsuariosRoles: GestionUsuariosRoles, private modalService: NgbModal, private toastr: ToastrService) { }
@@ -79,6 +80,7 @@ export class GestionRol implements OnInit {
     this.descRol = "";
     this.consultarSubmenu(rol);
     this.titulo = rol == null ? "Crear Rol" : "Editar Rol"
+    this.rolEdit = this.titulo == "Editar Rol" ? true : false;
     this.rolEditando = rol//==null?0:rol
     this.modalService.open(content, { size: 'xl' }).result.then((result) => {
 

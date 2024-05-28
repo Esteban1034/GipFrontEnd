@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ProyectoService } from '../../../../service/proyecto.service';
-import { Proyecto } from 'src/app/Model/proyecto';
+import { Proyecto } from 'src/app/model/proyecto';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -12,6 +12,9 @@ import { EtapaProyecto } from 'src/app/Model/etapa-proyecto';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatSelectChange } from '@angular/material/select';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { RolService } from 'src/app/service/rol.service';
+import { GestionUsuariosRoles } from 'src/app/service/gestion-usuario-roles.service';
+import { RolSeg } from 'src/app/model/rol-seg';
 
 
 @Component({
@@ -32,6 +35,7 @@ export class ListProyectoComponent implements OnInit {
     estadosProyecto: EstadoProyecto[] = new Array();
     clientesProyectos: Cliente[] = new Array();
     etapasProyecto: EtapaProyecto[] = new Array();
+    roles: RolSeg[] = [];
     idToDelete: number;
     permissionP: boolean = true;
     permissionF: boolean = true;
@@ -51,7 +55,8 @@ export class ListProyectoComponent implements OnInit {
     constructor(private proyectoService: ProyectoService,
         private modalService: NgbModal,
         private router: Router,
-        private toastr: ToastrService) { }
+        private toastr: ToastrService,
+        private gestionUsuariosRolesService: GestionUsuariosRoles) { }
 
     @ViewChild(MatSort) sort: MatSort;
 
@@ -62,6 +67,7 @@ export class ListProyectoComponent implements OnInit {
     ngOnInit(): void {
         this.session = JSON.parse(this.session);
         this.dataSource.sort = this.sort;
+        this.gestionUsuariosRolesService
 
         if (this.session['rol'] != 'ROL_ADMIN' && this.session['rol'] != 'ROL_LP' && this.session['rol'] != 'ROL_GP' && this.session['rol'] != 'ROL_DP') {
             this.router.navigate(['/error']);
@@ -82,7 +88,7 @@ export class ListProyectoComponent implements OnInit {
         let clienteProy = new Map();
         let etapaProy = new Map();
 
-        if (this.session['rol'] == 'ROL_LP') {
+        if (this.session['rol'] == 'LÍDER PROYECTOS') {
             this.proyectoService.findByLiderAsignado(parseInt(this.session['id'])).subscribe(data => {
                 data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
                     if (!proyecto.interno) {

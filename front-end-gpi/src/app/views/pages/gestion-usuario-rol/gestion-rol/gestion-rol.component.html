@@ -81,14 +81,14 @@
                     <div class="col-12">
                       <div class="form-group">
                         <label class="control-label">Nombre:</label>
-                        <input name="rolNombre" [(ngModel)]="nombreRol" type="text" class="form-control"
+                        <input [readonly]="rolEdit" name="rolNombre" [(ngModel)]="nombreRol" type="text" class="form-control"
                           placeholder="Ingresa el nombre del Rol" onkeyup="this.value = this.value.toUpperCase();" ngModel
                           #nombreRolGuardar="ngModel" required maxlength="{{validaciones.maxlength.valor}}">
                         <p class="text-danger mt-1"
                           *ngIf="nombreRolGuardar?.errors?.required && (nombreRolGuardar.dirty || nombreRolGuardar.touched)">
                           {{validaciones.campoObligatorio.mensaje}}</p>
                       </div>
-                    </div>  
+                    </div>   
 
                   </div>
   
@@ -139,14 +139,6 @@
           </div>
         </div>
       </div>
-  
-  
-  
-  
-  
-  
-  
-  
   
   
     </div>

@@ -254,7 +254,7 @@
             <button type="submit" class="btn btn-primary" (click)="nuevoComentario = true;">Agregar Observación</button>
             <button type="button" class="btn btn-light ml-2" (click)="d('Cross click')">Cerrar</button>
         </div>
-        <div *ngIf="(session['rol'] == 'ROL_GP' || esComentarioMismoDia) && !nuevoComentario" class="modal-footer">
+        <div  class="modal-footer">
             <button type="button" class="btn btn-light ml-2" (click)="d('Cross click')">Cerrar</button>
         </div>
     </form>

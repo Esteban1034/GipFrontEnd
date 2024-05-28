@@ -13,7 +13,7 @@
                     <div class="col-12 col-sm">
                         <h6 class="card-title">Administración de Clientes</h6>
                     </div>
-                    <div class="col-12 col-sm d-flex justify-content-end align-items-center" *ngIf="session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_DP'">
+                    <div class="col-12 col-sm d-flex justify-content-end align-items-center">
                         <a class="btn btn-outline-primary" id="btnNuevoCliente" routerLink="/clientes/nuevo">Nuevo Cliente</a>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                                 <ng-container matColumnDef="editar">
                                     <th mat-header-cell *matHeaderCellDef></th>
                                     <td mat-cell *matCellDef="let cliente" class="text-right">
-                                        <a *ngIf="session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_DP'" (click)="updateCliente(cliente.id)" class="mdi mdi-24px mdi-pencil"></a>
+                                        <a (click)="updateCliente(cliente.id)" class="mdi mdi-24px mdi-pencil"></a>
                                     </td>
                                 </ng-container>
                             </div>
@@ -62,7 +62,7 @@
                             <ng-container matColumnDef="eliminar">
                                 <th mat-header-cell *matHeaderCellDef></th>
                                 <td mat-cell *matCellDef="let cliente" class="text-right">
-                                    <a *ngIf="session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_DP'" (click)="deleteModal(delete, cliente.id)" class="mdi mdi-24px mdi-delete-forever"></a>
+                                    <a (click)="deleteModal(delete, cliente.id)" class="mdi mdi-24px mdi-delete-forever"></a>
                                 </td>
                             </ng-container>
 

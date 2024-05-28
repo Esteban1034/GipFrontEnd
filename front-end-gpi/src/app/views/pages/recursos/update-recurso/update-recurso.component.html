@@ -61,6 +61,21 @@
                             </div>
                         </div>
 
+                        <div class="form-group col-sm-12 col-md-4">
+                            <label for="rolSeguridad">Rol:</label>
+                            <select [(ngModel)]="rolSeleccionado" [ngClass]="{'is-invalid': submitted && rf.rolSeguridad.errors}" formControlName="rolSeguridad" name="rolSeguridad"  id="rolSeguridad"
+                                autocomplete="off" class="form-control">
+                                <option [ngValue]="null" [disabled]="true" [hidden]="true" [selected]="true">Seleccionar
+                                    opción</option>
+                                <option *ngFor="let r of rolesSeg" [ngValue]="r">{{ r.rolNombre }} </option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submitted && rf.rolSeguridad.errors">
+                                <div *ngIf="rf.rolSeguridad.errors.required">
+                                    Este campo es requerido.
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="form-row">
 

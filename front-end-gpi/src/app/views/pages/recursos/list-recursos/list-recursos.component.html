@@ -70,15 +70,13 @@
                             <ng-container matColumnDef="editar">
                                 <th mat-header-cell *matHeaderCellDef></th>
                                 <td mat-cell *matCellDef="let empleado" class="text-right">
-                                    <a *ngIf="session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_LP' || session['rol'] == 'ROL_DP'"
-                                        (click)="updateEmpleado(empleado.id)" class="mdi mdi-24px mdi-pencil"></a>
+                                    <a  (click)="updateEmpleado(empleado.id)" class="mdi mdi-24px mdi-pencil"></a>
                                 </td>
                             </ng-container>
                             <ng-container matColumnDef="eliminar">
                                 <th mat-header-cell *matHeaderCellDef></th>
                                 <td mat-cell *matCellDef="let empleado" class="text-right">
-                                    <a *ngIf="session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_DP'"
-                                        (click)="deleteModal(delete, empleado.id)"
+                                    <a  (click)="deleteModal(delete, empleado.id)"
                                         class="mdi mdi-24px mdi-delete-forever"></a>
                                 </td>
                             </ng-container>

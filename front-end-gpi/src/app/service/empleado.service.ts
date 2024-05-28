@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Empleado } from '../model/empleado';
 import { HttpHeaderApp } from './header';
+import { EmpleadoRolSave } from '../model/empleado-rol-save';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class EmpleadoService{
         return this.httpClient.get<any[]>(`${this.baseUrl}`, { headers: this.header});
     }
 
-    createEmpleado(empleado: Empleado): Observable<Object>{
+    createEmpleado(empleado: EmpleadoRolSave): Observable<Object>{
         return this.httpClient.post(`${this.baseUrl}`, empleado, { headers: this.header});
     }
 
@@ -28,7 +29,7 @@ export class EmpleadoService{
         return this.httpClient.get<Empleado>(`${this.baseUrl}/${id}`, { headers: this.header});
     }
 
-    updateEmpleado(id: number, empleado: Empleado): Observable<Object> {
+    updateEmpleado(id: number, empleado: EmpleadoRolSave): Observable<Object> {
         return this.httpClient.put(`${this.baseUrl}/${id}`, empleado, { headers: this.header});
     }
     

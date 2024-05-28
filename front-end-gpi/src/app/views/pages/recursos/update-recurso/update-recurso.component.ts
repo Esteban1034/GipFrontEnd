@@ -11,8 +11,8 @@ import { EspecialidadService } from 'src/app/service/especialidad.service';
 import { EmpleadoEspecialidadService } from 'src/app/service/empleado-especialidad.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CausasService } from 'src/app/service/causas.service';
-import { DependenciaEmpleado } from 'src/app/Model/dependencia-empleado';
-import { EstadoEmpleado } from 'src/app/Model/estado-empleado';
+import { DependenciaEmpleado } from 'src/app/model/dependencia-empleado';
+import { EstadoEmpleado } from 'src/app/model/estado-empleado';
 import { Novedad } from 'src/app/Model/novedad';
 import { Causas } from 'src/app/Model/causas';
 import { Cargo } from 'src/app/model/cargo';
@@ -23,6 +23,10 @@ import { Rol } from 'src/app/model/rol';
 import { RolService } from 'src/app/service/rol.service';
 import { EmpleadoRolService } from 'src/app/service/empleado-rol.service';
 import { EmpleadoRol } from 'src/app/model/empleado-rol';
+import { UsuarioRoles } from 'src/app/model/usuario-rol';
+import { RolSeg } from 'src/app/model/rol-seg';
+import { EmpleadoRolSave } from 'src/app/model/empleado-rol-save';
+import { GestionUsuariosRoles } from 'src/app/service/gestion-usuario-roles.service';
 
 @Component({
     selector: 'app-update-recurso',
@@ -37,6 +41,7 @@ export class UpdateRecursoComponent implements OnInit {
     cargos: Cargo[] = [];
     dependencias: DependenciaEmpleado[] = [];
     estados: EstadoEmpleado[] = [];
+    rolesSeg:RolSeg[] = [];
     newEspecialidad: EmpleadoEspecialidad = new EmpleadoEspecialidad();
     especialidades: Especialidad[] = [];
     especialidadesEmp: EmpleadoEspecialidad[] = [];
@@ -50,6 +55,10 @@ export class UpdateRecursoComponent implements OnInit {
     newRol: Rol = new Rol();
     addedRoles: EmpleadoRol[] = [];
     errorMsj: string = '';
+    rolSeleccionado:RolSeg = new RolSeg();
+    usuarioRolSeleccionado:number;
+    empleadoRolSave : EmpleadoRolSave = new EmpleadoRolSave();
+    rolSeleccionadoId:number;
 
     recursoForm: FormGroup;
     submitted: boolean = false;
@@ -76,7 +85,8 @@ export class UpdateRecursoComponent implements OnInit {
         private especialidadService: EspecialidadService,
         private especialidadEmpService: EmpleadoEspecialidadService,
         private formBuilder: FormBuilder,
-        private empRolService: EmpleadoRolService) {
+        private empRolService: EmpleadoRolService,
+        private gestionUsuariosRoles: GestionUsuariosRoles) {
     }
 
     session = localStorage.getItem('session');
@@ -125,6 +135,11 @@ export class UpdateRecursoComponent implements OnInit {
             this.causa = data;
         }, error => console.log(error));
 
+        this.gestionUsuariosRoles.obtenerRoles().subscribe(roles => {
+            this.rolesSeg = roles;
+            this.rolSeleccionado = this.rolesSeg.find(rol => rol.rolId === this.rolSeleccionadoId);
+        }, error => console.log(error));
+
         this.buildRecursoForm();
         this.buildEspecialidadForm();
         this.buildCargoForm();
@@ -147,6 +162,9 @@ export class UpdateRecursoComponent implements OnInit {
                 Validators.minLength(5),
                 Validators.maxLength(50),
                 Validators.email
+            ]],
+            rolSeguridad: ['', [
+                Validators.required
             ]],
             cargo: ['', [
                 Validators.required
@@ -214,18 +232,24 @@ export class UpdateRecursoComponent implements OnInit {
             return this.toastr.error('Debe agregar al menos una especialidad.');
         }
 
-        if (this.addedRoles.length == 0) {
-            return this.toastr.error('El empleado debe tener al menos un rol');
-        }
-
         if (this.recursoForm.invalid) {
             return;
         }
 
+        let rolesAsignar: UsuarioRoles = new UsuarioRoles();
+        let roles: UsuarioRoles[] = []
+        let r = this.rolesSeg.filter(rol => rol.rolId === this.rolSeleccionado.rolId);
+        rolesAsignar.rol = r[0];
+        roles.push(rolesAsignar)
+        rolesAsignar.usuarioRolId=this.usuarioRolSeleccionado;
+
+
+        this.empleadoRolSave.usuarioRoles = roles;
+        this.empleadoRolSave.usuarioRoles[0].rol.submenuRoles = [];
+        this.empleadoRolSave.empleado = this.empleado;
 
         this.showSpinner();
-
-        this.empleadoService.updateEmpleado(this.id, this.empleado).subscribe(data => {
+        this.empleadoService.updateEmpleado(this.id, this.empleadoRolSave).subscribe(data => {
             this.toastr.info('Recurso actualizado correctamente.');
             this.goToRecursosList();
         }, error => {

@@ -14,8 +14,7 @@
                         <h6 class="card-title">Administración de Proyectos</h6>
                     </div>
                     <div class="col-12 col-sm d-flex justify-content-end align-items-center">
-                        <a *ngIf="session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_DP'"
-                            class="btn btn-outline-primary" href="javascript:void(0);" id="btnNuevoProyecto"
+                        <a class="btn btn-outline-primary" href="javascript:void(0);" id="btnNuevoProyecto"
                             routerLink="/proyectos/nuevo">Nuevo Proyecto</a>
                     </div>
                 </div>
@@ -127,8 +126,7 @@
                             <ng-container matColumnDef="planeacion">
                                 <th mat-header-cell *matHeaderCellDef></th>
                                 <td mat-cell *matCellDef="let proyecto" class="text-center">
-                                    <a *ngIf="session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_LP' || session['rol'] == 'ROL_DP' "
-                                        (click)="planeacionProyecto(proyecto.id)" class="mdi mdi-24px mdi-calendar-plus"
+                                    <a  (click)="planeacionProyecto(proyecto.id)" class="mdi mdi-24px mdi-calendar-plus"
                                         ngbTooltip="Planeación"></a>
                                 </td>
                             </ng-container>
@@ -136,8 +134,7 @@
                             <ng-container matColumnDef="facturacion">
                                 <th mat-header-cell *matHeaderCellDef></th>
                                 <td mat-cell *matCellDef="let proyecto" class="text-center">
-                                    <a *ngIf="session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_DP'"
-                                        (click)="goToFacturacionProyecto(proyecto.id)"
+                                    <a (click)="goToFacturacionProyecto(proyecto.id)"
                                         class="mdi mdi-24px mdi-cart-outline" ngbTooltip="Facturación"></a>
                                 </td>
                             </ng-container>
@@ -145,8 +142,7 @@
                             <ng-container matColumnDef="editar">
                                 <th mat-header-cell *matHeaderCellDef></th>
                                 <td mat-cell *matCellDef="let proyecto" class="text-center">
-                                    <a *ngIf="session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_DP'"
-                                        (click)="updateProyecto(proyecto.id)" class="mdi mdi-24px mdi-pencil"
+                                    <a (click)="updateProyecto(proyecto.id)" class="mdi mdi-24px mdi-pencil"
                                         ngbTooltip="Editar"></a>
                                 </td>
                             </ng-container>
@@ -154,8 +150,7 @@
                             <ng-container matColumnDef="eliminar">
                                 <th mat-header-cell *matHeaderCellDef></th>
                                 <td mat-cell *matCellDef="let proyecto" class="text-center">
-                                    <a *ngIf="session['rol'] == 'ROL_ADMIN' || session['rol'] == 'ROL_GP' || session['rol'] == 'ROL_DP'"
-                                        (click)="deleteModal(delete, proyecto.id)"
+                                    <a (click)="deleteModal(delete, proyecto.id)"
                                         class="mdi mdi-24px mdi-delete-forever" ngbTooltip="Eliminar"></a>
                                 </td>
                             </ng-container>
