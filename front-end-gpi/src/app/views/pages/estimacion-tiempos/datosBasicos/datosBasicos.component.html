@@ -1,0 +1,93 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/proyectos">Proyectos</a></li>
+        <li class="breadcrumb-item"><a routerLink="/estimacion-tiempos/formulario-datosBasicos-proyecto">Direccionamiento Test</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Formulario</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center" id="occ">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Datos Iniciales</h6>
+
+                <form [formGroup]="datosBasicosForm" (ngSubmit)="onSubmit()">
+
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-7">
+                            <label for="dateFecha">Fecha de Estiamcion</label>
+                            <input name="dateFecha" formControlName="dateFecha" type="date" id="dateFecha" class="form-control"
+                            autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-7">
+                            <label for="nameProyect">Nombre del Proyecto</label>
+                            <select [ngClass]="{'is-invalid': submitted && rf.nameProyect.errors}"
+                            formControlName="nameProyect" name="nameProyect" id="nameProyect" class="form-control"
+                            autocomplete="off">
+                            <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccion Nombre Proyecto</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submitted && rf.nameProyect.errors">
+                                <div *ngIf="rf.nameProyect.errors.required">
+                                    Este campo es Obligatorio!
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-5">
+                            <label for="directorProyecto">Director del Proyecto</label>
+                            <select [ngClass]="{'is-invalid': submitted && rf.nameProyect.errors}"
+                            formControlName="directorProyecto" name="directorProyecto" id="directorProyecto" class="form-control"
+                            autocomplete="off">
+                            <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccion Director Proyecto</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submitted && rf.directorProyecto.errors">
+                                <div *ngIf="rf.directorProyecto.errors.required">
+                                    Este campo es Obligatorio!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 col-md-7">
+                            <label for="tipoProyecto">Tipo de Proyecto</label>
+                            <select [ngClass]="{'is-invalid': submitted && rf.tipoProyecto.errors}"
+                            formControlName="tipoProyecto" name="tipoProyecto" id="tipoProyecto" class="form-control"
+                            autocomplete="off">
+                            <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccion Tipo Proyecto</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submitted && rf.tipoProyecto.errors">
+                                <div *ngIf="rf.tipoProyecto.errors.required">
+                                    Este campo es Obligatorio!
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-5">
+                            <label for="cicloProyecto">Ciclo de vida del Proyecto</label>
+                            <select [ngClass]="{'is-invalid': submitted && rf.cicloProyecto.errors}"
+                            formControlName="cicloProyecto" name="cicloProyecto" id="cicloProyecto" class="form-control"
+                            autocomplete="off">
+                            <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccion Ciclo del Proyecto</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="submitted && rf.cicloProyecto.errors">
+                                <div *ngIf="rf.cicloProyecto.errors.required">
+                                    Este campo es Obligatorio!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <button type="submit" id="btnContinuar" class="btn btn-primary">Continuar</button>
+                    <button routerLink="/proyectos" id="btnCancelar" class="btn btn-light">Cancelar</button>
+
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>

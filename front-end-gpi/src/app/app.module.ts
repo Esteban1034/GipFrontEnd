@@ -65,7 +65,7 @@ import { GenracionInfotmesHistoricos } from './views/pages/parametria-matriz-tie
 import { Estimaciones_Iseries } from './views/pages/estimacion-tiempos/estimaciones/estimaciones.component';
 import { mantenimiento_peso } from './views/pages/estimacion-tiempos/mantenimiento-peso-hora/mantenimiento-peso-hora.component';
 import { Mantenimiento_unidadprogramacion} from './views/pages/estimacion-tiempos/mantenimiento-unidad-programacion/mantenimiento-unidad-programacion.component';
-
+import { formularioDatosBasicos } from './views/pages/estimacion-tiempos/datosBasicos/datosBasicos.component';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
@@ -108,7 +108,8 @@ registerLocaleData(localeEs, 'es');
         GenracionInfotmesHistoricos,
         Estimaciones_Iseries,
         mantenimiento_peso,
-        Mantenimiento_unidadprogramacion
+        Mantenimiento_unidadprogramacion,
+        formularioDatosBasicos
     ],
     imports: [
         BrowserModule,

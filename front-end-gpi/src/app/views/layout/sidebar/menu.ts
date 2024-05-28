@@ -242,6 +242,10 @@ export const MENU_DP: MenuItem[] = [
                     {
                         label: 'Unidad Programación',
                         link: '/estimacion tiempos/mant-unidad-programacion'
+                    },
+                    {
+                        label: 'Direccionamiento Test',
+                        link: '/estimacion tiempos/formulario-datosBasicos-proyecto'
                     }
                 ]
             }
