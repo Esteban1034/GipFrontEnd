@@ -43,11 +43,6 @@ export class ActividadesComponent implements OnInit {
         this.getFases();
         this.session = JSON.parse(this.session);
 
-        if (this.session['rol'] != 'ROL_ADMIN' && this.session['rol'] != 'ROL_GP' && this.session['rol'] != 'ROL_LP' && this.session['rol'] != 'ROL_DP') {
-            this.router.navigate(['/error']);
-            return;
-        }
-
         this.getActividades();
 
         this.buildFormNewActividad();

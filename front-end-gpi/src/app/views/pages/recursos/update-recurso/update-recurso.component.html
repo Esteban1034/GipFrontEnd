@@ -16,7 +16,7 @@
                 <form class="forms-sample" [formGroup]="recursoForm" (ngSubmit)="actualizarRecurso()">
                     <div class="form-row">
 
-                        <div class="form-group col-sm-12 col-md-6">
+                        <div class="form-group col-sm-12 col-md-4">
                             <label for="nombre">Nombres y Apellidos</label>
                             <input [(ngModel)]="empleado.nombre"
                                 [ngClass]="{'is-invalid': submitted && rf.nombre.errors}" formControlName="nombre"
@@ -39,7 +39,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-sm-12 col-md-6">
+                        <div class="form-group col-sm-12 col-md-4">
                             <label for="email">Correo Electrónico</label>
                             <input [(ngModel)]="empleado.email" [ngClass]="{'is-invalid': submitted && rf.email.errors}"
                                 formControlName="email" type="email" id="email" name="email" minlength="5"
@@ -131,7 +131,7 @@
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-12 col-md-12">
                             <h6 class="card-title text-center text-danger" *ngIf="especialidadesEmp.length == 0">NO hay
                                 especialidades agregadas</h6>
                             <h6 class="card-title text-center" *ngIf="especialidadesEmp.length > 0">Especialidades
@@ -158,41 +158,12 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-6">
-                            <hr class="d-block d-md-none">
-                            <h6 class="card-title text-center" *ngIf="addedRoles.length > 0">Roles Agregados</h6>
-                            <h6 class="card-title text-center text-danger" *ngIf="addedRoles.length == 0">NO hay roles
-                                agregados</h6>
-                            <div class="table-responsive" *ngIf="addedRoles.length > 0">
-                                <table class="table table-hover table-borderless text-center">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Rol</th>
-                                            <th scope="col">Quitar</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let r of addedRoles">
-                                            <td>{{r.rol.descripcion}}</td>
-                                            <td>
-                                                <a (click)="removeRol(r.id)">
-                                                    <i class="text-danger mdi mdi-close" placement="top"
-                                                        ngbTooltip="Quitar Rol"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
                     </div>
                     <hr>
                     <button type="submit" id="btnGuardar" class="btn btn-primary">Guardar</button>
                     <a id="btnNovedad" class="btn btn-outline-primary " (click)="showNovedadModal(novedad)">Novedad</a>
                     <a id="btnEspecialidad" class="btn btn-outline-primary" *ngIf="empleado.cargo.id != 10"
                         (click)="showEspecialidadModal(especialidad)">Especialidad</a>
-                    <button id="btnRol" type="button" (click)="openRolModal(rol)"
-                        class="btn btn-outline-primary">Rol</button>
                     <button id="btnCancelar" routerLink="/recursos" class="btn btn-light mr-2">
                         Cancelar
                     </button>

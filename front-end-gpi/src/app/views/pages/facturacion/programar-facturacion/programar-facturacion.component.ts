@@ -60,11 +60,6 @@ export class ProgramarFacturacionComponent implements OnInit {
 
         this.session = JSON.parse(this.session);
 
-        if (this.session['rol'] != 'ROL_GP' && this.session['rol'] != 'ROL_ADMIN' && this.session['rol'] != 'ROL_DP') {
-            this.router.navigate(['/error'])
-            return;
-        }
-
         this.idProyecto = this.route.snapshot.params['id'];
 
         this.proyectoService.getProyectoById(this.idProyecto).subscribe(data => {

@@ -115,10 +115,6 @@ export class GeneracionMatrizTiempos implements OnInit {
     ngOnInit(): void {
         this.session = JSON.parse(this.session);
 
-        if (this.session['rol'] != 'ROL_ADMIN' && this.session['rol'] != 'ROL_LP' && this.session['rol'] != 'ROL_GP' && this.session['rol'] != 'ROL_DP' && this.session['rol'] != 'ROL_QA') {
-            this.router.navigate(['/error']);
-            return;
-        }
         this.versionSeleccionada = null;
         this.getParametriaGeneral();
         this.getParametriaRecursos();

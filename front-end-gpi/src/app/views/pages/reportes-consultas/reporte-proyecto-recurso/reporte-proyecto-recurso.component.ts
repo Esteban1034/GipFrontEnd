@@ -47,16 +47,6 @@ export class ReporteProyectoRecursoComponent implements OnInit {
   ngOnInit(): void {
     this.session = JSON.parse(this.session);
 
-    if (
-      this.session["rol"] != "ROL_ADMIN" &&
-      this.session["rol"] != "ROL_LP" &&
-      this.session["rol"] != "ROL_GP" &&
-      this.session["rol"] != "ROL_DP"
-    ) {
-      this.router.navigate(["/error"]);
-      return;
-    }
-
     this.getProyectos();
     this.buildForm();
   }

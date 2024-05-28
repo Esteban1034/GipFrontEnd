@@ -29,6 +29,10 @@ export class EmpleadoService{
         return this.httpClient.get<Empleado>(`${this.baseUrl}/${id}`, { headers: this.header});
     }
 
+    getEmpleadoRolById(id: number): Observable<EmpleadoRolSave> {
+        return this.httpClient.get<EmpleadoRolSave>(`${this.baseUrl}/empleadoRol/${id}`, { headers: this.header});
+    }
+
     updateEmpleado(id: number, empleado: EmpleadoRolSave): Observable<Object> {
         return this.httpClient.put(`${this.baseUrl}/${id}`, empleado, { headers: this.header});
     }

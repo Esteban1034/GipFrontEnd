@@ -124,7 +124,7 @@
                     </div>
                     <hr>
                     <div class="row" *ngIf="empleado.cargo.id != 10">
-                        <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-12 col-md-12">
                             <h6 class="card-title text-center text-danger" *ngIf="selectedEspecialidades.length == 0">NO
                                 hay especialidades agregadas</h6>
                             <h6 class="card-title text-center" *ngIf="selectedEspecialidades.length > 0">Especialidades
@@ -145,33 +145,6 @@
                                                 <a (click)="removeEspecialidad(i)">
                                                     <i class="text-danger mdi mdi-close" placement="top"
                                                         ngbTooltip="Quitar Especialidad"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <h6 class="card-title text-center text-danger" *ngIf="selectedRoles.length == 0">NO hay
-                                roles
-                                agregados</h6>
-                            <h6 class="card-title text-center" *ngIf="selectedRoles.length > 0">Roles Agregados</h6>
-                            <div class="table-responsive" *ngIf="selectedRoles.length > 0">
-                                <table class="table table-hover table-borderless text-center">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Rol</th>
-                                            <th scope="col">Quitar</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let r of selectedRoles; let i = index">
-                                            <td>{{r.descripcion}}</td>
-                                            <td>
-                                                <a (click)="removeRol(i)">
-                                                    <i class="text-danger mdi mdi-close" placement="top"
-                                                        ngbTooltip="Quitar Rol"></i>
                                                 </a>
                                             </td>
                                         </tr>

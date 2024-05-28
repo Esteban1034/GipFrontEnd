@@ -93,18 +93,16 @@ export class UpdateRecursoComponent implements OnInit {
 
     ngOnInit(): void {
         this.session = JSON.parse(this.session);
-
         this.id = this.route.snapshot.params['id'];
 
-        this.empleadoService.getEmpleadoById(this.id).subscribe(data => {
-            this.empleado = data;
+        this.empleadoService.getEmpleadoRolById(this.id).subscribe(data => {
+            this.empleado = data.empleado;
+            this.rolSeleccionadoId= data.idRol;
+            this.usuarioRolSeleccionado = data.usuarioRolId;
         }, error => {
             console.log(error);
             this.toastr.error(error.error.message);
-            if (!this.empleado.hasOwnProperty('id')) {
-                console.log('Está vacio');
-                this.router.navigate(['recursos']);
-            }
+            this.router.navigate(['recursos']);
         });
 
         this.findEspecialidadesByEmpleado();
@@ -128,11 +126,6 @@ export class UpdateRecursoComponent implements OnInit {
 
         this.causaService.getCausaList().subscribe(data => {
             this.causa = data;
-        }, error => console.log(error));
-
-        this.gestionUsuariosRoles.obtenerRoles().subscribe(roles => {
-            this.rolesSeg = roles;
-            this.rolSeleccionado = this.rolesSeg.find(rol => rol.rolId === this.rolSeleccionadoId);
         }, error => console.log(error));
 
         this.gestionUsuariosRoles.obtenerRoles().subscribe(roles => {
