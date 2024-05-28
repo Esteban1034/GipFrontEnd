@@ -18,7 +18,7 @@ export class EstimacionesTiempoComponent implements OnInit {
     this.getEstimaciones();
   }
 
-  displayedColumns: string[] = ["id", "proyecto", "cliente", "estadopropuesta"];
+  displayedColumns: string[] = ["id", "proyecto", "cliente", "estadopropuesta", "eliminar"];
   /* me falta verificar estimaciontiempos */
 
   getEstimaciones() {
@@ -46,7 +46,14 @@ export class EstimacionesTiempoComponent implements OnInit {
 
     return listString;
   }
+  eliminar(row: any) {
+    // Lógica para eliminar la fila
+    console.log('Eliminar:', row);
+    this.dataSource.data = this.dataSource.data.filter(item => item.id !== row.id);
+  }
 }
+
+
 
 export class EstimacionesString {
   id: number;

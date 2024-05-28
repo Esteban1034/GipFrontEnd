@@ -19,13 +19,13 @@
           <div
             class="col-12 col-sm d-flex justify-content-end align-items-center"
           ><a class="btn btn-outline-primary" href="javascript:void(0);" id="btnNuevoProyecto"
-          routerLink="/proyectos/nuevo">Nueva estimación</a></div>
+          routerLink="/estimacion-tiempos/crear-estimacion"> Nueva estimación </a></div>
         </div>
         <mat-form-field>
           <mat-label>Buscar</mat-label>
           <input
             matInput
-            placeholder="Ex. Mia"
+            placeholder="Buscar"
             #input
           />
         </mat-form-field>
@@ -58,12 +58,19 @@
               <td mat-cell *matCellDef="let row">{{ row.estadopropuesta }}</td>
             </ng-container>
 
+            <ng-container matColumnDef="eliminar">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let row" class="text-center">
+                <a (click)="eliminar(row)" class="mdi mdi-24px mdi-delete-forever" ngbTooltip="Eliminar"></a>
+              </td>
+            </ng-container>
+
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
           </table>
         </div>
       </div>
     </div>
   </div>
 </div>
+
