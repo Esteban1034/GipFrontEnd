@@ -94,11 +94,6 @@ export class UpdateRecursoComponent implements OnInit {
     ngOnInit(): void {
         this.session = JSON.parse(this.session);
 
-        if (this.session['rol'] != 'ROL_ADMIN' && this.session['rol'] != 'ROL_GP' && this.session['rol'] != 'ROL_LP' && this.session['rol'] != 'ROL_DP') {
-            this.router.navigate(['/error']);
-            return;
-        }
-
         this.id = this.route.snapshot.params['id'];
 
         this.empleadoService.getEmpleadoById(this.id).subscribe(data => {
@@ -133,6 +128,11 @@ export class UpdateRecursoComponent implements OnInit {
 
         this.causaService.getCausaList().subscribe(data => {
             this.causa = data;
+        }, error => console.log(error));
+
+        this.gestionUsuariosRoles.obtenerRoles().subscribe(roles => {
+            this.rolesSeg = roles;
+            this.rolSeleccionado = this.rolesSeg.find(rol => rol.rolId === this.rolSeleccionadoId);
         }, error => console.log(error));
 
         this.gestionUsuariosRoles.obtenerRoles().subscribe(roles => {
@@ -247,6 +247,8 @@ export class UpdateRecursoComponent implements OnInit {
         this.empleadoRolSave.usuarioRoles = roles;
         this.empleadoRolSave.usuarioRoles[0].rol.submenuRoles = [];
         this.empleadoRolSave.empleado = this.empleado;
+
+        console.log(this.empleadoRolSave);
 
         this.showSpinner();
         this.empleadoService.updateEmpleado(this.id, this.empleadoRolSave).subscribe(data => {
@@ -474,7 +476,6 @@ export class UpdateRecursoComponent implements OnInit {
         r.rol = this.newRol;
 
         this.empRolService.save(r).subscribe(data => {
-            console.log(data);
             this.toastr.success('Rol guardado correctamente');
             this.modalService.dismissAll();
             this.newRol = new Rol();
