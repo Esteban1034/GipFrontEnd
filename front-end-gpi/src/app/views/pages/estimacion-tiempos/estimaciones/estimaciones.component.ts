@@ -1,99 +1,56 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { MatTableDataSource } from "@angular/material/table";
+import { EstimacionTiempos } from "src/app/model/estimacionTiempos";
+import { EstimacionTiempoService } from "src/app/service/estimacion-tiempos.service";
 
 @Component({
-    selector: 'app-estimaciones',
-    templateUrl: './estimaciones.component.html',
-    styleUrls: ['./estimaciones.component.scss']
+  selector: "app-estimaciones",
+  templateUrl: "./estimaciones.component.html",
+  styleUrls: ["./estimaciones.component.scss"],
 })
-export class Estimaciones_Iseries  implements OnInit {
-    ngOnInit(): void {
-        throw new Error('Method not implemented.');
-    }
-    displayedColumns: string[] = ['id', 'name', 'progress', 'client'];
-  dataSource: MatTableDataSource<UserData>;
+export class EstimacionesTiempoComponent implements OnInit {
+  estimaciones: EstimacionTiempos[] = [];
+  dataSource = null;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  constructor(private estimacionTiempoService: EstimacionTiempoService) {}
 
-  constructor() {
-    // Create 100 users
-    const users = Array.from({length: 100}, (_, k) => createNewUser(k + 1));
-
-    // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(users);
+  ngOnInit(): void {
+    this.getEstimaciones();
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+  displayedColumns: string[] = ["id", "proyecto", "cliente", "estadopropuesta"];
+  /* me falta verificar estimaciontiempos */
+
+  getEstimaciones() {
+    this.estimacionTiempoService.getEstimacionTiempoList().subscribe(
+      (data) => {
+        this.estimaciones = data;
+        console.log(this.estimaciones);
+        this.dataSource = new MatTableDataSource(this.castListObject(this.estimaciones))
+      },
+      (error) => console.log(error)
+    );
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  castListObject(listObject: EstimacionTiempos[]) {
+    let listString: EstimacionesString[] = [];
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    listObject.forEach((obj) => {
+      let string: EstimacionesString = new EstimacionesString();
+      string.id = obj.id;
+      string.cliente = obj.cliente.nombre;
+      string.proyecto = obj.proyecto.nombre;
+      string.estadopropuesta = obj.estadoPropuesta.estado;
+      listString.push(string);
+    });
+
+    return listString;
   }
 }
 
-/** Builds and returns a new User. */
-function createNewUser(id: number): UserData {
-  const name =
-    NAMES[Math.round(Math.random() * (NAMES.length - 1))] +
-    ' ' +
-    NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) +
-    '.';
-
-  return {
-    id: id.toString(),
-    name: name,
-    progress: Math.round(Math.random() * 100).toString(),
-    client: CLIENTS[Math.round(Math.random() * (CLIENTS.length - 1))],
-  };
+export class EstimacionesString {
+  id: number;
+  cliente: string;
+  proyecto: string;
+  estadopropuesta: string;
 }
-
-export interface UserData {
-    id: string;
-    name: string;
-    progress: string;
-    client: string;
-  }
-  
-  /** Constants used to fill up our data base. */
-  const CLIENTS: string[] = [
-    'blueberry',
-    'lychee',
-    'kiwi',
-    'mango',
-    'peach',
-    'lime',
-    'pomegranate',
-    'pineapple',
-  ];
-  const NAMES: string[] = [
-    'Maia',
-    'Asher',
-    'Olivia',
-    'Atticus',
-    'Amelia',
-    'Jack',
-    'Charlotte',
-    'Theodore',
-    'Isla',
-    'Oliver',
-    'Isabella',
-    'Jasper',
-    'Cora',
-    'Levi',
-    'Violet',
-    'Arthur',
-    'Mia',
-    'Thomas',
-    'Elizabeth',
-  ]
