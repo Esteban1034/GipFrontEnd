@@ -26,6 +26,7 @@
           <input matInput (keyup)="filtrar($event)" placeholder="Buscar">
       </mat-form-field>
 
+        
         <div class="mat-elevation-z8">
           <table mat-table [dataSource]="dataSource">
             <!-- ID Column -->
@@ -58,6 +59,13 @@
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let row" class="text-center">
                 <a (click)="ver(row)" class="mdi mdi-24px mdi-eye" ngbTooltip="ver"></a>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="editar">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let row" class="text-center">
+                <a (click)="editar(row)" class="mdi mdi-24px mdi-pencil" ngbTooltip="editar"></a>
               </td>
             </ng-container>
 

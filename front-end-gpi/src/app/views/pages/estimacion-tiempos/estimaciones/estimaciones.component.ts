@@ -21,7 +21,7 @@ export class EstimacionesTiempoComponent implements OnInit {
     this.getEstimaciones();
   }
 
-  displayedColumns: string[] = ["id", "proyecto", "cliente", "estadopropuesta","ver", "eliminar"];
+  displayedColumns: string[] = ["id", "proyecto", "cliente", "estadopropuesta","ver","editar", "eliminar"];
   /* me falta verificar estimaciontiempos */
 
   getEstimaciones() {
@@ -57,6 +57,11 @@ export class EstimacionesTiempoComponent implements OnInit {
 }
   
 ver(row: any) {
+  // me falta definir el enrutamiento real...
+  this.router.navigate(['/estimaciones/detalle', row.id]);
+}
+
+editar(row: any) {
   // me falta definir el enrutamiento real...
   this.router.navigate(['/estimaciones/detalle', row.id]);
 }
