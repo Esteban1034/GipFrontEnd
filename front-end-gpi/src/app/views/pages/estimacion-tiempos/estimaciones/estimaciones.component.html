@@ -21,14 +21,10 @@
           ><a class="btn btn-outline-primary" href="javascript:void(0);" id="btnNuevoProyecto"
           routerLink="/estimacion-tiempos/crear-estimacion"> Nueva estimación </a></div>
         </div>
-        <mat-form-field>
+        <mat-form-field id="inputSearch">
           <mat-label>Buscar</mat-label>
-          <input
-            matInput
-            placeholder="Buscar"
-            #input
-          />
-        </mat-form-field>
+          <input matInput (keyup)="filtrar($event)" placeholder="Buscar">
+      </mat-form-field>
 
         <div class="mat-elevation-z8">
           <table mat-table [dataSource]="dataSource">
@@ -56,6 +52,13 @@
             <ng-container matColumnDef="estadopropuesta">
               <th mat-header-cell *matHeaderCellDef>Estado</th>
               <td mat-cell *matCellDef="let row">{{ row.estadopropuesta }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="ver">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let row" class="text-center">
+                <a (click)="ver(row)" class="mdi mdi-24px mdi-eye" ngbTooltip="ver"></a>
+              </td>
             </ng-container>
 
             <ng-container matColumnDef="eliminar">
