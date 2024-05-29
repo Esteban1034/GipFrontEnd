@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { DependenciaEmpleado } from 'src/app/Model/dependencia-empleado';
-import { EstadoEmpleado } from 'src/app/Model/estado-empleado';
+import { DependenciaEmpleado } from 'src/app/model/dependencia-empleado';
+import { EstadoEmpleado } from 'src/app/model/estado-empleado';
 import { DependenciaEmpleadoService } from 'src/app/service/dependencia-empleado.service';
 import { EstadoEmpleadoService } from '../../../../service/estado-empleado.service';
 import { CargoService } from '../../../../service/cargo.service';
