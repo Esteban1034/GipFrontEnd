@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpHeaderApp } from './header';
-import { EstimacionTiempos } from '../model/estimacionTiempos';
+import { EstimacionTiempos } from '../model/estimacion-ufs';
 
 @Injectable({
     providedIn: 'root'

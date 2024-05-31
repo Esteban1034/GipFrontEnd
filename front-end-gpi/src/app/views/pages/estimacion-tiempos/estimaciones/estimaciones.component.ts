@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatInput } from "@angular/material/input";
 import { MatTableDataSource } from "@angular/material/table";
-import { EstimacionTiempos } from "src/app/model/estimacionTiempos";
+import { EstimacionTiempos } from "src/app/model/estimacion-ufs";
 import { EstimacionTiempoService } from "src/app/service/estimacion-tiempos.service";
 
 
@@ -14,8 +14,6 @@ export class EstimacionesTiempoComponent implements OnInit {
   estimaciones: EstimacionTiempos[] = [];
   dataSource = null;
   router: any;
-
-
 
   constructor(private estimacionTiempoService: EstimacionTiempoService) {}
 
@@ -43,9 +41,9 @@ export class EstimacionesTiempoComponent implements OnInit {
     listObject.forEach((obj) => {
       let string: EstimacionesString = new EstimacionesString();
       string.id = obj.id;
-      string.cliente = obj.cliente.nombre;
-      string.proyecto = obj.proyecto.nombre;
-      string.estadopropuesta = obj.estadoPropuesta.estado;
+      string.cliente = obj.proyecto.cliente.nombre;
+      string.proyecto = obj.proyecto.nombre + "-" + obj.proyecto.descripcion;
+      string.estadopropuesta = obj.proyecto.estadoPropuesta.estado;
       listString.push(string);
     });
 
