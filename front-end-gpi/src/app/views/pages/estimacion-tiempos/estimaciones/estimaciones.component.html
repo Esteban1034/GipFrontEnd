@@ -23,8 +23,22 @@
         </div>
         <mat-form-field id="inputSearch">
           <mat-label>Buscar</mat-label>
-          <input matInput (keyup)="filtrar($event)" placeholder="Buscar">
+          <input matInput (keyup)="filtrar()" placeholder="Buscar">
       </mat-form-field>
+
+
+      <div class="row mb-3">
+        <div class="col">
+          <mat-checkbox [(ngModel)]="filtroProyecto" (change)="filtrar">Nombre de proyecto</mat-checkbox>
+        </div>
+        <div class="col">
+          <mat-checkbox [(ngModel)]="filtroCliente" (change)="filtrar">Cliente</mat-checkbox>
+        </div>
+        <div class="col">
+          <mat-checkbox [(ngModel)]="filtroEstado" (change)="filtrar">Estado</mat-checkbox>
+        </div>
+      </div>
+
 
         <div class="mat-elevation">
           <table mat-table [dataSource]="dataSource">

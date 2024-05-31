@@ -13,6 +13,9 @@ import { EstimacionTiempoService } from "src/app/service/estimacion-tiempos.serv
 export class EstimacionesTiempoComponent implements OnInit {
   estimaciones: EstimacionTiempos[] = [];
   dataSource = null;
+  filtroProyecto: boolean = false;
+  filtroCliente: boolean = false;
+  filtroEstado: boolean = false;
   router: any;
 
   constructor(private estimacionTiempoService: EstimacionTiempoService) {}
@@ -51,12 +54,26 @@ export class EstimacionesTiempoComponent implements OnInit {
   }
   @ViewChild('input') input: MatInput;
 
-  filtrar(event: Event) {
-    const filtro = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filtro.trim().toLowerCase();
-}
+//   filtrar(event: Event) {
+//     const filtro = (event.target as HTMLInputElement).value;
+//     this.dataSource.filter = filtro.trim().toLowerCase();
+// }
 
-  
+  filtrar() {
+    const filtro = this.input.value.toLowerCase();
+    this.dataSource.filterPredicate = (data: EstimacionesString, filter: string) => {
+      let filtroProyecto = this.filtroProyecto ? data.proyecto.toLowerCase().includes(filter) : true;
+      let filtroCliente = this.filtroCliente ? data.cliente.toLowerCase().includes(filter) : true;
+      let filtroEstado = this.filtroEstado ? data.estadopropuesta.toLowerCase().includes(filter) : true;
+
+      return filtroProyecto && filtroCliente && filtroEstado;
+    };
+    this.dataSource.filter = filtro.trim().toLowerCase();
+  }
+
+
+
+
 ver(row: any) {
   // me falta definir el enrutamiento real...
   this.router.navigate(['/estimaciones/detalle', row.id]);
