@@ -15,6 +15,8 @@ export class EstimacionesTiempoComponent implements OnInit {
   dataSource = null;
   router: any;
 
+
+
   constructor(private estimacionTiempoService: EstimacionTiempoService) {}
 
   ngOnInit(): void {
@@ -55,6 +57,7 @@ export class EstimacionesTiempoComponent implements OnInit {
     const filtro = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filtro.trim().toLowerCase();
 }
+
   
 ver(row: any) {
   // me falta definir el enrutamiento real...
@@ -70,6 +73,8 @@ editar(row: any) {
     console.log('Eliminar:', row);
     this.dataSource.data = this.dataSource.data.filter(item => item.id !== row.id);
   }
+
+  
 }
 
 
