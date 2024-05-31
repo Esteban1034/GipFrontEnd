@@ -29,6 +29,7 @@
                             formControlName="nameProyect" name="nameProyect" id="nameProyect" class="form-control"
                             autocomplete="off">
                             <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccion Nombre Proyecto</option>
+                            <option *ngFor="let p of proyectos" [ngValue]="p">{{ p.nombre }}</option>
                             </select>
                             <div class="invalid-feedback" *ngIf="submitted && rf.nameProyect.errors">
                                 <div *ngIf="rf.nameProyect.errors.required">
@@ -43,6 +44,7 @@
                             formControlName="directorProyecto" name="directorProyecto" id="directorProyecto" class="form-control"
                             autocomplete="off">
                             <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccion Director Proyecto</option>
+                            <option *ngFor="let c of cargos" [ngValue]="c">{{ c.cargo }}</option>
                             </select>
                             <div class="invalid-feedback" *ngIf="submitted && rf.directorProyecto.errors">
                                 <div *ngIf="rf.directorProyecto.errors.required">
@@ -83,7 +85,7 @@
                     </div>
                     <hr>
                     <button type="submit" id="btnContinuar" class="btn btn-primary">Continuar</button>
-                    <button routerLink="/proyectos" id="btnCancelar" class="btn btn-light">Cancelar</button>
+                    <button routerLink="/estimacion tiempos/estimaciones" id="btnCancelar" class="btn btn-light">Cancelar</button>
 
                 </form>
                 

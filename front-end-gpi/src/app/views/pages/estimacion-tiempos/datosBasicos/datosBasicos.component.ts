@@ -1,7 +1,12 @@
+import { ProyectoService } from './../../../../service/proyecto.service';
+import { Proyecto } from './../../../../model/proyecto';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Cargo } from 'src/app/model/cargo';
+import { CargoService } from 'src/app/service/cargo.service';
 
-@Component({
+
+    @Component({
     selector: 'app-datosBasicos',
     templateUrl: './datosBasicos.component.html',
     styleUrls: ['./datosBasicos.component.scss']
@@ -14,21 +19,40 @@ export class formularioDatosBasicos implements OnInit {
     }
     */
 
+    cargos: Cargo[] = [];
+    proyectos: Proyecto[] = [];
+
+    constructor(
+        private cargoService: CargoService,
+        private proyectoService: ProyectoService,
+    ){}
+
     datosBasicosForm: FormGroup;
     submitted: boolean = false;
     router: any;
 
     session = localStorage.getItem('session');
 
+
+
     ngOnInit(): void {
-        this.session = JSON.parse(this.session);
-
-        if (this.session['rol'] != 'ROL_ADMIN' && this.session['rol'] != 'ROL_GP' && this.session['rol'] != 'ROL_LP' && this.session['rol'] != 'ROL_DP') {
-            this.router.navigate(['/error']);
-            return;
-        }
-
+        this.getCargoList();
+        this.getProyectoList();
     }
+
+    getCargoList(){
+        this.cargoService.getCargosList().subscribe(data => {
+            this.cargos = data;
+        }, error => console.log(error));
+    }
+
+    getProyectoList(){
+        this.proyectoService.getProyectosList().subscribe(data => {
+            this.proyectos = data;
+        }, error => console.log(error));
+    }
+
+
 
     get rf() { return this.datosBasicosForm.controls; }
 
