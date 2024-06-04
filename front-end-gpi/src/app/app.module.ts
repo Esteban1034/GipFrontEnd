@@ -66,6 +66,7 @@ import { EstimacionesTiempoComponent } from './views/pages/estimacion-tiempos/es
 import { mantenimiento_peso } from './views/pages/estimacion-tiempos/mantenimiento-peso-hora/mantenimiento-peso-hora.component';
 import { Mantenimiento_unidadprogramacion} from './views/pages/estimacion-tiempos/mantenimiento-unidad-programacion/mantenimiento-unidad-programacion.component';
 import { formularioDatosBasicos } from './views/pages/estimacion-tiempos/datosBasicos/datosBasicos.component';
+import { crear_estimacion } from './views/pages/estimacion-tiempos/crear-estimacion/crear-estimacion.component';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
@@ -109,6 +110,7 @@ registerLocaleData(localeEs, 'es');
         EstimacionesTiempoComponent,
         mantenimiento_peso,
         Mantenimiento_unidadprogramacion,
+        crear_estimacion,
         formularioDatosBasicos
     ],
     imports: [

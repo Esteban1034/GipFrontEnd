@@ -42,6 +42,7 @@ import { EstimacionesTiempoComponent } from './views/pages/estimacion-tiempos/es
 import { mantenimiento_peso } from './views/pages/estimacion-tiempos/mantenimiento-peso-hora/mantenimiento-peso-hora.component';
 import { Mantenimiento_unidadprogramacion } from './views/pages/estimacion-tiempos/mantenimiento-unidad-programacion/mantenimiento-unidad-programacion.component';
 import { formularioDatosBasicos } from './views/pages/estimacion-tiempos/datosBasicos/datosBasicos.component';
+import { crear_estimacion } from './views/pages/estimacion-tiempos/crear-estimacion/crear-estimacion.component';
 
 const routes: Routes = [
     { path: 'auth', loadChildren: () => import('./views/pages/auth/auth.module').then(m => m.AuthModule) },
@@ -168,6 +169,9 @@ const routes: Routes = [
             },
             {
                 path: 'estimacion tiempos/mant-unidad-programacion', component: Mantenimiento_unidadprogramacion
+            },
+            {
+                path: 'estimacion tiempos/crear-estimacion', component: crear_estimacion 
             },
             {
                 path: 'estimacion tiempos/formulario-datosBasicos-proyecto', component: formularioDatosBasicos
