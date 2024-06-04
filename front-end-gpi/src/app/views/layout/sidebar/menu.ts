@@ -236,6 +236,10 @@ export const MENU_DP: MenuItem[] = [
                         link: '/estimacion tiempos/estimaciones'
                     },
                     {
+                        label: 'Crear estimación',
+                        link: '/estimacion tiempos/crear-estimacion'
+                    },
+                    {
                         label: 'Mantenimiento Peso Hora',
                         link: '/estimacion tiempos/mant-peso-hora'
                     },
