@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatInput } from "@angular/material/input";
 import { MatTableDataSource } from "@angular/material/table";
+import { Router } from "@angular/router";
 import { EstimacionTiempos } from "src/app/model/estimacion-ufs";
 import { EstimacionTiempoService } from "src/app/service/estimacion-tiempos.service";
-
 
 @Component({
   selector: "app-estimaciones",
@@ -12,27 +12,27 @@ import { EstimacionTiempoService } from "src/app/service/estimacion-tiempos.serv
 })
 export class EstimacionesTiempoComponent implements OnInit {
   estimaciones: EstimacionTiempos[] = [];
-  dataSource = null;
+  dataSource: MatTableDataSource<any>;
   filtroProyecto: boolean = false;
   filtroCliente: boolean = false;
   filtroEstado: boolean = false;
-  router: any;
+  mostrarFiltros: boolean = false;
+  @ViewChild('input', {static:false}) input: any;
 
-  constructor(private estimacionTiempoService: EstimacionTiempoService) {}
+  constructor(private estimacionTiempoService: EstimacionTiempoService, private router: Router) {}
 
   ngOnInit(): void {
     this.getEstimaciones();
   }
 
   displayedColumns: string[] = ["id", "proyecto", "cliente", "estadopropuesta","ver","editar", "eliminar"];
-  /* me falta verificar estimaciontiempos */
 
   getEstimaciones() {
     this.estimacionTiempoService.getEstimacionTiempoList().subscribe(
       (data) => {
         this.estimaciones = data;
         console.log(this.estimaciones);
-        this.dataSource = new MatTableDataSource(this.castListObject(this.estimaciones))
+        this.dataSource = new MatTableDataSource(this.castListObject(this.estimaciones));
       },
       (error) => console.log(error)
     );
@@ -40,7 +40,6 @@ export class EstimacionesTiempoComponent implements OnInit {
 
   castListObject(listObject: EstimacionTiempos[]) {
     let listString: EstimacionesString[] = [];
-
     listObject.forEach((obj) => {
       let string: EstimacionesString = new EstimacionesString();
       string.id = obj.id;
@@ -49,50 +48,45 @@ export class EstimacionesTiempoComponent implements OnInit {
       string.estadopropuesta = obj.proyecto.estadoPropuesta.estado;
       listString.push(string);
     });
-
     return listString;
   }
-  @ViewChild('input') input: MatInput;
 
-//   filtrar(event: Event) {
-//     const filtro = (event.target as HTMLInputElement).value;
-//     this.dataSource.filter = filtro.trim().toLowerCase();
-// }
+  ocultarFiltros() {
+    setTimeout(() => {
+      this.mostrarFiltros = false;
+    }, 200); // A small delay to ensure checkboxes can be clicked
+  }
 
   filtrar() {
-    const filtro = this.input.value.toLowerCase();
+    const filtro = this.input?.nativeElement?.value?.toLowerCase();
     this.dataSource.filterPredicate = (data: EstimacionesString, filter: string) => {
       let filtroProyecto = this.filtroProyecto ? data.proyecto.toLowerCase().includes(filter) : true;
       let filtroCliente = this.filtroCliente ? data.cliente.toLowerCase().includes(filter) : true;
       let filtroEstado = this.filtroEstado ? data.estadopropuesta.toLowerCase().includes(filter) : true;
-
       return filtroProyecto && filtroCliente && filtroEstado;
     };
-    this.dataSource.filter = filtro.trim().toLowerCase();
+    this.dataSource.filter = filtro?.trim().toLowerCase();
   }
 
+  ver(row: any) {
+    // me falta definir el enrutamiento real...
+    this.router.navigate(['/estimaciones/ver-detalle', row.id]);
+  }
 
-
-
-ver(row: any) {
-  // me falta definir el enrutamiento real...
-  this.router.navigate(['/estimaciones/detalle', row.id]);
-}
-
-editar(row: any) {
-  // me falta definir el enrutamiento real...
-  this.router.navigate(['/estimaciones/detalle', row.id]);
-}
+  editar(row: any) {
+    // me falta definir el enrutamiento real...
+    this.router.navigate(['/estimaciones/editar-estimacion', row.id]);
+  }
 
   eliminar(row: any) {
     console.log('Eliminar:', row);
     this.dataSource.data = this.dataSource.data.filter(item => item.id !== row.id);
+    this.estimacionTiempoService.deleteEstimacionTiempoList(row.id).subscribe(response=>{
+      console.log(response,'respuesta al eliminar');
+      
+    })
   }
-
-  
 }
-
-
 
 export class EstimacionesString {
   id: number;
@@ -100,3 +94,4 @@ export class EstimacionesString {
   proyecto: string;
   estadopropuesta: string;
 }
+
