@@ -12,39 +12,39 @@ import { RolSeg } from '../model/rol-seg';
 
 
 @Injectable({
-    providedIn:'root'
+  providedIn: 'root'
 })
-export class GestionUsuariosRoles{
+export class GestionUsuariosRoles {
 
 
-    private baseUrl = environment.baseUrl + "/gestionUsuariosRoles";
+  private baseUrl = environment.baseUrl + "/gestionUsuariosRoles";
 
-    constructor(private httpClient: HttpClient, private headers: HttpHeaderApp) { }
+  constructor(private httpClient: HttpClient, private headers: HttpHeaderApp) { }
 
-    private header = this.headers.headerPrivate();
+  private header = this.headers.headerPrivate();
 
-    public obtenerRoles(): Observable<RolSeg[]>{
-        return this.httpClient.get<RolSeg[]>(`${this.baseUrl}/listarRoles`);
-    }
-
-
-    registrarUsuario(usuario:Usuario): Observable<any> {
-        return this.httpClient.post<any>(`${this.baseUrl}/crearUsuario`,usuario,{ headers: this.header })
-      }
+  public obtenerRoles(): Observable<RolSeg[]> {
+    return this.httpClient.get<RolSeg[]>(`${this.baseUrl}/listarRoles`);
+  }
 
 
-    listarMenuOpciones(): Observable<Submenu[]> {
-        return this.httpClient.get<Submenu[]>(`${this.baseUrl}/listarMenu`,{ headers: this.header })
-      }
+  registrarUsuario(usuario: Usuario): Observable<any> {
+    return this.httpClient.post<any>(`${this.baseUrl}/crearUsuario`, usuario, { headers: this.header })
+  }
 
 
-      registrarRol(rol:RolSeg): Observable<any> {
-        return this.httpClient.post<any>(`${this.baseUrl}/crearRol`,rol,{ headers: this.header })
-      }
+  listarMenuOpciones(): Observable<Submenu[]> {
+    return this.httpClient.get<Submenu[]>(`${this.baseUrl}/listarMenu`, { headers: this.header })
+  }
 
 
-      listarUsuarios(): Observable<Usuario[]> {
-        return this.httpClient.get<Usuario[]>(`${this.baseUrl}/listarUsuarios`,{ headers: this.header })
-      }
+  registrarRol(rol: RolSeg): Observable<any> {
+    return this.httpClient.post<any>(`${this.baseUrl}/crearRol`, rol, { headers: this.header })
+  }
+
+
+  listarUsuarios(): Observable<Usuario[]> {
+    return this.httpClient.get<Usuario[]>(`${this.baseUrl}/listarUsuarios`, { headers: this.header })
+  }
 
 }

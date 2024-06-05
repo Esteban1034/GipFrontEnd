@@ -12,6 +12,7 @@ import { Usuario } from 'src/app/model/usuario';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { ToastrService } from 'ngx-toastr';
+import { Item } from 'src/app/model/item';
 
 
 @Component({
@@ -95,8 +96,6 @@ export class GestionRol implements OnInit {
         if (rol != null) {
           this.armarMenuActual(rol)
         }
-        console.log("SUBMENUSSSSSSSSSSSSS");
-        console.log(this.submenus);
       }, err => {
         this.toastr.error("Error al listar las opciones " + err.error.error);
       }
@@ -110,6 +109,9 @@ export class GestionRol implements OnInit {
   cambiarEstados(submenu): void {
     submenu.items.forEach((item) => {
       item.seleccionado = submenu.seleccionado;
+      item.subItems.forEach((subitem) => {
+        subitem.seleccionado = item.seleccionado;
+      })
     })
   }
 
@@ -127,10 +129,17 @@ export class GestionRol implements OnInit {
       } else {
         let items = [];
         items = submenu.items.filter(item => {
-          return item.seleccionado
+          let subitems = [];
+          subitems = item.subItems.filter(subitem => {
+            return subitem.seleccionado;
+          })
+          if (subitems.length > 0) {
+            return item.subItems = subitems;
+          }
+          return item.seleccionado;
         })
         if (items.length > 0) {
-          return submenu.items = items
+          return submenu.items = items;
         }
       }
     });
@@ -142,30 +151,38 @@ export class GestionRol implements OnInit {
     rol.rolNombre = this.nombreRol.toUpperCase();
     rol.rolDescripcion = this.descRol;
     rol.submenuRoles = submenuRolLista;
-
-    console.log("NUEVO ROOOOOOOOL");
-    console.log(rol);
     return rol
   }
 
   armarMenuActual(rol: RolSeg): void {
     let idsItems: number[] = [];
+    let idsSubItems: number[] = [];
     let idsSubmenu: number[] = [];
     rol.submenuRoles.forEach(submenuRol => {
       if (submenuRol.submenu.items.length == submenuRol.itemRol.length) {
-        idsSubmenu.push(submenuRol.submenu.id)
+        idsSubmenu.push(submenuRol.submenu.id);
       }
       submenuRol.itemRol.forEach((item) => {
-        idsItems.push(item.item.id)
+        idsItems.push(item.item.id);
+        if (item.subItemRol) {
+          item.subItemRol.forEach((subitem) => {
+            idsSubItems.push(subitem.subItem.id);
+          });
+        }
       })
     })
-
 
     this.submenus.forEach(submenu => {
       submenu.items.forEach(item => {
         if (idsItems.includes(item.id)) {
           item.seleccionado = true
         }
+        item.subItems.forEach(subitem => {
+          if (idsSubItems.includes(subitem.id)) {
+            subitem.seleccionado = true
+          }
+          return subitem;
+        })
         return item;
       })
       if (idsSubmenu.includes(submenu.id)) {
@@ -188,6 +205,26 @@ export class GestionRol implements OnInit {
       submenu.seleccionado = true
     } else {
       submenu.seleccionado = false
+    }
+
+    submenu.items.forEach((item) => {
+      item.subItems.forEach((subitem) => {
+        subitem.seleccionado = item.seleccionado;
+      })
+    })
+  }
+
+  cambiarEstadoItem(item: Item): void {
+    let contador = 0;
+    item.subItems.forEach((subitem) => {
+      if (subitem.seleccionado) {
+        contador++
+      }
+    })
+    if (contador === item.subItems.length) {
+      item.seleccionado = true
+    } else {
+      item.seleccionado = false
     }
   }
 
