@@ -9,10 +9,8 @@ import { EstimacionTiempos } from '../model/estimacion-ufs';
     providedIn: 'root'
 })
 export class EstimacionTiempoService {
-/* falta cambiar  por el enpoint que me de jair */
 
     private baseUrl = environment.baseUrl + "/estimaciones";
-
     private header = this.headers.headerPrivate();
     
 

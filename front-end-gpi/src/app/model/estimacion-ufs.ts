@@ -3,8 +3,6 @@ import { Empleado } from "./empleado";
 import { Modelo } from "./modelo";
 import { Proyecto } from "./proyecto";
 import { Ufs } from "./ufs";
-
-
 export class EstimacionTiempos {
   id: number;
   proyecto: Proyecto;
@@ -14,3 +12,4 @@ export class EstimacionTiempos {
   fecha: Date;
   empleado: Empleado;
 }
+

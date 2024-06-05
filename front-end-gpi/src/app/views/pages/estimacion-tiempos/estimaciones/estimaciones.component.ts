@@ -44,22 +44,14 @@ export class EstimacionesTiempoComponent implements OnInit {
     );
   }
 
-  
-
   createFilter(): (data: EstimacionTiempos, filter: string) => boolean {
     return (data: EstimacionTiempos, filter: string): boolean => {
       const transformedFilter = filter.trim().toLowerCase();
-      const filtroProyecto = this.filtroProyecto ? data.proyecto.nombre.toLowerCase().includes(transformedFilter) : true;
-      const filtroCliente = this.filtroCliente ? data.proyecto.cliente.nombre.toLowerCase().includes(transformedFilter) : true;
-      const filtroEstado = this.filtroEstado ? data.proyecto.estadoPropuesta.estado.toLowerCase().includes(transformedFilter) : true;
-      return filtroProyecto && filtroCliente && filtroEstado;
+      const filtroProyecto = data.proyecto.nombre.toLowerCase().includes(transformedFilter);
+      const filtroCliente = data.proyecto.cliente.nombre.toLowerCase().includes(transformedFilter);
+      const filtroEstado = data.proyecto.estadoPropuesta.estado.toLowerCase().includes(transformedFilter);
+      return filtroProyecto || filtroCliente || filtroEstado;
     };
-  }
-
-  ocultarFiltros() {
-    setTimeout(() => {
-      this.mostrarFiltros = false;
-    }, 200); // A small delay to ensure checkboxes can be clicked
   }
 
   filtrar() {
@@ -112,9 +104,7 @@ export class EstimacionesTiempoComponent implements OnInit {
     }
   }
 
-
   castListObject(listObject: EstimacionTiempos[]): EstimacionesString[] {
-  
       let listString: EstimacionesString[] = [];
       listObject.forEach((obj) => {
         let string: EstimacionesString = new EstimacionesString();
@@ -125,10 +115,9 @@ export class EstimacionesTiempoComponent implements OnInit {
         listString.push(string);
       });
       return listString;
-    }
-
-
   }
+}
+
 export class EstimacionesString {
   id: number;
   proyecto: string;
