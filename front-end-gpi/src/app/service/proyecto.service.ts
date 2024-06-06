@@ -103,6 +103,8 @@ export class ProyectoService {
     deleteProyectoInt(id:number):Observable<Object> {
         return this.httpClient.delete(`${this.baseUrl}/internos/${id}`, { headers: this.header });
     }
-
+    findByEtapa(id: number): Observable<Proyecto[]> {
+        return this.httpClient.get<Proyecto[]>(`${this.baseUrl}/proyectos-by-Etapa/${id}`, { headers: this.header });
+    }
 
 }

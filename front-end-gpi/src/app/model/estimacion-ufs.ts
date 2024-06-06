@@ -10,6 +10,6 @@ export class EstimacionTiempos {
   actividadesComplementarias: ActividadesComplementarias;
   modelo: Modelo;
   fecha: Date;
-  empleado: Empleado;
+  recurso: Empleado;
 }
 

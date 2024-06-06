@@ -68,4 +68,7 @@ export class EmpleadoService{
     searchRecursoByName(nombre: string): Observable<Empleado[]>{
         return this.httpClient.get<Empleado[]>(`${this.baseUrl}/search/nombre-recurso/${nombre}`, {headers: this.header});
     }
+    getDirectoresPEstimacion(): Observable<Empleado[]> {
+        return this.httpClient.get<Empleado[]>(`${this.baseUrl}/estimacion/`, { headers: this.header});
+    }
 }

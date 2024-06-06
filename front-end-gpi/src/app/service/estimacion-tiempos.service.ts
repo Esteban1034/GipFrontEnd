@@ -26,8 +26,8 @@ export class EstimacionTiempoService {
         return this.httpClient.get<EstimacionTiempos>(`${this.baseUrl}/${id}`, { headers: this.header });
     }
 
-    createEstimacionTiempoList(): Observable<EstimacionTiempos[]> {
-        return this.httpClient.post<EstimacionTiempos[]>(`${this.baseUrl}`, { headers: this.header });
+    createEstimacionTiempoList(Estimacion: EstimacionTiempos): Observable<Object> {
+        return this.httpClient.post(`${this.baseUrl}`,Estimacion, { headers: this.header });
     }
 
     deleteEstimacionTiempoList(id:string): Observable<EstimacionTiempos> {
