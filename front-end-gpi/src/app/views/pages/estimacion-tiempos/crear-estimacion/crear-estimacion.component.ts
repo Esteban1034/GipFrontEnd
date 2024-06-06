@@ -14,16 +14,21 @@ import { Empleado } from 'src/app/model/empleado';
 import { EmpleadoService } from 'src/app/service/empleado.service';
 
 
-import { EstadoProyecto } from 'src/app/Model/estado-proyecto';
-import { EstadoProyectoService } from 'src/app/service/estado-proyecto.service';
+//import { EstadoProyecto } from 'src/app/Model/estado-proyecto';
+//import { EstadoProyectoService } from 'src/app/service/estado-proyecto.service';
 
 import { TipoProyecto } from 'src/app/Model/tipo-proyecto';
 import { TipoProyectoService } from 'src/app/service/tipo-proyecto.service';
+
+
+import { EtapaProyecto } from 'src/app/Model/etapa-proyecto';
+import { EtapaProyetoService } from 'src/app/service/etapa-proyecto.service';
 
 import { EstimacionTiempos } from 'src/app/model/estimacion-ufs';
 import { EstimacionTiempoService } from 'src/app/service/estimacion-tiempos.service';
 import { Ufs } from 'src/app/model/ufs';
 import { ActividadesComplementarias } from 'src/app/model/actividades-complementarias';
+
 
 @Component({
     selector: 'app-crear-estimacion',
@@ -43,12 +48,14 @@ export class crear_estimacion  implements OnInit {
     TiEsP:Proyecto;
     
 
-    EstadoProyectos: EstadoProyecto[]=[];
-    TiEsEst:EstadoProyecto;
+    //EstadoProyectos: EstadoProyecto[]=[];
+    //TiEsEst:EstadoProyecto;
 
+    CicloDeVidaProyecto : TipoProyecto []=[];
+    TiEsCV:TipoProyecto;
 
-    TipoProyecto : TipoProyecto []=[];
-    TiEsTi:TipoProyecto;
+    TipoProyecto : EtapaProyecto []=[];
+    TiEsEt:EtapaProyecto;
 
     estimacionTiempos: EstimacionTiempos = new EstimacionTiempos();
 
@@ -66,8 +73,9 @@ export class crear_estimacion  implements OnInit {
         private modeloService: ModeloService,
         private empleadoService: EmpleadoService,
         private ProyectoService: ProyectoService,
-        private estadoService: EstadoProyectoService,
-        private tipoService: TipoProyectoService,
+    //  private estadoService: EstadoProyectoService,
+        private CicloVidaService: TipoProyectoService,
+        private tipoService: EtapaProyetoService,
         private estimacionTiempoService: EstimacionTiempoService,
 
         /////////////////////////////
@@ -115,7 +123,7 @@ export class crear_estimacion  implements OnInit {
         NombreProyecto:['', [
             Validators.required,
         ]],
-        fechaEstimacion:['', [
+        fechaCreacion:['', [
             Validators.required,
         ]],
         TipoProyecto:['', [
@@ -154,18 +162,18 @@ export class crear_estimacion  implements OnInit {
         });
     }
 
-    getEstadosProyecto(){
-        this.estadoService.getEstadosList().subscribe(data => {
-            this.EstadoProyectos = data;
+    getTipoProyecto(){
+        this.tipoService.getEtapasList().subscribe(data => {
+            this.TipoProyecto = data;
         }, error => {
             console.log(error);
             this.toastr.error(error.error);
         });
     }
 
-    getTipoProyecto(){
-        this.tipoService.getTiposList().subscribe(data => {
-            this.TipoProyecto = data;
+    getEstadosProyecto(){
+        this.CicloVidaService.getTiposList().subscribe(data => {
+            this.CicloDeVidaProyecto = data;
         }, error => {
             console.log(error);
             this.toastr.error(error.error);
@@ -175,9 +183,12 @@ export class crear_estimacion  implements OnInit {
     saveProyecto() {
         let estimacion: EstimacionTiempos = new EstimacionTiempos();
         estimacion.ufs = new Ufs();
+        estimacion.fechaCreacion = this.estimacionTiempos.fechaCreacion;
         estimacion.recurso = this.TiEsDi;
         estimacion.modelo = this.TiEs;
         estimacion.proyecto = this.TiEsP;
+        estimacion.etapaProyecto = this.TiEsEt;
+        estimacion.tipoProyecto = this.TiEsCV;
         estimacion.actividadesComplementarias = new ActividadesComplementarias();
         console.log(estimacion);
         this.estimacionTiempoService.createEstimacionTiempoList(estimacion).subscribe(data => {

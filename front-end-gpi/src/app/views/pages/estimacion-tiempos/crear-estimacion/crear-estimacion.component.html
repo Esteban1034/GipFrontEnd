@@ -68,13 +68,13 @@
                           </div>
                     </div>
                       <div class="form-group col-sm-12 col-md-4">
-                        <label for="fechaAprobacion">Fecha de estimación</label>
-                       <input 
-                           [ngClass]="{'is-invalid': submittedPp && fpp.fechaEstimacion.errors}" type="date"
-                            id="fechaEstimacion" name="fechaEstimacion" formControlName="fechaEstimacion"
+                        <label for="fechaCreacion">Fecha de estimación</label>
+                       <input [(ngModel)]="estimacionTiempos.fechaCreacion"
+                           [ngClass]="{'is-invalid': submittedPp && fpp.fechaCreacion.errors}" type="date"
+                            id="fechaCreacion" name="fechaCreacion" formControlName="fechaCreacion"
                             autocomplete="off" class="form-control" />
-                         <div class="invalid-feedback" *ngIf="submittedPp && fpp.fechaEstimacion.errors">
-                            <div *ngIf="fpp.fechaEstimacion.errors.required">
+                         <div class="invalid-feedback" *ngIf="submittedPp && fpp.fechaCreacion.errors">
+                            <div *ngIf="fpp.fechaCreacion.errors.required">
                                 Este campo es requerido.
                             </div>
                         </div>
@@ -83,11 +83,11 @@
                   <div  class="form-row">
                     <div class="form-group col-sm-12 col-md-4">
                         <label for="TipoProyecto">Tipo de proyecto</label>
-                        <select [(ngModel)]="TiEsEst"
+                        <select [(ngModel)]="TiEsEt"
                             [ngClass]="{'is-invalid': submittedPp && fpp.TipoProyecto.errors}" id="TipoProyecto" autocomplete="off"
                             name="TipoProyecto" formControlName="TipoProyecto" class="form-control">
                             <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
-                            <option *ngFor="let TP of EstadoProyectos" [ngValue]="TP">{{TP.estado}}</option>
+                            <option *ngFor="let TP of TipoProyecto" [ngValue]="TP">{{TP.etapa}}</option>
                         </select>
                             <div class="invalid-feedback" *ngIf="submittedPp && fpp.TipoProyecto.errors">
                            <div *ngIf="fpp.TipoProyecto.errors.required">
@@ -97,11 +97,11 @@
                     </div>
                   <div class="form-group col-sm-12 col-md-4">
                       <label for="cicloVida">Ciclo de vida del proyecto</label>
-                      <select [(ngModel)]="TiEsTi"
+                      <select [(ngModel)]="TiEsCV"
                           [ngClass]="{'is-invalid': submittedPp && fpp.cicloVida.errors}" id="cicloVida" autocomplete="off"
                           name="cicloVida" formControlName="cicloVida" class="form-control">
                           <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
-                          <option *ngFor="let cv of TipoProyecto" [ngValue]="cv">{{cv.tipo}}</option>
+                          <option *ngFor="let CV of CicloDeVidaProyecto" [ngValue]="CV">{{CV.tipo}}</option>
                       </select>
                           <div class="invalid-feedback" *ngIf="submittedPp && fpp.cicloVida.errors">
                           <div *ngIf="fpp.cicloVida.errors.required">
