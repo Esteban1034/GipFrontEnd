@@ -37,6 +37,9 @@ export class GestionUsuariosRoles {
     return this.httpClient.get<Submenu[]>(`${this.baseUrl}/listarMenu`, { headers: this.header })
   }
 
+  getByRol(empleadoId: number): Observable<RolSeg> {
+    return this.httpClient.get<RolSeg>(`${this.baseUrl}/empleadorol/${empleadoId}`, { headers: this.header });
+  }
 
   registrarRol(rol: RolSeg): Observable<any> {
     return this.httpClient.post<any>(`${this.baseUrl}/crearRol`, rol, { headers: this.header })
