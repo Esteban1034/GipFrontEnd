@@ -1,9 +1,7 @@
 <nav class="page-breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a routerLink="/proyectos">Proyectos</a></li>
-    <li class="breadcrumb-item">
-      <a routerLink="/estimacion tiempos/estimaciones">Estimaciones</a>
-    </li>
+    <li class="breadcrumb-item"><a routerLink="/estimacion tiempos/estimaciones">Estimaciones</a></li>
     <li class="breadcrumb-item active" aria-current="page">Mis estimaciones</li>
   </ol>
 </nav>
@@ -17,13 +15,12 @@
             <h6 class="card-title">Administración de estimaciones</h6>
           </div>
           <div class="col-12 col-sm d-flex justify-content-end align-items-center">
-            <a class="btn btn-outline-primary" href="javascript:void(0);" id="btnNuevoProyecto"
-               routerLink="/estimacion tiempos/crear-estimacion"> Nueva estimación </a>
+            <a class="btn btn-outline-primary" href="javascript:void(0);" id="btnNuevoProyecto" routerLink="/estimacion tiempos/crear-estimacion"> Nueva estimación </a>
           </div>
         </div>
         <mat-form-field id="inputSearch">
           <mat-label>Buscar</mat-label>
-          <input matInput (keyup)="filtrar()" placeholder="Buscar" #input>
+          <input matInput (focus)="mostrarFiltros = true" (keyup)="filtrar()" placeholder="Buscar" #input>
         </mat-form-field>
 
         <div class="row mb-3" *ngIf="mostrarFiltros">
@@ -40,31 +37,27 @@
 
         <div class="mat-elevation">
           <table mat-table [dataSource]="dataSource" class="table-hover" style="width: 100%;" matSort (matSortChange)="sortData($event)">
-            <!-- ID Columna -->
+            <!-- Columnas de la tabla -->
             <ng-container matColumnDef="id">
               <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px">Código</th>
               <td mat-cell *matCellDef="let row">{{ row.id }}</td>
             </ng-container>
 
-            <!-- proyecto Columna -->
             <ng-container matColumnDef="proyecto">
               <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px">Nombre del proyecto</th>
               <td mat-cell *matCellDef="let row">{{ row.proyecto.nombre }}</td>
             </ng-container>
 
-            <!-- cliente Columna -->
             <ng-container matColumnDef="cliente">
               <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px">Cliente</th>
               <td mat-cell *matCellDef="let row">{{ row.proyecto.cliente.sector.sector }}-{{ row.proyecto.cliente.nombre }}</td>
             </ng-container>
 
-            <!-- estado Columna -->
             <ng-container matColumnDef="estadopropuesta">
               <th mat-header-cell *matHeaderCellDef mat-sort-header class="mdi mdi-15px">Estado</th>
               <td mat-cell *matCellDef="let row">{{ row.proyecto.estadoPropuesta.estado }}</td>
             </ng-container>
 
-            <!-- Iconos Columnas -->
             <ng-container matColumnDef="ver">
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let row" class="text-center">
