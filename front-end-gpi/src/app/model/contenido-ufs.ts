@@ -1,16 +1,21 @@
 import { Esfuerzo } from "./esfuerzo";
+import { Funcion } from "./funcion";
 import { MantenimientoUnidad } from "./mantenimiento-unidad";
 
 export class ContenidoUfs{
     id: number;
-    funcion: string;
     nombreCaso: string;
-    mantenimientoUnidad: MantenimientoUnidad;
-    esfuerzo: Esfuerzo;
-    porcentajeDiseno: number;
     porcentajeConstruccion: number;
+    porcentajeDiseno: number;    
     porcentajePruebas: number;
     totalDiseno: number;
     totalConstruccion: number;
     totalPruebas: number;
+    esfuerzo: Esfuerzo;
+    funcion: Funcion;
+    mantenimientoUnidad: MantenimientoUnidad;
+ 
+  
+
+  
 }
