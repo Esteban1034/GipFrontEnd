@@ -1,0 +1,94 @@
+<nav class="page-breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/estimacion-tiempos/UnidadFuncionalComponent">Dirección de Prueba</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Formulario</li>
+  </ol>
+</nav>
+
+<div class="row justify-content-center" id="occ">
+  <div class="col-md-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title">Datos Iniciales</h6>
+
+        <form [formGroup]="contenidoUfsForm" (ngSubmit)="onSubmit()">
+
+          <div class="form-row">
+            <div class="form-group col-sm-12 col-md-7">
+              <label for="nombreCaso">Nombre del caso</label>
+              <input type="text" formControlName="nombreCaso" class="form-control" id="nombreCaso" placeholder="Nombre del caso">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-12 col-md-7">
+              <label for="porcentajeConstruccion">Porcentaje de construcción</label>
+              <input type="text" formControlName="porcentajeConstruccion" class="form-control" id="porcentajeConstruccion" placeholder="Porcentaje de construcción">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-12 col-md-7">
+              <label for="porcentajePruebas">Porcentaje de pruebas</label>
+              <input type="text" formControlName="porcentajePruebas" class="form-control" id="porcentajePruebas" placeholder="Porcentaje de pruebas">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-12 col-md-7">
+              <label for="totalConstruccion">Total de construcción</label>
+              <input type="text" formControlName="totalConstruccion" class="form-control" id="totalConstruccion" placeholder="Total de construcción">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-12 col-md-7">
+              <label for="totalPruebas">Total de pruebas</label>
+              <input type="text" formControlName="totalPruebas" class="form-control" id="totalPruebas" placeholder="Total de pruebas">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-12 col-md-7">
+              <label for="totalDiseno">Total de diseño</label>
+              <input type="text" formControlName="totalDiseno" class="form-control" id="totalDiseno" placeholder="Total de diseño">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-12 col-md-7">
+              <label for="fkEsfuerzo">Esfuerzo</label>
+              <select formControlName="fkEsfuerzo" class="form-control" id="fkEsfuerzo">
+                <option *ngFor="let esfuerzoItem of esfuerzo" [value]="esfuerzoItem.id">{{ esfuerzoItem.nombre }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-12 col-md-7">
+              <label for="fkFuncion">Función</label>
+              <select formControlName="fkFuncion" class="form-control" id="fkFuncion">
+                <option *ngFor="let funcionItem of funcion" [value]="funcionItem.id">{{ funcionItem.funcion }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-12 col-md-7">
+              <label for="fkMantenimientoUnidad">Mantenimiento Unidad</label>
+              <select formControlName="fkMantenimientoUnidad" class="form-control" id="fkMantenimientoUnidad">
+                <option *ngFor="let mantenimientoItem of mantenimientoUnidad" [value]="mantenimientoItem.id">{{ mantenimientoItem.nombre }}</option>
+              </select>
+            </div>
+          </div>
+
+          <hr>
+          <button type="submit" id="btnContinuar" class="btn btn-primary">Continuar</button>
+          <button routerLink="/estimacion-tiempos/estimaciones" id="btnCancelar" class="btn btn-light">Cancelar</button>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

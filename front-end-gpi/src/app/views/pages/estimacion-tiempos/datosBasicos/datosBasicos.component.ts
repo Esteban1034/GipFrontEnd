@@ -1,7 +1,7 @@
 import { ProyectoService } from './../../../../service/proyecto.service';
-import { Proyecto } from './../../../../model/proyecto';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Proyecto } from 'src/app/Model/proyecto';
 import { Cargo } from 'src/app/model/cargo';
 import { CargoService } from 'src/app/service/cargo.service';
 
