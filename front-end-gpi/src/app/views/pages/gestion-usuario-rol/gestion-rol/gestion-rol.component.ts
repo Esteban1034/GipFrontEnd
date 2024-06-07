@@ -216,6 +216,7 @@ export class GestionRol implements OnInit {
 
   cambiarEstadoItem(item: Item): void {
     let contador = 0;
+    
     item.subItems.forEach((subitem) => {
       if (subitem.seleccionado) {
         contador++
