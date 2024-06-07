@@ -5,10 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { EstadoProyecto } from 'src/app/Model/estado-proyecto';
+import { EstadoProyecto } from 'src/app/model/estado-proyecto';
 import { Cliente } from 'src/app/model/cliente';
 import { ClienteString } from '../../clientes/list-clientes/list-clientes.component';
-import { EtapaProyecto } from 'src/app/Model/etapa-proyecto';
+import { EtapaProyecto } from 'src/app/model/etapa-proyecto';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatSelectChange } from '@angular/material/select';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -50,6 +50,7 @@ export class ListProyectoComponent implements OnInit {
     filtroEstadoProyecto: string = '';
     filtroClienteProyecto: string = '';
     filtroEtapaProyecto: string = '';
+    sessionRol: RolSeg = new RolSeg();
 
 
     constructor(private proyectoService: ProyectoService,
@@ -67,7 +68,6 @@ export class ListProyectoComponent implements OnInit {
     ngOnInit(): void {
         this.session = JSON.parse(this.session);
         this.dataSource.sort = this.sort;
-        this.gestionUsuariosRolesService
         this.getProyectos();
     }
 
@@ -82,45 +82,57 @@ export class ListProyectoComponent implements OnInit {
         let clienteProy = new Map();
         let etapaProy = new Map();
 
-        if (this.session['rol'] == 'LÍDER PROYECTOS') {
-            this.proyectoService.findByLiderAsignado(parseInt(this.session['id'])).subscribe(data => {
-                data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
-                    if (!proyecto.interno) {
-                        proyectos.push(proyecto);
-                        estadoProy.set(proyecto.estadoProyecto.id, proyecto.estadoProyecto);
-                        clienteProy.set(proyecto.cliente.id, proyecto.cliente);
-                        etapaProy.set(proyecto.etapa.id, proyecto.etapa);
-                    }
-                });
+        this.gestionUsuariosRolesService.getByRol(parseInt(this.session['id'])).subscribe(data => {
+            this.sessionRol = data;
 
-                estadoProy.forEach(estado => this.estadoProyec.push(estado));
-                clienteProy.forEach(cliente => this.client.push(cliente));
-                etapaProy.forEach(etapa => this.etap.push(etapa));
-                this.proyectos = proyectos;
-                this.proyectoTexto = this.castListObjectToStringList(proyectos);
-                this.dataSource = new MatTableDataSource(this.proyectoTexto);
+            if (this.sessionRol.rolNombre != "LÍDER PROYECTOS" && this.sessionRol.rolNombre != "GERENTE DE PROYECTOS" && this.sessionRol.rolNombre != "USUARIO ADMINISTRADOR" && this.sessionRol.rolNombre != "DIRECTOR DE PROYECTOS") {
+                this.router.navigate(['/error']);
+                return;
             }
-                , error => {
-                    console.log(error);
-                });
-        } else if (this.session['rol'] == 'ROL_GP' || this.session['rol'] == 'ROL_ADMIN' || this.session['rol'] == 'ROL_DP') {
-            this.proyectoService.getProyectosList().subscribe(data => {
-                data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
-                    if (!proyecto.interno) {
-                        proyectos.push(proyecto);
-                        estadoProy.set(proyecto.estadoProyecto.id, proyecto.estadoProyecto);
-                        clienteProy.set(proyecto.cliente.id, proyecto.cliente);
-                        etapaProy.set(proyecto.etapa.id, proyecto.etapa);
-                    }
-                });
-                estadoProy.forEach(estado => this.estadoProyec.push(estado));
-                clienteProy.forEach(cliente => this.client.push(cliente));
-                etapaProy.forEach(etapa => this.etap.push(etapa));
-                this.proyectos = proyectos;
-                this.proyectoTexto = this.castListObjectToStringList(proyectos);
-                this.dataSource = new MatTableDataSource(this.proyectoTexto);
-            }, error => console.log(error));
-        }
+        
+            if (this.sessionRol.rolNombre === "LÍDER PROYECTOS") {
+                console.log("entro a lider");
+                this.proyectoService.findByLiderAsignado(parseInt(this.session['id'])).subscribe(data => {
+                    data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
+                        if (!proyecto.interno) {
+                            proyectos.push(proyecto);
+                            estadoProy.set(proyecto.estadoProyecto.id, proyecto.estadoProyecto);
+                            clienteProy.set(proyecto.cliente.id, proyecto.cliente);
+                            etapaProy.set(proyecto.etapa.id, proyecto.etapa);
+                        }
+                    });
+
+                    estadoProy.forEach(estado => this.estadoProyec.push(estado));
+                    clienteProy.forEach(cliente => this.client.push(cliente));
+                    etapaProy.forEach(etapa => this.etap.push(etapa));
+                    this.proyectos = proyectos;
+                    this.proyectoTexto = this.castListObjectToStringList(proyectos);
+                    this.dataSource = new MatTableDataSource(this.proyectoTexto);
+                }
+                    , error => {
+                        console.log(error);
+                    });
+            } else if (this.sessionRol.rolNombre === "GERENTE DE PROYECTOS" || this.sessionRol.rolNombre === "USUARIO ADMINISTRADOR" || this.sessionRol.rolNombre === "DIRECTOR DE PROYECTOS") {
+                console.log("entro al otro");
+                this.proyectoService.getProyectosList().subscribe(data => {
+                    data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
+                        if (!proyecto.interno) {
+                            proyectos.push(proyecto);
+                            estadoProy.set(proyecto.estadoProyecto.id, proyecto.estadoProyecto);
+                            clienteProy.set(proyecto.cliente.id, proyecto.cliente);
+                            etapaProy.set(proyecto.etapa.id, proyecto.etapa);
+                        }
+                    });
+                    estadoProy.forEach(estado => this.estadoProyec.push(estado));
+                    clienteProy.forEach(cliente => this.client.push(cliente));
+                    etapaProy.forEach(etapa => this.etap.push(etapa));
+                    this.proyectos = proyectos;
+                    this.proyectoTexto = this.castListObjectToStringList(proyectos);
+                    this.dataSource = new MatTableDataSource(this.proyectoTexto);
+                }, error => console.log(error));
+            }
+        }, error => console.log(error));
+
     }
 
     updateProyecto(id: number) {

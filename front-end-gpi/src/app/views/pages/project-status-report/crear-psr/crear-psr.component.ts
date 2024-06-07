@@ -1,11 +1,11 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ProyectoService } from '../../../../service/proyecto.service';
-import { Proyecto } from 'src/app/Model/proyecto';
+import { Proyecto } from 'src/app/model/proyecto';
 import { Router, UrlTree } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { EtapaProyecto } from 'src/app/Model/etapa-proyecto';
+import { EtapaProyecto } from 'src/app/model/etapa-proyecto';
 import { EtapaProyetoService } from 'src/app/service/etapa-proyecto.service';
 import { PSRService } from 'src/app/service/project-status-report.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -31,6 +31,8 @@ import { PSRStatus } from 'src/app/model/PSRStatus';
 import { finalize } from 'rxjs/operators';
 import { ProjectStatusReportComentarios } from 'src/app/model/ProjectStatusReportComentarios';
 import { NotasSemanaPSR } from 'src/app/model/notas-semana-psr';
+import { RolSeg } from 'src/app/model/rol-seg';
+import { GestionUsuariosRoles } from 'src/app/service/gestion-usuario-roles.service';
 
 
 @Component({
@@ -109,6 +111,7 @@ export class CrearPsrComponent implements OnInit, OnExit {
     validaComentarioDia: boolean = false;
     mostrarAgregarNotaSemanal: boolean = false;
     notaSemanal: NotasSemanaPSR = new NotasSemanaPSR();
+    sessionRol: RolSeg = new RolSeg();
     @ViewChild('exitPage') myModal: any;
 
     @ViewChild(MatSort) sort: MatSort
@@ -126,17 +129,21 @@ export class CrearPsrComponent implements OnInit, OnExit {
         private recursoActService: RecursoActividadService,
         private faseService: FaseProyectoService,
         private reporteService: ReporteTiempoService,
-        private empleadoService: EmpleadoService) { };
+        private empleadoService: EmpleadoService,
+        private gestionUsuariosRolesService: GestionUsuariosRoles) { };
 
     columnas: string[] = ['opciones1', 'cliente', 'nombre', 'fecha_inicio', 'fecha_fin', 'horas_aprobadas', 'opciones'];
     session = localStorage.getItem('session');
 
     ngOnInit(): void {
         this.session = JSON.parse(this.session);
-        if (this.session['rol'] != 'ROL_ADMIN' && this.session['rol'] != 'ROL_LP' && this.session['rol'] != 'ROL_GP' && this.session['rol'] != 'ROL_DP') {
+        this.gestionUsuariosRolesService.getByRol(parseInt(this.session['id'])).subscribe(data => {
+            this.sessionRol = data;
+        if (this.sessionRol.rolNombre === "USUARIO ADMINISTRADOR" || this.sessionRol.rolNombre === "LÍDER PROYECTOS" || this.sessionRol.rolNombre === "GERENTE DE PROYECTOS" || this.sessionRol.rolNombre === "DIRECTOR DE PROYECTOS") {
             this.router.navigate(['/error']);
             return;
         }
+        });
         this.getEtapas();
         this.getProyectos();
         this.buildForm();
@@ -182,7 +189,9 @@ export class CrearPsrComponent implements OnInit, OnExit {
 
     private getProyectos() {
         let proyectos: Proyecto[] = [];
-        if (this.session['rol'] == 'ROL_LP') {
+        this.gestionUsuariosRolesService.getByRol(parseInt(this.session['id'])).subscribe(data => {
+         this.sessionRol = data;
+        if (this.sessionRol.rolNombre === "LÍDER PROYECTOS") {
             this.psrService.getProjectsForPsrByLiderAsignado(parseInt(this.session['id'])).subscribe(data => {
                 data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
                     if (!proyecto.interno) {
@@ -196,7 +205,7 @@ export class CrearPsrComponent implements OnInit, OnExit {
             }, error => {
                 console.log(error);
             });
-        } else if (this.session['rol'] == 'ROL_GP' || this.session['rol'] == 'ROL_ADMIN' || this.session['rol'] == 'ROL_DP') {
+        } else if (this.sessionRol.rolNombre === "GERENTE DE PROYECTOS" || this.sessionRol.rolNombre === "USUARIO ADMINISTRADOR" || this.sessionRol.rolNombre === "DIRECTOR DE PROYECTOS") {
             this.psrService.getProjectsForPsr().subscribe(data => {
                 data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
                     if (!proyecto.interno) {
@@ -207,7 +216,9 @@ export class CrearPsrComponent implements OnInit, OnExit {
                 this.proyectoTexto = this.castListObjectToStringList(proyectos);
                 this.dataSource = new MatTableDataSource(this.castListObjectToStringList(this.proyectos));
             }, error => console.log(error));
+
         }
+        });
     }
 
     private getProyectosFiltro() {
@@ -220,34 +231,36 @@ export class CrearPsrComponent implements OnInit, OnExit {
         if (fechaI.getTime() > fechaF.getTime()) {
             return this.toastr.error('La fecha inicio debe ser menor a la fecha de fin.');
         }
-
-        if (this.session['rol'] == 'ROL_LP') {
-            this.psrService.getProyectosForPsrByLiderFechaInicioFechaFin(this.fechaInicioFiltro, this.fechaFinFiltro, parseInt(this.session['id'])).subscribe(data => {
-                data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
-                    if (!proyecto.interno) {
-                        proyectos.push(proyecto);
-                    }
-                })
-                this.proyectos = proyectos;
-                this.proyectoTexto = this.castListObjectToStringList(proyectos);
-                this.dataSource = new MatTableDataSource(this.castListObjectToStringList(this.proyectos));
-                this.dataSource.sort = this.sort;
-            }, error => {
-                console.log(error);
-            });
-        } else if (this.session['rol'] == 'ROL_GP' || this.session['rol'] == 'ROL_ADMIN' || this.session['rol'] == 'ROL_DP') {
-            this.psrService.getProyectosForPsrByFechaInicioFechaFin(this.fechaInicioFiltro, this.fechaFinFiltro).subscribe(data => {
-                data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
-                    if (!proyecto.interno) {
-                        proyectos.push(proyecto);
-                    }
-                })
-                this.proyectos = proyectos;
-                this.proyectoTexto = this.castListObjectToStringList(proyectos);
-                this.dataSource = new MatTableDataSource(this.castListObjectToStringList(this.proyectos));
-                this.dataSource.sort = this.sort;
-            }, error => console.log(error));
-        }
+        this.gestionUsuariosRolesService.getByRol(parseInt(this.session['id'])).subscribe(data => {
+            this.sessionRol = data;
+            if (this.sessionRol.rolNombre === "LÍDER PROYECTOS") {
+                this.psrService.getProyectosForPsrByLiderFechaInicioFechaFin(this.fechaInicioFiltro, this.fechaFinFiltro, parseInt(this.session['id'])).subscribe(data => {
+                    data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
+                        if (!proyecto.interno) {
+                            proyectos.push(proyecto);
+                        }
+                    })
+                    this.proyectos = proyectos;
+                    this.proyectoTexto = this.castListObjectToStringList(proyectos);
+                    this.dataSource = new MatTableDataSource(this.castListObjectToStringList(this.proyectos));
+                    this.dataSource.sort = this.sort;
+                }, error => {
+                    console.log(error);
+                });
+            } else if (this.sessionRol.rolNombre === "GERENTE DE PROYECTOS" || this.sessionRol.rolNombre === "USUARIO ADMINISTRADOR" || this.sessionRol.rolNombre === "DIRECTOR DE PROYECTOS") {
+                this.psrService.getProyectosForPsrByFechaInicioFechaFin(this.fechaInicioFiltro, this.fechaFinFiltro).subscribe(data => {
+                    data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
+                        if (!proyecto.interno) {
+                            proyectos.push(proyecto);
+                        }
+                    })
+                    this.proyectos = proyectos;
+                    this.proyectoTexto = this.castListObjectToStringList(proyectos);
+                    this.dataSource = new MatTableDataSource(this.castListObjectToStringList(this.proyectos));
+                    this.dataSource.sort = this.sort;
+                }, error => console.log(error));
+            }
+        });
     }
 
 

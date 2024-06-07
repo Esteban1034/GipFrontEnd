@@ -11,6 +11,8 @@ import { EmpleadoString } from 'src/app/model/dto/empleado-string';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { GestionUsuariosRoles } from 'src/app/service/gestion-usuario-roles.service';
+import { RolSeg } from 'src/app/model/rol-seg';
 
 
 @Component({
@@ -42,6 +44,7 @@ export class AprobarTiempoComponent implements OnInit {
     recursos: Empleado[] = [];
     searchTextR: string = "";
     recursosAdd: number[] = [];
+    sessionRol: RolSeg = new RolSeg();
 
     constructor(private reporteService: ReporteTiempoService,
         private empleadoService: EmpleadoService,
@@ -49,7 +52,8 @@ export class AprobarTiempoComponent implements OnInit {
         private modalService: NgbModal,
         private router: Router,
         private toast: ToastrService,
-        private toastr: ToastrService) { }
+        private toastr: ToastrService,
+        private gestionUsuariosRolesService: GestionUsuariosRoles) { }
 
     session = localStorage.getItem('session');
     sessionObject: EmpleadoString = new EmpleadoString();
@@ -158,7 +162,9 @@ export class AprobarTiempoComponent implements OnInit {
     }
 
     getReportes() {
-        if (this.sessionObject.rol == 'ROL_ADMIN' || this.sessionObject.rol == 'ROL_GP' || this.sessionObject.rol == 'ROL_DP') {
+      this.gestionUsuariosRolesService.getByRol(parseInt(this.session['id'])).subscribe(data => {
+        this.sessionRol = data;
+        if (this.sessionRol.rolNombre === "USUARIO ADMINISTRADOR" || this.sessionRol.rolNombre === "GERENTE DE PROYECTOS" || this.sessionRol.rolNombre === "DIRECTOR DE PROYECTOS") {
 
             this.reporteService.findByProyectoInt().subscribe(data => {
                 data.sort((a, b) => (a.fecha > b.fecha ? -1 : 1));
@@ -193,7 +199,7 @@ export class AprobarTiempoComponent implements OnInit {
 
         }
 
-        if (this.sessionObject.rol == 'ROL_LP') {
+        if (this.sessionRol.rolNombre === "LÍDER PROYECTOS") {
             this.reporteService.findByLider(this.sessionObject.id).subscribe(data => {
                 data.sort((a, b) => (a.fecha > b.fecha ? -1 : 1));
                 this.reportes = data;
@@ -202,6 +208,7 @@ export class AprobarTiempoComponent implements OnInit {
                 console.log(error);
             });
         }
+      });
     }
 
     detalleReporte(id: number) {
