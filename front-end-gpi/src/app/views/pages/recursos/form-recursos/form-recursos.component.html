@@ -157,8 +157,7 @@
                     <button type="submit" id="btnGuardar" class="btn btn-primary">Guardar</button>
                     <a (click)="open(especialidad);" id="btnEspecialidad" class="btn btn-outline-primary"
                         *ngIf="empleado.cargo.id != 10">Especialidad</a>
-                    <a (click)="open(rol);" id="btnRol" class="btn btn-outline-primary"
-                        *ngIf="empleado.cargo.id != 10">Rol</a>
+                    
                     <!--
                     <button id="btnRol" (click)="openRolModal(rol)" type="button"
                         class="btn btn-outline-primary">Rol</button>
@@ -294,39 +293,3 @@
     </div>
 </ng-template>
 
-<!-- MODAL ADD ROLE-->
-<ng-template #rol let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">
-            Añadir Rol
-        </h4>
-        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <form [formGroup]="rolForm" (ngSubmit)="addRol()">
-        <div class="modal-body">
-            <div class="form-row">
-                <div class="form-group col-12">
-                    <label for="rol">Rol</label>
-                    <select [(ngModel)]="newRol" [ngClass]="{'is-invalid': submittedR && rolF.rol.errors}"
-                        formControlName="rol" name="rol" id="rol" minlength="5" maxlength="50" class="form-control"
-                        autocomplete="off">
-                        <option [ngValue]="null" [disabled]="true">Seleccionar opción</option>
-                        <option *ngFor="let r of roles" [ngValue]="r">{{r.descripcion}}</option>
-                    </select>
-                    <div class="invalid-feedback" *ngIf="submittedR && rolF.rol.errors">
-                        <div *ngIf="rolF.rol.errors.required">
-                            Este campo es requerido.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button id="btnModalRol" type="submit" class="btn btn-primary">
-                Agregar
-            </button>
-        </div>
-    </form>
-</ng-template>
