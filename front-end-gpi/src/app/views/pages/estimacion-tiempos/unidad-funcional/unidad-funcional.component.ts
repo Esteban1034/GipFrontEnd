@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -108,15 +108,4 @@ export class UnidadFuncionalComponent implements OnInit {
     }
   }
 }
-=======
-import { Component, OnInit, ViewChild } from "@angular/core";
 
-
-@Component({
-    selector: "app-unidad-funcional",
-    templateUrl: "./unidad-funcional.component.html",
-    styleUrls: ["./unidad-funcional.component.scss"],})
-
-
-  
->>>>>>> 37ab1a1c71508892d6579bcdd0dcf087cfaa0b91
