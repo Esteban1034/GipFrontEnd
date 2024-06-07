@@ -43,7 +43,7 @@ export class UnidadFuncionalComponent implements OnInit {
 
     this.getEsfuerzoData();
     this.getFuncionData();
-    this.getMantenimientoUnidadData();
+    this.getMantenimiento();
     this.getContenidoUfsList();    
   }
 
@@ -69,8 +69,8 @@ export class UnidadFuncionalComponent implements OnInit {
     );
   }
 
-  getMantenimientoUnidadData() {
-    this.contenidoUfsService.getMantenimientoUnidad().subscribe(
+  getMantenimiento() {
+    this.contenidoUfsService.getMantenimiento().subscribe(
       data => {
         this.mantenimientoUnidad = data;
       },
