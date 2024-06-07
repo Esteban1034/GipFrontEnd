@@ -34,3 +34,26 @@ table {
         overflow: hidden;
         vertical-align: middle;
     }
+
+    #btnContinuar {
+      width: 100%;
+  }
+  
+  #btnCancelar {
+      width     : 100%;
+      margin-top: 5px;
+  }
+  
+  
+  // Small devices (landscape phones, 576px and up)
+  @media (min-width: 576px) {
+      #btnContinuar {
+          width: auto;
+      }
+  
+      #btnCancelar {
+          width      : auto;
+          margin-top : 0px;
+          margin-left: 5px;
+      }
+  }
