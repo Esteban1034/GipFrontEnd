@@ -68,7 +68,6 @@ export class ListProyectoComponent implements OnInit {
     ngOnInit(): void {
         this.session = JSON.parse(this.session);
         this.dataSource.sort = this.sort;
-        this.gestionUsuariosRolesService
         this.getProyectos();
     }
 
@@ -85,6 +84,11 @@ export class ListProyectoComponent implements OnInit {
 
         this.gestionUsuariosRolesService.getByRol(parseInt(this.session['id'])).subscribe(data => {
             this.sessionRol = data;
+
+            if (this.sessionRol.rolNombre != "LÍDER PROYECTOS" && this.sessionRol.rolNombre != "GERENTE DE PROYECTOS" && this.sessionRol.rolNombre != "USUARIO ADMINISTRADOR" && this.sessionRol.rolNombre != "DIRECTOR DE PROYECTOS") {
+                this.router.navigate(['/error']);
+                return;
+            }
         
             if (this.sessionRol.rolNombre === "LÍDER PROYECTOS") {
                 console.log("entro a lider");
