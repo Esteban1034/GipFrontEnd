@@ -47,17 +47,36 @@ export class EstimacionesTiempoComponent implements OnInit {
   createFilter(): (data: EstimacionTiempos, filter: string) => boolean {
     return (data: EstimacionTiempos, filter: string): boolean => {
       const transformedFilter = filter.trim().toLowerCase();
-      const filtroProyecto = data.proyecto.nombre.toLowerCase().includes(transformedFilter);
-      const filtroCliente = data.proyecto.cliente.nombre.toLowerCase().includes(transformedFilter);
-      const filtroEstado = data.proyecto.estadoPropuesta.estado.toLowerCase().includes(transformedFilter);
-      return filtroProyecto || filtroCliente || filtroEstado;
+
+      if (!this.filtroProyecto && !this.filtroCliente && !this.filtroEstado) {
+        const filtroProyecto = data.proyecto.nombre.toLowerCase().includes(transformedFilter);
+        const filtroCliente = data.proyecto.cliente.nombre.toLowerCase().includes(transformedFilter);
+        const filtroEstado = data.proyecto.estadoPropuesta.estado.toLowerCase().includes(transformedFilter);
+        return filtroProyecto || filtroCliente || filtroEstado;
+      }
+      let filtroProyecto = true;
+      let filtroCliente = true;
+      let filtroEstado = true;
+      
+      if (this.filtroProyecto) {
+        filtroProyecto = data.proyecto.nombre.toLowerCase().includes(transformedFilter);
+      }
+      if (this.filtroCliente) {
+        filtroCliente = data.proyecto.cliente.nombre.toLowerCase().includes(transformedFilter);
+      }
+      if (this.filtroEstado) {
+        filtroEstado = data.proyecto.estadoPropuesta.estado.toLowerCase().includes(transformedFilter);
+      }
+  
+      return filtroProyecto && filtroCliente && filtroEstado;
     };
   }
-
+  
   filtrar() {
     const filtro = this.input.nativeElement.value.trim().toLowerCase();
     this.dataSource.filter = filtro;
   }
+
 
   ver(row: any) {
     this.router.navigate(['/estimaciones/ver-detalle', row.id]);

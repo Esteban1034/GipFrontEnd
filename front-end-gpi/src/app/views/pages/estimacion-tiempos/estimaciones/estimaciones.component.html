@@ -33,7 +33,7 @@
           <div class="col">
             <mat-checkbox [(ngModel)]="filtroEstado" (change)="filtrar()">Estado</mat-checkbox>
           </div>
-        </div>
+        </div>        
 
         <div class="mat-elevation">
           <table mat-table [dataSource]="dataSource" class="table-hover" style="width: 100%;" matSort (matSortChange)="sortData($event)">
