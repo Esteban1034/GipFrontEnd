@@ -1,137 +1,138 @@
-<div class="tabla">
-    <table>
-      <thead>
-        <tr>
-          <th>Diseño</th>
-          <th>Construccion</th>
-          <th>Pruebas</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <div class="casilla">
-              <p>Nombre del casn de uso</p>
-              <p>Complejidad</p>
-              <p>Artefactos/</p>
-              <p>Horas</p>
-              <p>Ajuste</p>
-              <p>Total con</p>
-            </div>
-            <div class="casilla">
-              <p>Actividades</p>
-            </div>
-          </td>
-          <td>
-            <div class="casilla">
-              <p>Nombre del casn de uso</p>
-              <p>Complejidad</p>
-              <p>Artefactos/</p>
-              <p>Horas</p>
-              <p>Ajuste</p>
-              <p>Total con</p>
-            </div>
-            <div class="casilla">
-              <p>Actividades</p>
-            </div>
-          </td>
-          <td>
-            <div class="casilla">
-              <p>Nombre del casn de uso</p>
-              <p>Complejidad</p>
-              <p>Artefactos/</p>
-              <p>Horas</p>
-              <p>Ajuste</p>
-              <p>Total con</p>
-            </div>
-            <div class="casilla">
-              <p>Actividades</p>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="casilla">
-              <p>Base de datos</p>
-              <p>0.00</p>
-              <p>-</p>
-              <p>0.00</p>
-              <p>-</p>
-              <p>0.00</p>
-            </div>
-            <div class="casilla">
-              <p>Agregar Fila</p>
-            </div>
-          </td>
-          <td>
-            <div class="casilla">
-              <p>Parametrización</p>
-              <p>0.00</p>
-              <p>-</p>
-              <p>0.00</p>
-              <p>-</p>
-              <p>0.00</p>
-            </div>
-            <div class="casilla">
-              <p>Agregar Fila</p>
-            </div>
-          </td>
-          <td>
-            <div class="casilla">
-              <p>Procesos</p>
-              <p>0.00</p>
-              <p>-</p>
-              <p>0.00</p>
-              <p>-</p>
-              <p>0.00</p>
-            </div>
-            <div class="casilla">
-              <p>Agregar Fila</p>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="casilla">
-              <p>Totales</p>
-              <p>-</p>
-              <p>-</p>
-              <p>-</p>
-              <p>-</p>
-              <p>0.00</p>
-            </div>
-            <div class="casilla">
-              <p>-</p>
-            </div>
-          </td>
-          <td>
-            <div class="casilla">
-              <p>-</p>
-              <p>-</p>
-              <p>-</p>
-              <p>-</p>
-              <p>-</p>
-              <p>0.00</p>
-            </div>
-            <div class="casilla">
-              <p>-</p>
-            </div>
-          </td>
-          <td>
-            <div class="casilla">
-              <p>-</p>
-              <p>-</p>
-              <p>-</p>
-              <p>-</p>
-              <p>-</p>
-              <p>0.00</p>
-            </div>
-            <div class="casilla">
-              <p>-</p>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
+<nav class="page-breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/estimacion tiempos/datosBasicos/unidad-funcional">Unidad Funcional</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Formulario: Unidad funcional</li>
+  </ol>
+</nav>
+
+
+<div class="spinner-wrapper " style="display: none;" id="con_spinner" name="con_spinner">
+<div class="spinner"></div>
+</div>
+
+<div class="row justify-content-center" id="occ">
+<div class="col-md-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h6 class="card-title">Nuevo Contenido de Unidad Funcional</h6>
+
+            <form [formGroup]="formCreaContenidoUfs" (ngSubmit)="onSubmit()">
+                <div class="form-row">
+                    <div class="form-group col-sm-12 col-md-6">
+                        <label for="nombreCaso">Nombre del Caso</label>
+                        <input type="text" formControlName="nombreCaso" class="form-control" id="nombreCaso" placeholder="Nombre del Caso">
+                        <div class="invalid-feedback" *ngIf="submitted && fc.nombreCaso.errors">
+                            <div *ngIf="fc.nombreCaso.errors.required">
+                                Este campo es requerido.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-12 col-md-6">
+                        <label for="porcentajeConstruccion">Porcentaje de Construcción</label>
+                        <input type="number" formControlName="porcentajeConstruccion" class="form-control" id="porcentajeConstruccion" placeholder="Porcentaje de Construcción">
+                        <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeConstruccion.errors">
+                            <div *ngIf="fc.porcentajeConstruccion.errors.required">
+                                Este campo es requerido.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-12 col-md-6">
+                        <label for="porcentajeDiseno">Porcentaje de Diseño</label>
+                        <input type="number" formControlName="porcentajeDiseno" class="form-control" id="porcentajeDiseno" placeholder="Porcentaje de Diseño">
+                        <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeDiseno.errors">
+                            <div *ngIf="fc.porcentajeDiseno.errors.required">
+                                Este campo es requerido.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-12 col-md-6">
+                        <label for="porcentajePruebas">Porcentaje de Pruebas</label>
+                        <input type="number" formControlName="porcentajePruebas" class="form-control" id="porcentajePruebas" placeholder="Porcentaje de Pruebas">
+                        <div class="invalid-feedback" *ngIf="submitted && fc.porcentajePruebas.errors">
+                            <div *ngIf="fc.porcentajePruebas.errors.required">
+                                Este campo es requerido.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-12 col-md-6">
+                        <label for="esfuerzo">Esfuerzo</label>
+                        <select formControlName="esfuerzo" class="form-control" id="esfuerzo">
+                            <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
+                            <option *ngFor="let esfuerzo of esfuerzos" [ngValue]="esfuerzo">{{ esfuerzo.nombre }}</option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="submitted && fc.esfuerzo.errors">
+                            <div *ngIf="fc.esfuerzo.errors.required">
+                                Este campo es requerido.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-12 col-md-6">
+                        <label for="funcion">Función</label>
+                        <select formControlName="funcion" class="form-control" id="funcion">
+                            <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
+                            <option *ngFor="let funcion of funciones" [ngValue]="funcion">{{ funcion.funcion }}</option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="submitted && fc.funcion.errors">
+                            <div *ngIf="fc.funcion.errors.required">
+                                Este campo es requerido.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-12 col-md-6">
+                        <label for="mantenimientoUnidad">Mantenimiento de Unidad</label>
+                        <select formControlName="mantenimientoUnidad" class="form-control" id="mantenimientoUnidad">
+                            <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
+                            <option *ngFor="let mantenimiento of mantenimientos" [ngValue]="mantenimiento">{{ mantenimiento.nombre }}</option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="submitted && fc.mantenimientoUnidad.errors">
+                            <div *ngIf="fc.mantenimientoUnidad.errors.required">
+                                Este campo es requerido.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                  <div class="col-12">
+                      <button id="btnGuardar" type="submit" class="btn btn-primary">Guardar y Continuar</button>
+                      <button id="btnCancelar" routerLink="/estimacion-tiempos/formulario-datosBasicos-proyecto" class="btn btn-light">Cancelar</button>
+                  </div>
+              </div>
+          </form>
+            <h1>Listado de Contenido de Unidad Funcional</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre del Caso</th>
+                        <th>Porcentaje de Construcción</th>
+                        <th>Porcentaje de Diseño</th>
+                        <th>Porcentaje de Pruebas</th>
+                        <th>Esfuerzo</th>
+                        <th>Función</th>
+                        <th>Mantenimiento de Unidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let contenido of contenidoUfsList">
+                        <td>{{ contenido.nombreCaso }}</td>
+                        <td>{{ contenido.porcentajeConstruccion }}</td>
+                        <td>{{ contenido.porcentajeDiseno }}</td>
+                        <td>{{ contenido.porcentajePruebas }}</td>
+                        <td>{{ contenido.esfuerzo.nombre }}</td>
+                        <td>{{ contenido.funcion.funcion }}</td>
+                        <td>{{ contenido.mantenimientoUnidad.nombre }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+
+

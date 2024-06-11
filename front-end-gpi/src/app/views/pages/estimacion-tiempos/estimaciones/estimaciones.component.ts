@@ -1,8 +1,16 @@
+
 import { Component, OnInit, ViewChild } from "@angular/core";
+import { MatCheckboxChange } from "@angular/material/checkbox";
 import { MatInput } from "@angular/material/input";
+import { MatSelectChange } from "@angular/material/select";
 import { MatSort, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ToastrService } from "ngx-toastr";
+import { EstadoPropuesta } from "src/app/Model/estado-propuesta";
+import { Proyecto } from "src/app/Model/proyecto";
+import { Cliente } from "src/app/model/cliente";
 import { EstimacionTiempos } from "src/app/model/estimacion-ufs";
 import { EstimacionTiempoService } from "src/app/service/estimacion-tiempos.service";
 
@@ -12,115 +20,243 @@ import { EstimacionTiempoService } from "src/app/service/estimacion-tiempos.serv
   styleUrls: ["./estimaciones.component.scss"],
 })
 export class EstimacionesTiempoComponent implements OnInit {
+ 
   estimaciones: EstimacionTiempos[] = [];
-  dataSource: MatTableDataSource<EstimacionTiempos>;
+  proyectos: Proyecto[] = [];
+  client: Cliente[] = [];
+  estadoPropues: EstadoPropuesta[] = [];
+  dataSource = new MatTableDataSource(this.castListObjectToStringList(this.estimaciones));
   estimacionesTexto: EstimacionesString[] = [];
+  idToDelete: number;
+  permissionP: boolean = true;
+  permissionF: boolean = true;
 
-  filtroProyecto: boolean = false;
-  filtroCliente: boolean = false;
-  filtroEstado: boolean = false;
-  mostrarFiltros: boolean = false;
-  @ViewChild('input', { static: false }) input: any;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  checked: boolean = false;
 
-  constructor(private estimacionTiempoService: EstimacionTiempoService, private router: Router) {}
+  proyectoFiltro: Proyecto[] = [];
+  clientesProyectos: Cliente[] = [];
+  pro: Proyecto[] = [];
+
+  estadoChecked: boolean = false;
+  clienteChecked: boolean = false;
+  proyectoChecked: boolean = false;
+
+  filtroEstadoPropuesta: string = '';
+  filtroClienteProyecto: string = '';
+  filtroEtapaProyecto: string = '';
+  limpiarFiltroEstado = '';
+  limpiarFiltroCliente = '';
+  limpiarFiltroProyecto = '';
+  filtroProyecto: string = '';
+  
+  constructor(private estimacionTiempoService: EstimacionTiempoService, 
+    private modalService: NgbModal,
+    private router: Router,
+    private toastr: ToastrService) { }
+
+    
+    @ViewChild(MatSort) sort: MatSort;
+
+    displayedColumns: string[] = ["id", "proyecto", "cliente", "estadoPropuesta", "ver", "editar", "eliminar"];
+
+    session = localStorage.getItem('session');
 
   ngOnInit(): void {
+    this.session = JSON.parse(this.session);
+    this.dataSource.sort = this.sort;
+
+    if (this.session['rol'] != 'ROL_ADMIN' && this.session['rol'] != 'ROL_LP' && this.session['rol'] != 'ROL_GP' && this.session['rol'] != 'ROL_DP') {
+        this.router.navigate(['/error']);
+        return;
+    }
+
     this.getEstimaciones();
-  }
+}
 
-  displayedColumns: string[] = ["id", "proyecto", "cliente", "estadopropuesta", "ver", "editar", "eliminar"];
+getEstimaciones() {
+  let estadoPropues = new Map();
+  let clienteProy = new Map();
+  let proProy = new Map();
 
-  getEstimaciones() {
-    this.estimacionTiempoService.getEstimacionTiempoList().subscribe(
-      (data) => {
-        this.estimaciones = data;
-        this.estimacionesTexto = this.castListObject(data);
-        this.dataSource = new MatTableDataSource(this.estimaciones);
-        this.dataSource.sort = this.sort;
-        this.dataSource.filterPredicate = this.createFilter();
-      },
-      (error) => console.log(error)
-    );
-  }
+  this.estimacionTiempoService.getEstimacionTiempoList().subscribe(
+    (data) => {
+      console.log('Datos recibidos:', data);
+      this.estimaciones = data;
 
-  createFilter(): (data: EstimacionTiempos, filter: string) => boolean {
-    return (data: EstimacionTiempos, filter: string): boolean => {
-      const transformedFilter = filter.trim().toLowerCase();
-      const filtroProyecto = data.proyecto.nombre.toLowerCase().includes(transformedFilter);
-      const filtroCliente = data.proyecto.cliente.nombre.toLowerCase().includes(transformedFilter);
-      const filtroEstado = data.proyecto.estadoPropuesta.estado.toLowerCase().includes(transformedFilter);
-      return filtroProyecto || filtroCliente || filtroEstado;
-    };
-  }
+      // Limpiar arreglos antes de agregar nuevos datos
+      this.proyectos = [];
+      this.client = [];
+      this.estadoPropues = [];
 
-  filtrar() {
-    const filtro = this.input.nativeElement.value.trim().toLowerCase();
-    this.dataSource.filter = filtro;
-  }
-
-  ver(row: any) {
-    this.router.navigate(['/estimaciones/ver-detalle', row.id]);
-  }
-
-  editar(row: any) {
-    this.router.navigate(['/estimaciones/editar-estimacion', row.id]);
-  }
-
-  eliminar(row: any) {
-    const confirmacion = confirm('¿Estás seguro de que deseas eliminar este elemento?');
-    if (confirmacion) {
-      console.log('Eliminar:', row);
-      this.dataSource.data = this.dataSource.data.filter(item => item.id !== row.id);
-      this.estimacionTiempoService.deleteEstimacionTiempoList(row.id).subscribe(response => {
-        console.log(response, 'respuesta al eliminar');
+      // Llenar mapas con datos de clientes, proyectos y estados de propuesta
+      this.estimaciones.forEach(estimacion => {
+        estadoPropues.set(estimacion.id, estimacion.proyecto.estadoPropuesta);
+        clienteProy.set(estimacion.id, estimacion.proyecto.cliente);
+        proProy.set(estimacion.id, estimacion.proyecto);
       });
-    }
-  }
 
-  sortData(sort: Sort) {
-    const data = this.dataSource.data.slice();
-    if (!sort.active || sort.direction === '') {
-      this.dataSource.data = data;
-      return;
-    }
-    data.sort((a, b) => {
-      const isAsc = sort.direction === 'asc';
-      return this.onCondition(sort.active, isAsc, a, b);
+      // Agregar proyectos y clientes únicos a los arreglos
+      proProy.forEach(proyecto => {
+        if (!this.proyectos.some(p => p.id === proyecto.id)) {
+          this.proyectos.push(proyecto);
+        }
+      });
+      clienteProy.forEach(cliente => {
+        if (!this.client.some(c => c.id === cliente.id)) {
+          this.client.push(cliente);
+        }
+      });
+      estadoPropues.forEach(estado => {
+        if (!this.estadoPropues.some(e => e.id === estado.id)) {
+          this.estadoPropues.push(estado);
+        }
+      });
+
+      // Asignar datos a dataSource
+      this.estimacionesTexto = this.castListObjectToStringList(data);
+      this.dataSource = new MatTableDataSource(this.estimacionesTexto);
+      this.dataSource.sort = this.sort;
+    },
+    (error) => console.log(error)
+  );
+}
+
+onSelectEstado(event: MatSelectChange) {
+  switch (event.source.id) {
+      case "estadPropues":
+          for (const value of Object.values(this.estadoPropues)) {
+              if (value.id == event.value) this.filtroEstadoPropuesta = value.estado;
+          }
+          break;
+      case "clienteProyec":
+          for (const value of Object.values(this.client)) {
+              if (value.id == event.value) this.filtroClienteProyecto = value.nombre;
+          }
+          break;
+      case "Proyec":
+          for (const value of Object.values(this.proyectos)) {
+              if (value.id == event.value) this.filtroProyecto = value.nombre;
+          }
+          break;
+  }
+  
+  let valoresValidos: EstimacionesString[] = [];
+  this.estimacionesTexto.forEach(row => {
+      let estadoPropuestaValido = this.estadoChecked ? row.estadoPropuesta == this.filtroEstadoPropuesta : true;
+      let clienteValido = this.clienteChecked ? row.cliente == this.filtroClienteProyecto : true;
+      let proyectoValido = this.proyectoChecked ? row.proyecto == this.filtroProyecto : true;
+
+      if (estadoPropuestaValido && clienteValido && proyectoValido) {
+          valoresValidos.push(row);
+      }
+  });
+  
+  this.dataSource.data = valoresValidos;
+}
+
+
+
+
+  filtrar(event: Event) {
+    const filtro = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filtro.trim().toLowerCase();
+}
+  clearFiltro(event: MatCheckboxChange) {
+    if (!event.checked) this.dataSource.data = this.estimacionesTexto;
+    this.filtroEstadoPropuesta = '';
+    this.filtroClienteProyecto = '';
+    this.filtroProyecto = '';
+    this.estadoChecked = false;
+    this.clienteChecked = false;
+    this.resetSelect();
+}
+  clearFiltroEstado(event: MatCheckboxChange) {
+    if (!event.checked) this.limpiarFiltroEstado = '';
+}
+clearFiltroCliente(event: MatCheckboxChange) {
+    if (!event.checked) this.limpiarFiltroCliente = '';
+}
+clearFiltroProyecto(event: MatCheckboxChange) {
+  if (!event.checked) this.limpiarFiltroProyecto = '';
+}
+
+resetSelect() {
+this.limpiarFiltroEstado = '';
+this.limpiarFiltroCliente = '';
+this.limpiarFiltroProyecto = '';
+}
+
+ver(row: any) {
+  this.router.navigate(['/estimaciones/ver-detalle', row.id]);
+}
+
+editar(row: any) {
+  this.router.navigate(['/estimaciones/editar-estimacion', row.id]);
+}
+
+eliminar(row: any) {
+  const confirmacion = confirm('¿Estás seguro de que deseas eliminar este elemento?');
+  if (confirmacion) {
+    console.log('Eliminar:', row);
+    this.dataSource.data = this.dataSource.data.filter(item => item.id !== row.id);
+    this.estimacionTiempoService.deleteEstimacionTiempoList(row.id).subscribe(response => {
+      console.log(response, 'respuesta al eliminar');
     });
-    this.dataSource.data = data;
   }
+}
 
-  compare(a: string | number, b: string | number, isAsc: boolean) {
-    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-  }
 
-  onCondition(activo: string, orden: boolean, a: EstimacionTiempos, b: EstimacionTiempos) {
-    switch (activo) {
-      case 'proyecto': return this.compare(a.proyecto.nombre, b.proyecto.nombre, orden);
-      case 'cliente': return this.compare(a.proyecto.cliente.nombre, b.proyecto.cliente.nombre, orden);
-      case 'estadopropuesta': return this.compare(a.proyecto.estadoPropuesta.estado, b.proyecto.estadoPropuesta.estado, orden);
-      default: return 0;
-    }
-  }
+sortData(sort: Sort) {
+const data = this.dataSource.data.slice();
+if (!sort.active || sort.direction === '') {
+this.dataSource.data = data;
+return;
+}
+console.log(data);
+data.sort((a, b) => {
+const isAsc = sort.direction === 'asc';
+return this.onCondition(sort.active, isAsc, a, b);
+});
+this.dataSource.data = data;
+}
 
-  castListObject(listObject: EstimacionTiempos[]): EstimacionesString[] {
-      let listString: EstimacionesString[] = [];
-      listObject.forEach((obj) => {
-        let string: EstimacionesString = new EstimacionesString();
-        string.id = obj.id;     
-        string.proyecto = obj.proyecto.nombre + "-" + obj.proyecto.descripcion;
-        string.cliente = obj.proyecto.cliente.nombre;
-        string.estadopropuesta = obj.proyecto.estadoPropuesta.estado;
-        listString.push(string);
-      });
-      return listString;
-  }
+compare(a: string | number, b: string | number, isAsc: boolean) {
+return a.toString().localeCompare(b.toString(), undefined, { numeric: true }) * (isAsc ? 1 : -1);
+}
+
+onCondition(activo: string, orden: boolean, a: EstimacionesString, b: EstimacionesString) {
+switch (activo) {
+case 'proyecto':
+return this.compare(a.proyecto, b.proyecto, orden);
+case 'cliente':
+return this.compare(a.cliente, b.cliente, orden);
+case 'estadopropuesta':
+return this.compare(a.estadoPropuesta, b.estadoPropuesta, orden);
+default:
+return 0;
+}
+}
+
+castListObjectToStringList(listObject: EstimacionTiempos[]) {
+  let listString: EstimacionesString[] = [];
+  listObject.forEach((obj) => {
+    let string: EstimacionesString = new EstimacionesString();
+    string.id = obj.id;
+
+    // Validación de las propiedades antes de usarlas
+    string.proyecto = (obj.proyecto.nombre || 'Nombre no disponible') + "-" + (obj.proyecto.descripcion || 'Descripción no disponible');
+    string.cliente = obj.proyecto.cliente.nombre || 'Nombre de cliente no disponible';
+    string.estadoPropuesta = obj.proyecto.estadoPropuesta.estado || 'Estado no disponible';
+
+    listString.push(string);
+  });
+  return listString;
+}
 }
 
 export class EstimacionesString {
   id: number;
   proyecto: string;
   cliente: string;
-  estadopropuesta: string;
+  estadoPropuesta: string;
 }
