@@ -177,8 +177,11 @@ const routes: Routes = [
             {
                 path: 'estimacion tiempos/formulario-datosBasicos-proyecto', component: formularioDatosBasicos
             },
-            { path: 'estimacion-tiempos/datosBasicos/unidad-funcional', component: formularioUnidadFuncional},
- 
+            { path: 'estimacion tiempos/datosBasicos/unidad-funcional', component: formularioUnidadFuncional },
+  // otras rutas
+  { path: '', redirectTo: '/unidad-funcional', pathMatch: 'full' }, // redirección por defecto
+  { path: '**', redirectTo: '/unidad-funcional' }, // redirección por rutas no definidas
+            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         ]
     },
     {

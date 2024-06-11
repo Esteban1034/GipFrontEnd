@@ -138,8 +138,6 @@ export class formularioUnidadFuncional implements OnInit {
           this.toastr.error('Error al crear el contenido de unidad funcional');
         }
       );
-    } else {
-      this.toastr.error('Por favor, complete el formulario correctamente');
     }
   }
 }
