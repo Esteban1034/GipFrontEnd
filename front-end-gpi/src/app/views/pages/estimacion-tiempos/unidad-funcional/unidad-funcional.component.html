@@ -83,6 +83,37 @@
                 </div>
               </div>
             </div>
+
+            <div class="form-group col-sm-12 col-md-6">
+              <label for="totalConstruccion">Total de Construcción</label>
+              <input type="number" formControlName="totalConstruccion" class="form-control" id="totalConstruccion" placeholder="Total de Construcción">
+              <div class="invalid-feedback" *ngIf="submitted && fc.totalConstruccion.errors">
+                <div *ngIf="fc.totalConstruccion.errors.required">
+                  Este campo es requerido.
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-sm-12 col-md-6">
+              <label for="totalDiseno">Total de Diseño</label>
+              <input type="number" formControlName="totalDiseno" class="form-control" id="totalDiseno" placeholder="Total de Diseño">
+              <div class="invalid-feedback" *ngIf="submitted && fc.totalDiseno.errors">
+                <div *ngIf="fc.totalDiseno.errors.required">
+                  Este campo es requerido.
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group col-sm-12 col-md-6">
+              <label for="totalPruebas">Total de Pruebas</label>
+              <input type="number" formControlName="totalPruebas" class="form-control" id="totalPruebas" placeholder="Total de Pruebas">
+              <div class="invalid-feedback" *ngIf="submitted && fc.totalPruebas.errors">
+                <div *ngIf="fc.totalPruebas.errors.required">
+                  Este campo es requerido.
+                </div>
+              </div>
+            </div>
+            
+            
             <div class="form-group col-sm-12 col-md-6">
               <label for="mantenimientoUnidad">Mantenimiento de Unidad</label>
               <select formControlName="mantenimientoUnidad" class="form-control" id="mantenimientoUnidad">
@@ -111,6 +142,10 @@
               <th>Porcentaje de Construcción</th>
               <th>Porcentaje de Diseño</th>
               <th>Porcentaje de Pruebas</th>
+              <th>totalConstruccion</th>
+              <th>totalDiseno</th>
+              <th>totalPruebas</th>      
+         
               <th>Esfuerzo</th>
               <th>Función</th>
               <th>Mantenimiento de Unidad</th>
@@ -122,10 +157,14 @@
               <td>{{ contenido.porcentajeConstruccion }}</td>
               <td>{{ contenido.porcentajeDiseno }}</td>
               <td>{{ contenido.porcentajePruebas }}</td>
+              <td>{{ contenido.totalConstruccion }}</td>
+              <td>{{ contenido.totalDiseno }}</td>
+              <td>{{ contenido.totalPruebas }}</td>
               <td>{{ contenido.esfuerzo.nombre }}</td>
               <td>{{ contenido.funcion.funcion }}</td>
               <td>{{ contenido.mantenimientoUnidad.nombre }}</td>
             </tr>
+          
           </tbody>
         </table>
       </div>

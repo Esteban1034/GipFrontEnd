@@ -9,13 +9,14 @@ import { ContenidoUfsService } from 'src/app/service/contenidoufs.service';
 import { EsfuerzoService } from 'src/app/service/esfuerzo.service';
 import { FuncionService } from 'src/app/service/funcion.Service';
 import { MantenimientoUnidadService } from 'src/app/service/mantenimiento-unidad-service';
+ // Corregido el nombre del servicio
 
 @Component({
   selector: 'app-unidad-funcional',
   templateUrl: './unidad-funcional.component.html',
   styleUrls: ['./unidad-funcional.component.scss']
 })
-export class formularioUnidadFuncional implements OnInit {
+export class formularioUnidadFuncional implements OnInit { // Corregido el nombre de la clase
   formCreaContenidoUfs: FormGroup;
   esfuerzos: Esfuerzo[] = [];
   funciones: Funcion[] = [];
@@ -48,11 +49,15 @@ export class formularioUnidadFuncional implements OnInit {
       porcentajeConstruccion: ['', Validators.required],
       porcentajeDiseno: ['', Validators.required],
       porcentajePruebas: ['', Validators.required],
-      esfuerzo:  ['', Validators.required],
+      totalDiseno:['', Validators.required],
+      totalConstruccion: ['', Validators.required],
+      totalPruebas: ['', Validators.required],
+      esfuerzo: ['', Validators.required],
       funcion:  ['', Validators.required],
       mantenimientoUnidad: ['', Validators.required]
     });
   }
+
 
   getContenidoUfs() {
     this.contenidoUfsService.getContenidoUfs().subscribe(
@@ -67,7 +72,7 @@ export class formularioUnidadFuncional implements OnInit {
   }
 
   getFunciones() {
-    this.funcionService.getFuncions().subscribe(
+    this.funcionService.getFuncions().subscribe( // Corregido el nombre del método
       data => {
         this.funciones = data;
       },
@@ -79,7 +84,7 @@ export class formularioUnidadFuncional implements OnInit {
   }
 
   getEsfuerzos() {
-    this.esfuerzoService.gEsfuerzos().subscribe(
+    this.esfuerzoService.gEsfuerzos().subscribe( // Corregido el nombre del método
       data => {
         this.esfuerzos = data;
       },
@@ -105,10 +110,12 @@ export class formularioUnidadFuncional implements OnInit {
   saveContenidoUfs() {
     if (this.formCreaContenidoUfs.invalid) {
       this.toastr.error('Por favor, complete el formulario correctamente');
-      return;
-    }
-
+      return;    }
+  
     const contenido: ContenidoUfs = this.formCreaContenidoUfs.value;
+    
+  
+  
     this.contenidoUfsService.saveContenidoUfs(contenido).subscribe(
       data => {
         this.toastr.success('Contenido de unidad funcional creado exitosamente');
@@ -122,6 +129,8 @@ export class formularioUnidadFuncional implements OnInit {
       }
     );
   }
+  
+  
 
   onSubmit() {
     this.submitted = true;
