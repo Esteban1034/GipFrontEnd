@@ -14,8 +14,5 @@ export class ContenidoUfs{
     esfuerzo: Esfuerzo;
     funcion: Funcion;
     mantenimientoUnidad: MantenimientoUnidad;
- 
-  
-
   
 }
