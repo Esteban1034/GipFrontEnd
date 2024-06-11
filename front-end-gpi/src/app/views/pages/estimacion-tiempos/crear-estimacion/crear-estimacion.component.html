@@ -114,9 +114,14 @@
                       <div class="col-12">
                         <button routerLink="/estimacion tiempos/datosBasicos/unidad-funcional" type="submit" id="btnContinuar" class="btn btn-primary">Continuar</button>
                           <button id="btnGuardar" type="submit" class="btn btn-primary">Guardar</button>
-                          <button id="btnCancelar" routerLink="/proyectos" class="btn btn-light">Cancelar</button>
+                          <button id="btnCancelar" routerLink="/estimacion tiempos/estimaciones" class="btn btn-light">Cancelar</button>
                       </div>
                   </div>
+              </form>
+              <form *ngIf="validatorBtn(btnContinue) == true" [formGroup]="formDatosIniciales" (ngSubmit)="onSubmit()">
+                <div class="col-12-btnContinuar">
+                    <button id="btnContinuar" routerLink="" class="btn btn-primary">Continuar</button>
+                </div>
               </form>                         
           </div>
       </div>
