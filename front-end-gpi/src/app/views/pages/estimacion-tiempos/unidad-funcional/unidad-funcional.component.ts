@@ -1,60 +1,75 @@
-<<<<<<< HEAD
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { ContenidoUfs } from 'src/app/model/contenido-ufs';
 import { Esfuerzo } from 'src/app/model/esfuerzo';
 import { Funcion } from 'src/app/model/funcion';
 import { MantenimientoUnidad } from 'src/app/model/mantenimiento-unidad';
-
 import { ContenidoUfsService } from 'src/app/service/contenidoufs.service';
+import { MantenimientoUnidadService } from 'src/app/service/mantenimiento-unidad-service';
 
 @Component({
   selector: 'app-unidad-funcional',
   templateUrl: './unidad-funcional.component.html',
   styleUrls: ['./unidad-funcional.component.scss']
 })
-export class UnidadFuncionalComponent implements OnInit {
-  esfuerzo: Esfuerzo[] = []; 
-  funcion: Funcion[] = []; 
-  mantenimientoUnidad: MantenimientoUnidad[] = []; 
+export class formularioUnidadFuncional implements OnInit {
+  formCreaContenidoUfs: FormGroup;
+  esfuerzos: Esfuerzo[] = [];
+  funciones: Funcion[] = [];
+  mantenimientos: MantenimientoUnidad[] = [];
   contenidoUfsList: ContenidoUfs[] = [];
-  contenidoUfsForm: FormGroup;
   submitted: boolean = false;
 
   constructor(
-    private contenidoUfsService: ContenidoUfsService,
     private formBuilder: FormBuilder,
-    private router: Router
-  ) { } 
+    private contenidoUfsService: ContenidoUfsService,
+    private mantenimientoUnidadService: MantenimientoUnidadService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
-    this.contenidoUfsForm = this.formBuilder.group({
+    this.buildForm();
+    this.getEsfuerzoData();
+    this.getFuncionData();
+    this.getMantenimiento();
+    this.getContenidoUfs();
+  }
+
+  get fc() { return this.formCreaContenidoUfs.controls; }
+
+  buildForm() {
+    this.formCreaContenidoUfs = this.formBuilder.group({
       nombreCaso: ['', Validators.required],
       porcentajeConstruccion: ['', Validators.required],
       porcentajeDiseno: ['', Validators.required],
       porcentajePruebas: ['', Validators.required],
-      totalConstruccion: ['', Validators.required],
-      totalDiseno: ['', Validators.required],
-      totalPruebas: ['', Validators.required],
-      fkEsfuerzo: ['', Validators.required],
-      fkFuncion: ['', Validators.required],
-      fkMantenimientoUnidad: ['', Validators.required]
+      esfuerzo: [null], // Permitir que esfuerzo sea nulo
+      funcion: [null], // Permitir que funcion sea nulo
+      mantenimientoUnidad: ['', Validators.required]
     });
+  }
 
-    this.getEsfuerzoData();
-    this.getFuncionData();
-    this.getMantenimiento();
-    this.getContenidoUfsList();    
+  getContenidoUfs() {
+    this.contenidoUfsService.getContenidoUfs().subscribe(
+      data => {
+        this.contenidoUfsList = data;
+      },
+      error => {
+        console.log(error);
+        this.toastr.error('Error al obtener los datos de contenido de unidades funcionales');
+      }
+    );
   }
 
   getEsfuerzoData() {
     this.contenidoUfsService.getEsfuerzoData().subscribe(
       data => {
-        this.esfuerzo = data;
+        this.esfuerzos = data;
       },
       error => {
-        console.error('Error obteniendo datos de esfuerzo', error);
+        console.log(error);
+        this.toastr.error('Error al obtener los datos de esfuerzo');
       }
     );
   }
@@ -62,61 +77,69 @@ export class UnidadFuncionalComponent implements OnInit {
   getFuncionData() {
     this.contenidoUfsService.getFuncionData().subscribe(
       data => {
-        this.funcion = data;
+        this.funciones = data;
       },
       error => {
-        console.error('Error obteniendo datos de función', error);
+        console.log(error);
+        this.toastr.error('Error al obtener los datos de función');
       }
     );
   }
 
   getMantenimiento() {
-    this.contenidoUfsService.getMantenimiento().subscribe(
+    this.mantenimientoUnidadService.getMantenimientos().subscribe(
       data => {
-        this.mantenimientoUnidad = data;
+        this.mantenimientos = data;
       },
       error => {
-        console.error('Error obteniendo datos de mantenimientoUnidad', error);
+        console.log(error);
+        this.toastr.error('Error al obtener los datos de mantenimiento');
       }
     );
   }
-  
 
-  getContenidoUfsList() {
-    this.contenidoUfsService.getContenidoUfs().subscribe(
+
+  saveContenidoUfs() {
+    if (this.formCreaContenidoUfs.invalid) {
+      this.toastr.error('Por favor, complete el formulario correctamente');
+      return;
+    }
+
+    const contenido: ContenidoUfs = this.formCreaContenidoUfs.value;
+    this.contenidoUfsService.saveContenidoUfs(contenido).subscribe(
       data => {
-        this.contenidoUfsList = data;
+        this.toastr.success('Contenido de unidad funcional creado exitosamente');
+        this.formCreaContenidoUfs.reset();
+        this.submitted = false;
+        this.getContenidoUfs();
       },
       error => {
-        console.error('Error obteniendo lista de ContenidoUfs', error);
+        console.log(error);
+        this.toastr.error('Error al crear el contenido de unidad funcional');
       }
     );
   }
+
 
   onSubmit() {
-    if (this.contenidoUfsForm.valid) {
-      const newContenidoUfs: ContenidoUfs = this.contenidoUfsForm.value;
-      this.contenidoUfsService.saveContenidoUfs(newContenidoUfs).subscribe(
+    this.submitted = true;
+
+    if (this.formCreaContenidoUfs.valid) {
+      const contenidoUfs: ContenidoUfs = this.formCreaContenidoUfs.value;
+      this.contenidoUfsService.saveContenidoUfs(contenidoUfs).subscribe(
         response => {
-          console.log('ContenidoUfs creado', response);
-          this.router.navigate(['/ruta-deseada']);  
+          this.toastr.success('Contenido de unidad funcional creado exitosamente');
+          this.formCreaContenidoUfs.reset();
+          this.submitted = false;
+          this.getContenidoUfs();
         },
         error => {
-          console.error('Error creando ContenidoUfs', error);
+          console.log(error);
+          this.toastr.error('Error al crear el contenido de unidad funcional');
         }
       );
+    } else {
+      this.toastr.error('Por favor, complete el formulario correctamente');
     }
   }
 }
-=======
-import { Component, OnInit, ViewChild } from "@angular/core";
-
-
-@Component({
-    selector: "app-unidad-funcional",
-    templateUrl: "./unidad-funcional.component.html",
-    styleUrls: ["./unidad-funcional.component.scss"],})
-
-
-  
->>>>>>> 37ab1a1c71508892d6579bcdd0dcf087cfaa0b91

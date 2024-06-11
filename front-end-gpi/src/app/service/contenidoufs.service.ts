@@ -21,9 +21,8 @@ export class ContenidoUfsService {
     return this.httpClient.get<Esfuerzo[]>(`${this.baseUrl}`, { headers: this.header });
   }  getFuncionData(): Observable<Funcion[]> {
     return this.httpClient.get<Funcion[]>(`${this.baseUrl}`, { headers: this.header });
-  }  getMantenimiento(): Observable<MantenimientoUnidad[]> {
-    return this.httpClient.get<MantenimientoUnidad[]>(`${this.baseUrl}`, { headers: this.header });
-  }
+  }  
+  
   getContenidoUfs(): Observable<ContenidoUfs[]> {
     return this.httpClient.get<ContenidoUfs[]>(`${this.baseUrl}`, { headers: this.header });
   }

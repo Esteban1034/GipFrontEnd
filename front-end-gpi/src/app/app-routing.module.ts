@@ -43,7 +43,7 @@ import { mantenimiento_peso } from './views/pages/estimacion-tiempos/mantenimien
 import { Mantenimiento_unidadprogramacion } from './views/pages/estimacion-tiempos/mantenimiento-unidad-programacion/mantenimiento-unidad-programacion.component';
 import { formularioDatosBasicos } from './views/pages/estimacion-tiempos/datosBasicos/datosBasicos.component';
 import { crear_estimacion } from './views/pages/estimacion-tiempos/crear-estimacion/crear-estimacion.component';
-import { UnidadFuncionalComponent } from './views/pages/estimacion-tiempos/unidad-funcional/unidad-funcional.component';
+import { formularioUnidadFuncional } from './views/pages/estimacion-tiempos/unidad-funcional/unidad-funcional.component';
 
 const routes: Routes = [
     { path: 'auth', loadChildren: () => import('./views/pages/auth/auth.module').then(m => m.AuthModule) },
@@ -177,11 +177,8 @@ const routes: Routes = [
             {
                 path: 'estimacion tiempos/formulario-datosBasicos-proyecto', component: formularioDatosBasicos
             },
-            { path: 'unidad-funcional', component: UnidadFuncionalComponent },
-  // otras rutas
-  { path: '', redirectTo: '/unidad-funcional', pathMatch: 'full' }, // redirección por defecto
-  { path: '**', redirectTo: '/unidad-funcional' }, // redirección por rutas no definidas
-            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+            { path: 'estimacion-tiempos/datosBasicos/unidad-funcional', component: formularioUnidadFuncional},
+ 
         ]
     },
     {
