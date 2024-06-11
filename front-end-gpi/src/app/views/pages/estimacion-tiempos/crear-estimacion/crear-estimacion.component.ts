@@ -46,7 +46,10 @@ export class crear_estimacion  implements OnInit {
 
     proyectos: Proyecto[]=[];
     TiEsP:Proyecto;
-    
+
+    //
+    btnContinue = false;
+    //
 
     //EstadoProyectos: EstadoProyecto[]=[];
     //TiEsEst:EstadoProyecto;
@@ -100,6 +103,9 @@ export class crear_estimacion  implements OnInit {
        this.getEstadosProyecto();
        this.getTipoProyecto();
       ///////////////////// 
+        //
+        this.validatorBtn(this.btnContinue);
+        //
     }
 
     get fp() { return this.formCreaEstimacion.controls; }
@@ -134,6 +140,14 @@ export class crear_estimacion  implements OnInit {
         ]],
      })
     }
+
+    //
+    validatorBtn(btnContinue: boolean){
+        if (this.formDatosIniciales.valid) {
+            return btnContinue != true;
+        };
+    }
+    //
 
     getModelos() {
         this.modeloService.getAllModelos().subscribe(data => {
