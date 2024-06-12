@@ -35,9 +35,13 @@ table {
         vertical-align: middle;
     }
 
-    #btnContinuar {
+    .col-12-btnContinuar{
+      text-align: center
+}
+
+  #btnGuardar {
       width: 100%;
-  }
+}
   
   #btnCancelar {
       width     : 100%;
@@ -47,7 +51,7 @@ table {
   
   // Small devices (landscape phones, 576px and up)
   @media (min-width: 576px) {
-      #btnContinuar {
+      #btnGuardar {
           width: auto;
       }
   
@@ -56,4 +60,5 @@ table {
           margin-top : 0px;
           margin-left: 5px;
       }
+
   }

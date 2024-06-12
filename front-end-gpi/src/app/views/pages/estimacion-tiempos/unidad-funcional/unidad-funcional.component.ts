@@ -6,14 +6,17 @@ import { Esfuerzo } from 'src/app/model/esfuerzo';
 import { Funcion } from 'src/app/model/funcion';
 import { MantenimientoUnidad } from 'src/app/model/mantenimiento-unidad';
 import { ContenidoUfsService } from 'src/app/service/contenidoufs.service';
+import { EsfuerzoService } from 'src/app/service/esfuerzo.service';
+import { FuncionService } from 'src/app/service/funcion.Service';
 import { MantenimientoUnidadService } from 'src/app/service/mantenimiento-unidad-service';
+ // Corregido el nombre del servicio
 
 @Component({
   selector: 'app-unidad-funcional',
   templateUrl: './unidad-funcional.component.html',
   styleUrls: ['./unidad-funcional.component.scss']
 })
-export class formularioUnidadFuncional implements OnInit {
+export class formularioUnidadFuncional implements OnInit { // Corregido el nombre de la clase
   formCreaContenidoUfs: FormGroup;
   esfuerzos: Esfuerzo[] = [];
   funciones: Funcion[] = [];
@@ -25,13 +28,15 @@ export class formularioUnidadFuncional implements OnInit {
     private formBuilder: FormBuilder,
     private contenidoUfsService: ContenidoUfsService,
     private mantenimientoUnidadService: MantenimientoUnidadService,
+    private funcionService: FuncionService,
+    private esfuerzoService: EsfuerzoService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
     this.buildForm();
-    this.getEsfuerzoData();
-    this.getFuncionData();
+    this.getEsfuerzos();
+    this.getFunciones();
     this.getMantenimiento();
     this.getContenidoUfs();
   }
@@ -44,11 +49,15 @@ export class formularioUnidadFuncional implements OnInit {
       porcentajeConstruccion: ['', Validators.required],
       porcentajeDiseno: ['', Validators.required],
       porcentajePruebas: ['', Validators.required],
-      esfuerzo: [null], // Permitir que esfuerzo sea nulo
-      funcion: [null], // Permitir que funcion sea nulo
+      totalDiseno:['', Validators.required],
+      totalConstruccion: ['', Validators.required],
+      totalPruebas: ['', Validators.required],
+      esfuerzo: ['', Validators.required],
+      funcion:  ['', Validators.required],
       mantenimientoUnidad: ['', Validators.required]
     });
   }
+
 
   getContenidoUfs() {
     this.contenidoUfsService.getContenidoUfs().subscribe(
@@ -62,26 +71,26 @@ export class formularioUnidadFuncional implements OnInit {
     );
   }
 
-  getEsfuerzoData() {
-    this.contenidoUfsService.getEsfuerzoData().subscribe(
-      data => {
-        this.esfuerzos = data;
-      },
-      error => {
-        console.log(error);
-        this.toastr.error('Error al obtener los datos de esfuerzo');
-      }
-    );
-  }
-
-  getFuncionData() {
-    this.contenidoUfsService.getFuncionData().subscribe(
+  getFunciones() {
+    this.funcionService.getFuncions().subscribe( // Corregido el nombre del método
       data => {
         this.funciones = data;
       },
       error => {
         console.log(error);
-        this.toastr.error('Error al obtener los datos de función');
+        this.toastr.error('Error al obtener los datos de funciones');
+      }
+    );
+  }
+
+  getEsfuerzos() {
+    this.esfuerzoService.gEsfuerzos().subscribe( // Corregido el nombre del método
+      data => {
+        this.esfuerzos = data;
+      },
+      error => {
+        console.log(error);
+        this.toastr.error('Error al obtener los datos de esfuerzos');
       }
     );
   }
@@ -98,14 +107,15 @@ export class formularioUnidadFuncional implements OnInit {
     );
   }
 
-
   saveContenidoUfs() {
     if (this.formCreaContenidoUfs.invalid) {
       this.toastr.error('Por favor, complete el formulario correctamente');
-      return;
-    }
-
+      return;    }
+  
     const contenido: ContenidoUfs = this.formCreaContenidoUfs.value;
+    
+  
+  
     this.contenidoUfsService.saveContenidoUfs(contenido).subscribe(
       data => {
         this.toastr.success('Contenido de unidad funcional creado exitosamente');
@@ -119,25 +129,14 @@ export class formularioUnidadFuncional implements OnInit {
       }
     );
   }
-
+  
+  
 
   onSubmit() {
     this.submitted = true;
 
     if (this.formCreaContenidoUfs.valid) {
-      const contenidoUfs: ContenidoUfs = this.formCreaContenidoUfs.value;
-      this.contenidoUfsService.saveContenidoUfs(contenidoUfs).subscribe(
-        response => {
-          this.toastr.success('Contenido de unidad funcional creado exitosamente');
-          this.formCreaContenidoUfs.reset();
-          this.submitted = false;
-          this.getContenidoUfs();
-        },
-        error => {
-          console.log(error);
-          this.toastr.error('Error al crear el contenido de unidad funcional');
-        }
-      );
+      this.saveContenidoUfs();
     }
   }
 }

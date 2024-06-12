@@ -12,16 +12,12 @@ import { Esfuerzo } from '../model/esfuerzo';
   providedIn: 'root'
 })
 export class ContenidoUfsService {
-  private baseUrl = environment.baseUrl + "/contenido-ufs";
+  private baseUrl = `${environment.baseUrl}/contenido-ufs`;
 
   constructor(private httpClient: HttpClient, private headers: HttpHeaderApp) { }
 
   private header = this.headers.headerPrivate();
-  getEsfuerzoData(): Observable<Esfuerzo[]> {
-    return this.httpClient.get<Esfuerzo[]>(`${this.baseUrl}`, { headers: this.header });
-  }  getFuncionData(): Observable<Funcion[]> {
-    return this.httpClient.get<Funcion[]>(`${this.baseUrl}`, { headers: this.header });
-  }  
+ 
   
   getContenidoUfs(): Observable<ContenidoUfs[]> {
     return this.httpClient.get<ContenidoUfs[]>(`${this.baseUrl}`, { headers: this.header });
