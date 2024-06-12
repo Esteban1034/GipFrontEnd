@@ -241,8 +241,6 @@ export class UpdateRecursoComponent implements OnInit {
         this.empleadoRolSave.usuarioRoles[0].rol.submenuRoles = [];
         this.empleadoRolSave.empleado = this.empleado;
 
-        console.log(this.empleadoRolSave);
-
         this.showSpinner();
         this.empleadoService.updateEmpleado(this.id, this.empleadoRolSave).subscribe(data => {
             this.toastr.info('Recurso actualizado correctamente.');
@@ -292,7 +290,6 @@ export class UpdateRecursoComponent implements OnInit {
 
 
         this.novedadService.createNovedad(this.newNovedad).subscribe(data => {
-            console.log(data);
             this.hideNovedadModal();
             this.toastr.success('Novedad agregada correctamente.');
             this.newNovedad = new Novedad();
@@ -349,7 +346,6 @@ export class UpdateRecursoComponent implements OnInit {
         }
 
         this.especialidadEmpService.createEmpleadoEspecialidad(this.newEspecialidad).subscribe(data => {
-            console.log(data);
             this.toastr.success("Especialidad agregada correctamente.");
             this.hideEspecialidadModal();
             this.findEspecialidadesByEmpleado();
@@ -359,7 +355,6 @@ export class UpdateRecursoComponent implements OnInit {
 
     deleteEspecialidad(id: number) {
         this.especialidadEmpService.deleteEmpleadoEspecialidad(id).subscribe(data => {
-            console.log(data);
             this.toastr.warning("Especialidad eliminada correctamente.");
             this.findEspecialidadesByEmpleado();
         }, error => console.log(error));
@@ -369,8 +364,6 @@ export class UpdateRecursoComponent implements OnInit {
         this.findEspecialidadesByEmpleado();
 
         for (let i = 0; i < this.especialidadesEmp.length; i++) {
-            console.log(this.especialidadesEmp[i].especialidad.id);
-            console.log(especialidad.especialidad.id);
             if (this.especialidadesEmp[i].especialidad.id == especialidad.especialidad.id) {
                 return true;
             }
@@ -401,12 +394,10 @@ export class UpdateRecursoComponent implements OnInit {
         if (this.cargoForm.invalid) {
             return;
         }
-        console.log(this.newCargo.id);
         this.cargoService.createCargo(this.newCargo).subscribe(data => {
             this.toastr.success('Cargo guardado correctamente!');
             this.modalService.dismissAll();
             this.newCargo = new Cargo();
-            console.log(data);
 
             this.cargoService.getCargosList().subscribe(data => {
                 this.cargos = data;
@@ -424,7 +415,6 @@ export class UpdateRecursoComponent implements OnInit {
 
     deleteCargo() {
         this.cargoService.deleteCargo(this.idToDelete).subscribe(data => {
-            console.log(data);
             this.idToDelete = undefined;
             this.modalService.dismissAll();
             this.toastr.warning('Cargo eliminado correctamente!');
@@ -449,7 +439,6 @@ export class UpdateRecursoComponent implements OnInit {
 
     getRolesByEmpleado() {
         this.empRolService.findByEmpleado(this.id).subscribe(data => {
-            console.log(data);
             this.addedRoles = data;
         }, error => {
             console.log(error);
@@ -481,7 +470,6 @@ export class UpdateRecursoComponent implements OnInit {
 
     removeRol(id: number) {
         this.empRolService.delete(id).subscribe(data => {
-            console.log(data);
             this.toastr.warning('Rol eliminado correctamente');
             this.getRolesByEmpleado();
         }, error => {

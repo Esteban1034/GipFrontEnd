@@ -70,7 +70,6 @@ export class FormProyectoIntComponent implements OnInit {
 
     getClientes() {
         this.clienteService.getClientesList().subscribe(data => {
-            console.log(data);
             this.clientes = data;
         }, error => {
             console.log(error);
@@ -79,7 +78,6 @@ export class FormProyectoIntComponent implements OnInit {
 
     getEtapas() {
         this.etapaService.getEtapasList().subscribe(data => {
-            console.log(data);
             this.etapas = data;
         }, error => {
             console.log(error);
@@ -88,7 +86,6 @@ export class FormProyectoIntComponent implements OnInit {
 
     getTipos() {
         this.tipoService.getTiposList().subscribe(data => {
-            console.log(data);
             this.tipos = data;
         }, error => {
             console.log(error);
@@ -97,7 +94,6 @@ export class FormProyectoIntComponent implements OnInit {
 
     getComponentes() {
         this.componenteService.getComponentesList().subscribe(data => {
-            console.log(data);
             this.componentes = data;
         }, error => {
             console.log(error);
@@ -106,7 +102,6 @@ export class FormProyectoIntComponent implements OnInit {
 
     getEstadosProp() {
         this.estadoPropService.getEstadosList().subscribe(data => {
-            console.log(data);
             this.estadosProp = data;
         }, error => {
             console.log(error);
@@ -115,7 +110,6 @@ export class FormProyectoIntComponent implements OnInit {
 
     getEstadosProy() {
         this.estadoProyService.getEstadosList().subscribe(data => {
-            console.log(data);
             this.estadosProy = data;
         }, error => {
             console.log(error);
@@ -124,7 +118,6 @@ export class FormProyectoIntComponent implements OnInit {
 
     getDirectoresIts() {
         this.empleadoService.getDirectorIts().subscribe(data => {
-            console.log(data);
             this.directoresIts = data;
         }, error => {
             console.log(error);
@@ -133,7 +126,6 @@ export class FormProyectoIntComponent implements OnInit {
 
     getLideres() {
         this.empleadoService.getLideres().subscribe(data => {
-            console.log(data);
             this.lideres = data;
         }, error => {
             console.log(error);
@@ -203,7 +195,6 @@ export class FormProyectoIntComponent implements OnInit {
         this.proyecto.interno = true;
         this.proyecto.creador = this.session['nombre'];
         this.proyectoService.saveProyectoInt(this.proyecto).subscribe(data => {
-            console.log(data);
             this.proyecto = new Proyecto();
             this.toastr.success('Proyecto guardado correctamente!');
             this.router.navigate(['/proyectos/internos']);

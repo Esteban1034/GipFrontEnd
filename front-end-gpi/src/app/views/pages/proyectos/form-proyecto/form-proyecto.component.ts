@@ -257,7 +257,6 @@ export class FormProyectoComponent implements OnInit {
 
     removeTipo() {
         this.tipoService.deleteTipo(this.idToDelete).subscribe(data => {
-            console.log(data);
             this.idToDelete = undefined;
             this.modalDeleteTipo.close();
             this.toastr.warning('Tipo eliminado correctamente!');

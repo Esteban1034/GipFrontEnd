@@ -220,7 +220,6 @@ export class ReporteTiemposReportadosEmpleadoComponent implements OnInit {
       .subscribe(
         (data) => {
           this.reportes = data;
-          console.log(this.reportes);
 
           if (this.reportes.length == 0) {
             return this.toastr.info(

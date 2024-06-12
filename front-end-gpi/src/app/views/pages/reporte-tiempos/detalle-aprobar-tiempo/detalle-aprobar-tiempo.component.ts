@@ -40,7 +40,6 @@ export class DetalleAprobarTiempoComponent implements OnInit {
             console.log(error);
             this.toastr.error(error.error.message);
             if (!this.reporte.hasOwnProperty('id')) {
-                console.log('Está vacio');
                 this.router.navigate(['reporte-tiempo/nuevo']);
             }
         });
@@ -61,7 +60,6 @@ export class DetalleAprobarTiempoComponent implements OnInit {
 
         this.reporteService.aprobar(this.id, f, this.session["id"]).subscribe(data => {
             this.toastr.success('Reporte aprobado correctamente');
-            console.log(this.session);
             this.goToAprobarTiempoList();
         }, error => {
             console.log(error);

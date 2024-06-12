@@ -265,7 +265,6 @@ export class ReporteProyectoRecursoComponent implements OnInit {
           document.getElementById("occ").style.display = "block";
 
           this.reportes = data;
-          console.log("Reportes ProyectoRecursos", data);
 
           let sumHoras: ReporteProyectoRecurso = new ReporteProyectoRecurso();
           sumHoras.horasReportadas = 0;

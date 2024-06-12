@@ -167,9 +167,6 @@ export class ReporteTiempoClienteComponent implements OnInit {
         fechaInicio.setDate(fechaInicio.getDate() + 1);
         fechaFin.setDate(fechaFin.getDate() + 1);
 
-        console.log(fechaInicio);
-        console.log(fechaFin);
-
         if (fechaInicio.getTime() > fechaFin.getTime()) {
             return this.errorMsj = "La fecha Inicio no debe ser mayor a la fecha Fin.";
         }
@@ -193,7 +190,6 @@ export class ReporteTiempoClienteComponent implements OnInit {
                 return this.toastr.info("No se encontraron resultados en la busqueda.");
 
             }
-            console.log(this.reportes);
         }, error => {
 
             console.log(error);

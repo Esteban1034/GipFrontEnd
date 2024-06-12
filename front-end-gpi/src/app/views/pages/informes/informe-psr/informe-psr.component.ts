@@ -116,7 +116,6 @@ export class InformePsrComponent implements OnInit {
 
   ngOnInit(): void {
     this.getEjeX().then(function (item1) {
-      console.log(item1)
     })
 
     this.getEjeX().then(item1 => {

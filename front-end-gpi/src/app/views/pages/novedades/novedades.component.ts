@@ -29,8 +29,6 @@ export class NovedadesComponent implements OnInit {
         this.novedadService.getNovedadesList().subscribe(data => {
             this.novedades = data;
             this.dataSource = new MatTableDataSource(this.castListObjectToStringList(this.novedades));
-            console.log("DATA SOURCEEE NOVEDADES");
-            console.log(this.dataSource);
         }, error => console.log(error));
     }
 

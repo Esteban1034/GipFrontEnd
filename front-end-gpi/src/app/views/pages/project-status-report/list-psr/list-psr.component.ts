@@ -124,8 +124,6 @@ export class ListPsrComponent implements OnInit {
             .pipe(finalize(() => this.validarPsrVisualizada())
             ).subscribe(data => {
                 this.projectStatusReports = data;
-                console.log("PSRSSSSSSS");
-                console.log(this.projectStatusReports);
                 this.dataSource = new MatTableDataSource(this.castListObjectToStringList(this.projectStatusReports));
                 this.dataSource.sort = this.sort;
             }, error => console.log(error));
@@ -136,7 +134,6 @@ export class ListPsrComponent implements OnInit {
             //.pipe(finalize(() => this.validarPsrVisualizada()))
             .subscribe(data => {
                 this.notasSemanales = data;
-                console.log(this.notasSemanales);
             }, error => console.log(error));
     }
 
@@ -146,7 +143,6 @@ export class ListPsrComponent implements OnInit {
             //.pipe(finalize(() => this.validarPsrVisualizada()))
             .subscribe(data => {
                 this.notasSemanales = data;
-                console.log(this.notasSemanales);
             }, error => console.log(error));
     }
 

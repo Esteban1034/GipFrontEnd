@@ -219,7 +219,6 @@ export class PlaneacionComponent implements OnInit {
         }
 
         this.actividadService.findByFase(this.selectedFase.id).subscribe(data => {
-            console.log('ACTIVIDADES', data);
             this.actividades = data.sort((a, b) => (a.actividad < b.actividad ? -1 : 1));
             this.showActividadAsigToPlan();
             this.hideFaseToPlan();
@@ -356,7 +355,6 @@ export class PlaneacionComponent implements OnInit {
         this.newActividad.base = false;
         this.newActividad.proyecto = this.proyecto;
         this.actividadService.createActividad(this.newActividad).subscribe(data => {
-            console.log('ACTIVIDAD CREADA', data);
             this.modalService.dismissAll();
             this.toast.success('Se ha guardado la actividad correctamente');
             this.newActividad = new Actividad();
@@ -535,7 +533,6 @@ export class PlaneacionComponent implements OnInit {
             this.hideDisponibilidad();
             this.getEmpleadoAsignados();
             this.getActividadesAsignadas();
-            console.log("RESPUESTA FECHAS ASIGNADAS: ", data);
             if (Object.entries(data).length > 0) {
                 if (Object.entries(data).length === list.length) {
                     this.toast.success('El recurso se ha agregado correctamente a la actividad');
@@ -600,7 +597,6 @@ export class PlaneacionComponent implements OnInit {
     deleteActAsig() {
         let id: number = parseFloat((<HTMLInputElement>document.getElementById('idDeleteActividadAsig')).value);
         this.actividadAsigService.deleteActividad(id).subscribe(data => {
-            console.log('ELIMINAR ACTIVIDAD', data);
             this.toast.warning('La actividad asignada se ha eliminado correctamente');
             this.modalService.dismissAll();
             this.getActividadesAsignadas();
@@ -676,7 +672,6 @@ export class PlaneacionComponent implements OnInit {
 
         this.actividadAsigService.getActividadById(id).subscribe(data => {
             this.actividadToEdit = data;
-            console.log('EDITAR ACTIVIDAD', data);
         }, error => {
             console.log(error);
             this.toast.error(error);
@@ -727,9 +722,7 @@ export class PlaneacionComponent implements OnInit {
         if (this.formEditActividad.invalid) {
             return;
         }
-        console.log(this.actividadToEdit);
         this.actividadAsigService.updateActividad(this.actividadToEdit.id, this.actividadToEdit).subscribe(data => {
-            console.log('ACTUALIZAR ACTIVIDAD', data);
             this.toast.info('Actividad actualizada correctamente.');
             this.getActividadesAsignadas();
             this.closeEditActividadModal();

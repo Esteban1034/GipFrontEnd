@@ -49,7 +49,7 @@
                                 href="javascript:void(0);">
                                 <i class="link-icon" [attr.data-feather]="subitem.icon" appFeatherIcon
                                     *ngIf="subitem.icon"></i>
-                                <span class="link-title"> {{ subitem.label }}</span>
+                                <span> {{ subitem.label }}</span>
                                 <span class="link-arrow" data-feather="chevron-down" appFeatherIcon></span>
                             </a>
 
@@ -63,7 +63,7 @@
                             <ul class="sidebar-nav sub-menu nav-third-level" *ngIf="hasItems(subitem)"
                                 aria-expanded="false">
                                 <li class="nav-item" *ngFor="let subSubitem of subitem.subItems">
-                                    <a class="nav-link nav-link-ref" [routerLink]="subSubitem.link"
+                                    <a class="nav-link nav-link-ref third-level" [routerLink]="subSubitem.link"
                                         [routerLinkActive]="['active']" [attr.data-parent]="subSubitem.parentId">
                                         <i class="link-icon" [attr.data-feather]="subitem.icon" appFeatherIcon
                                             *ngIf="subitem.icon"></i>

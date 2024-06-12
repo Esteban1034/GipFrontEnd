@@ -91,7 +91,6 @@ export class ListProyectoComponent implements OnInit {
             }
         
             if (this.sessionRol.rolNombre === "LÍDER PROYECTOS") {
-                console.log("entro a lider");
                 this.proyectoService.findByLiderAsignado(parseInt(this.session['id'])).subscribe(data => {
                     data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
                         if (!proyecto.interno) {
@@ -113,7 +112,6 @@ export class ListProyectoComponent implements OnInit {
                         console.log(error);
                     });
             } else if (this.sessionRol.rolNombre === "GERENTE DE PROYECTOS" || this.sessionRol.rolNombre === "USUARIO ADMINISTRADOR" || this.sessionRol.rolNombre === "DIRECTOR DE PROYECTOS") {
-                console.log("entro al otro");
                 this.proyectoService.getProyectosList().subscribe(data => {
                     data.sort((a, b) => (a.nombre < b.nombre ? -1 : 1)).forEach(proyecto => {
                         if (!proyecto.interno) {
@@ -239,7 +237,6 @@ export class ListProyectoComponent implements OnInit {
             this.dataSource.data = data;
             return;
         }
-        console.log(data);
         data.sort((a, b) => {
             const isAsc = sort.direction === 'asc';
             return this.onCondition(sort.active, isAsc, a, b);

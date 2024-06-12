@@ -86,11 +86,9 @@ export class FormReporteComponent implements OnInit {
     }
 
     getTiemposReportados() {
-        console.log("ENTRA A EXTRAER TIEMPOS REPORTADOS");
         this.reporteService.findByMesActualAndEmpleado(this.idEmpleado).subscribe(data => {
             data.sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
             this.tiemposReportados = data;
-            console.log(data);
         }, error => {
             console.log(error);
         });
