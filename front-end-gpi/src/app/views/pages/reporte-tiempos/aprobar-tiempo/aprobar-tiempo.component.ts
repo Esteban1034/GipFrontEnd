@@ -203,7 +203,6 @@ export class AprobarTiempoComponent implements OnInit {
             this.reporteService.findByLider(this.sessionObject.id).subscribe(data => {
                 data.sort((a, b) => (a.fecha > b.fecha ? -1 : 1));
                 this.reportes = data;
-                console.log('Reportes por Lider Proyecto');
             }, error => {
                 console.log(error);
             });
@@ -245,7 +244,6 @@ export class AprobarTiempoComponent implements OnInit {
           .subscribe(
             (data) => {
               this.reportes = data;
-              console.log(this.reportes);
       
               if (this.reportes.length == 0) {
                 return this.toastr.info(

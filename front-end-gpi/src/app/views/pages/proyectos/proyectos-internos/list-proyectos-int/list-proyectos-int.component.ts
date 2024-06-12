@@ -53,7 +53,6 @@ export class ListProyectosIntComponent implements OnInit {
 
     eliminar() {
         this.proyectoService.deleteProyectoInt(this.idToDelete).subscribe(data => {
-            console.log(data);
             this.toastr.warning('Proyecto eliminado correctamente.');
             this.modalService.dismissAll();
             this.getProyectos();

@@ -288,7 +288,6 @@ export class GenracionInfotmesHistoricos implements OnInit {
 
     openXlModal(content: TemplateRef<any>, idMatriz, nombreMatriz) {
         this.modalService.open(content, { size: 'xl' }).result.then((result) => {
-            console.log("Modal closed" + result);
         }).catch((res) => { });
 
         this.getParametrosGeneralesInformeByMatriz(idMatriz);

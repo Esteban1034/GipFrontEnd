@@ -92,7 +92,6 @@ export class FormClientesComponent implements OnInit {
     }
 
     saveCliente() {
-        console.log(this.cliente);
         this.clienteService.createCliente(this.cliente).subscribe(data => {
             this.toastr.success('Cliente guardado correctamente!');
             this.goToClienteList();

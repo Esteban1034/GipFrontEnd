@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { ApexAxisChartSeries, ApexNonAxisChartSeries, ApexGrid, ApexChart, ApexXAxis, ApexYAxis, ApexMarkers, ApexStroke, ApexLegend, ApexResponsive, ApexTooltip, ApexFill, ApexDataLabels, ApexPlotOptions, ApexTitleSubtitle } from 'ng-apexcharts';
 
 import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { MenuItem } from '../../layout/sidebar/menu.model';
+import { MenuService } from 'src/app/service/menu.service';
 
 // Ng2-charts
 // import { ChartOptions, ChartType, ChartDataSets, RadialChartOptions } from 'chart.js';
@@ -45,6 +47,7 @@ export class DashboardComponent implements OnInit {
      * Miga de pan
      */
     options = [];
+    menuItems: MenuItem[] = [];
 
     /**
      * Apex chart
@@ -106,7 +109,7 @@ export class DashboardComponent implements OnInit {
 
 
 
-    constructor(private router: Router, private calendar: NgbCalendar, private loginService: LoginService) {
+    constructor(private router: Router, private calendar: NgbCalendar, private loginService: LoginService, private menuService: MenuService) {
 
         /**
          * ApexChart1 options
@@ -482,93 +485,11 @@ export class DashboardComponent implements OnInit {
         let session = localStorage.getItem('session');
         session = JSON.parse(session);
 
-        switch (session["rol"]) {
-            case "ROL_ADMIN":
-                this.options = [
-                    {
-                        nombre: "Client",
-                        link: "/clientes"
-                    },
-                    {
-                        nombre: "Recursos",
-                        link: "/recursos/nuevo"
-                    },
-                    {
-                        nombre: "Reporte Tiempos",
-                        link: "/reporte-tiempo/nuevo"
-                    },
-                    {
-                        nombre: "Proyectos",
-                        link: "/proyectos/nuevo"
-                    }
-                ]
-                break;
-            case "ROL_GP":
-                this.options = [
-                    {
-                        nombre: "Clientes",
-                        link: "/clientes"
-                    },
-                    {
-                        nombre: "Recursos",
-                        link: "/recursos/nuevo"
-                    },
-                    {
-                        nombre: "Reporte Tiempos",
-                        link: "/reporte-tiempo/nuevo"
-                    },
-                    {
-                        nombre: "Proyectos",
-                        link: "/proyectos/nuevo"
-                    }
-                ]
-                break;
-
-                case "ROL_DP":
-                    this.options = [
-                        {
-                            nombre: "Clientes",
-                            link: "/clientes"
-                        },
-                        {
-                            nombre: "Recursos",
-                            link: "/recursos/nuevo"
-                        },
-                        {
-                            nombre: "Reporte Tiempos",
-                            link: "/reporte-tiempo/nuevo"
-                        },
-                        {
-                            nombre: "Proyectos",
-                            link: "/proyectos/nuevo"
-                        }
-                    ]
-                    break;
-
-            case "ROL_LP":
-                this.options = [
-                    {
-                        nombre: "Reporte Tiempos",
-                        link: "/reporte-tiempo/nuevo"
-                    },
-                    {
-                        nombre: "Proyectos",
-                        link: "/proyectos/nuevo"
-                    }
-                ]
-                break;
-            case "ROL_USER":
-                this.options = [
-                    {
-                        nombre: "Reporte Tiempos",
-                        link: "/reporte-tiempo/nuevo"
-                    }
-                ]
-                break;
-        }
+        this.menuService.getMenu(session["id"]).subscribe(data => {
+            this.menuItems = data;
+        })
 
         this.currentDate = this.calendar.getToday();
-        //console.log(this.hoyBogota);
 
 
 

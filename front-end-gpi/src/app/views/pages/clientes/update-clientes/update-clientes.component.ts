@@ -50,12 +50,10 @@ export class UpdateClientesComponent implements OnInit {
 
         this.clienteService.getClienteById(this.id).subscribe(data => {
             this.cliente = data;
-            console.log(data);
         }, error => {
             console.log(error);
             this.toastr.error(error.error.message);
             if (!this.cliente.hasOwnProperty('id')) {
-                console.log('Esta vacio');
                 this.router.navigate(['clientes']);
             }
         });

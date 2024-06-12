@@ -281,8 +281,6 @@ export class GeneracionMatrizTiempos implements OnInit {
     }
 
     openXlModal(content: TemplateRef<any>) {
-        console.log("OBJETO A ARMAR");
-        console.log(this.dataSourceAsignacionRecursoBeta);
         this.modalService.open(content, { size: 'xl' }).result.then((result) => {
         }).catch((res) => { });
         this.versionesInforme = [];
@@ -292,7 +290,6 @@ export class GeneracionMatrizTiempos implements OnInit {
         this.versionesInforme = [...new Set(this.versionesInforme)];
         this.PorcentajeSprint()
         this.calculosGeneral();
-        console.log(this.recursoAsignado)
     }
 
     validarPorcentaje(index: number) {
@@ -418,7 +415,6 @@ export class GeneracionMatrizTiempos implements OnInit {
 
     openXlModal2(content: TemplateRef<any>, matriz_General: any) {
         this.modalService.open(content, { size: 'xl', backdrop: 'static', keyboard: false }).result.then((result) => {
-            console.log("Modal closed" + result);
             let cantidadRecursos = 0;
             this.dataSourceAsignacionRecursoBeta.forEach(element => {
                 if (matriz_General.sprint === element.Version.sprint && matriz_General.version.id === element.Version.version.id) {

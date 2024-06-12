@@ -808,8 +808,6 @@ export class CrearPsrComponent implements OnInit, OnExit {
                 contador++;
             }
         });
-        console.log("PSR HIST");
-        console.log(this.psrStatusHistLastTwo);
     }
 
     getEmpleadoAsignados() {

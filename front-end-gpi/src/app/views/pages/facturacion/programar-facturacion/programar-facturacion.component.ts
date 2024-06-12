@@ -165,7 +165,6 @@ export class ProgramarFacturacionComponent implements OnInit {
     getCobros() {
         this.cobroService.getCobrosByProyecto(this.idProyecto).subscribe(data => {
             this.cobros = data;
-            console.log(data);
             this.calculatePrecio(this.cobros);
             this.vlrTotalPendiente = this.calculateVlrPendiente(this.calculatePrecio(this.cobros));
             this.vlrSinIva = this.calculateVlrSinIva(this.cobros);

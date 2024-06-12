@@ -100,8 +100,6 @@ export class ActividadesComponent implements OnInit {
         if (this.formEditActividad.invalid) {
             return;
         }
-
-        console.log(this.actividadToEdit);
         this.actividadService.updateActividad(this.actividadToEdit.id, this.actividadToEdit).subscribe(data => {
             this.actividadToEdit = new Actividad();
             this.toastr.info('Actividad actualizada correctamente.');

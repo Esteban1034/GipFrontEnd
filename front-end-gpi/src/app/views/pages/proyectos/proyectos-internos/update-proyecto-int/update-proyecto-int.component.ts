@@ -229,7 +229,6 @@ export class UpdateProyectoIntComponent implements OnInit {
         this.submittedEP = true;
 
         this.proyectoService.updateProyectoInt(this.proyecto.id, this.proyecto).subscribe(data => {
-            console.log(data);
             this.proyecto = new Proyecto();
             this.toastr.info('Proyecto actualizado correctamente!');
             this.router.navigate(['/proyectos/internos']);
@@ -284,7 +283,6 @@ export class UpdateProyectoIntComponent implements OnInit {
         this.newActividad.base = false;
         this.newActividad.proyecto = this.proyecto;
         this.actividadService.createActividad(this.newActividad).subscribe(data => {
-            console.log(data);
             this.modalService.dismissAll();
             this.toastr.success('Se ha guardado la actividad correctamente');
             this.newActividad = new Actividad();

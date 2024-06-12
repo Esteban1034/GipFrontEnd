@@ -95,8 +95,7 @@ export class MisReportesComponent implements OnInit {
         }
 
         this.reporteTiempoService.getRecursosAprobacionTiempos(this.fechaInicio, this.fechaFin, this.idRecurso).subscribe(data => {
-            this.reportes = data.sort((a, b) => (a.fecha > b.fecha ? -1 : 1));
-            console.log(this.reportes);           
+            this.reportes = data.sort((a, b) => (a.fecha > b.fecha ? -1 : 1));         
             
         }, error => {
             console.log(error);

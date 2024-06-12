@@ -33,13 +33,11 @@ export class LoginComponent implements OnInit {
         this.onLogin().then(() => {
             this.router.navigate(["/dashboard"]);
         }).catch((error) => {
-            console.log('Usuario o correo incorrecto', error);
             window.location.href = "https://itssolutions.co/#"
         })
     }
 
     onLogin() {
-        console.log("LOG IN");
         return this.loginService.loginUser(this.empleado.correo, this.empleado.correo).toPromise()
             .then((response) => {
                 localStorage.setItem('session', JSON.stringify(this.castListObjectToStringList(response)));
@@ -52,7 +50,6 @@ export class LoginComponent implements OnInit {
                     let dateNow: Date = new Date();
                     let reportesVencidos: ReporteTiempo[] = [];
                     data.forEach(reporte => {
-                        console.log(reporte);
                         reporte.fecha = new Date(reporte.fecha);
                         if (reporte.fecha.getTime() < dateNow.getTime()) {
                             reportesVencidos.push(reporte);

@@ -177,9 +177,6 @@ export class ReporteFacturacionClienteComponent implements OnInit {
         fechaInicio.setDate(fechaInicio.getDate() + 1);
         fechaFin.setDate(fechaFin.getDate() + 1);
 
-        console.log(fechaInicio);
-        console.log(fechaFin);
-
         if (fechaInicio.getTime() > fechaFin.getTime()) {
             return this.errorMsj = "La fecha Inicio no debe ser mayor a la fecha Fin.";
         }
@@ -217,7 +214,6 @@ export class ReporteFacturacionClienteComponent implements OnInit {
                         this.reportesResumidos.splice(i, 1);
                     }
                 }
-                console.log(data);
 
                 this.reportesResumidos.push(reporteR);
             });
@@ -225,7 +221,6 @@ export class ReporteFacturacionClienteComponent implements OnInit {
 
             console.log(error);
         });
-        console.log(this.reportesResumidos);
         this.errorMsj = null;
     }
 
