@@ -4,44 +4,54 @@ import { ToastrService } from 'ngx-toastr';
 import { ContenidoUfs } from 'src/app/model/contenido-ufs';
 import { Esfuerzo } from 'src/app/model/esfuerzo';
 import { Funcion } from 'src/app/model/funcion';
+import { MantenimientoPesoHora } from 'src/app/model/mantenimiento-peso-hora';
 import { MantenimientoUnidad } from 'src/app/model/mantenimiento-unidad';
 import { ContenidoUfsService } from 'src/app/service/contenidoufs.service';
 import { EsfuerzoService } from 'src/app/service/esfuerzo.service';
 import { FuncionService } from 'src/app/service/funcion.Service';
 import { MantenimientoUnidadService } from 'src/app/service/mantenimiento-unidad-service';
- // Corregido el nombre del servicio
 
 @Component({
   selector: 'app-unidad-funcional',
   templateUrl: './unidad-funcional.component.html',
   styleUrls: ['./unidad-funcional.component.scss']
 })
-export class formularioUnidadFuncional implements OnInit { // Corregido el nombre de la clase
+export class formularioUnidadFuncional implements OnInit {
   formCreaContenidoUfs: FormGroup;
+  formCreaFuncion: FormGroup;
+
   esfuerzos: Esfuerzo[] = [];
   funciones: Funcion[] = [];
   mantenimientos: MantenimientoUnidad[] = [];
   contenidoUfsList: ContenidoUfs[] = [];
   submitted: boolean = false;
+  horasDiseno: number = 0;
+  horasConstruccion: number = 0;
+  horasPruebas: number = 0;
+  showCreateFunctionForm: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
-    private contenidoUfsService: ContenidoUfsService,
     private mantenimientoUnidadService: MantenimientoUnidadService,
-    private funcionService: FuncionService,
+    private contenidoUfsService: ContenidoUfsService,
     private esfuerzoService: EsfuerzoService,
+    private funcionService: FuncionService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
     this.buildForm();
-    this.getEsfuerzos();
-    this.getFunciones();
+    this.getFuncionData();
+    this.buildFuncionForm();
     this.getMantenimiento();
     this.getContenidoUfs();
   }
 
-  get fc() { return this.formCreaContenidoUfs.controls; }
+  buildFuncionForm() {
+    this.formCreaFuncion = this.formBuilder.group({
+      funcion: ['', Validators.required],
+    });
+  }
 
   buildForm() {
     this.formCreaContenidoUfs = this.formBuilder.group({
@@ -49,94 +59,186 @@ export class formularioUnidadFuncional implements OnInit { // Corregido el nombr
       porcentajeConstruccion: ['', Validators.required],
       porcentajeDiseno: ['', Validators.required],
       porcentajePruebas: ['', Validators.required],
-      totalDiseno:['', Validators.required],
-      totalConstruccion: ['', Validators.required],
-      totalPruebas: ['', Validators.required],
-      esfuerzo: ['', Validators.required],
-      funcion:  ['', Validators.required],
-      mantenimientoUnidad: ['', Validators.required]
+      funcionSeleccionada: [''],
+      funcion: [''],
+      mantenimientoUnidad: ['', Validators.required],
     });
   }
 
+  get fc() { return this.formCreaContenidoUfs.controls; }
 
   getContenidoUfs() {
     this.contenidoUfsService.getContenidoUfs().subscribe(
-      data => {
+      (data: ContenidoUfs[]) => {
         this.contenidoUfsList = data;
       },
       error => {
-        console.log(error);
+        console.error(error);
         this.toastr.error('Error al obtener los datos de contenido de unidades funcionales');
       }
     );
   }
 
-  getFunciones() {
-    this.funcionService.getFuncions().subscribe( // Corregido el nombre del método
-      data => {
+  obtenerHoras(peso: number) {
+    this.contenidoUfsService.obtenerHoras(peso).subscribe(
+      (resultado: any) => {
+        console.log('Resultado de obtenerHoras:', resultado);
+        this.horasConstruccion = resultado.hora; // Asignar las horas obtenidas
+        this.horasDiseno = resultado.hora;
+        this.horasPruebas = resultado.hora;
+        // Actualizar los valores en el formulario si es necesario
+        this.actualizarValoresFormulario();
+      },
+      (error) => {
+        console.error('Error al obtener horas:', error);
+        this.toastr.error('Error al obtener las horas del mantenimiento');
+      }
+    );
+  }
+  
+  actualizarValoresFormulario() {
+    if (this.fc.mantenimientoUnidad.value) {
+      this.fc.horaDiseno.setValue(this.horasDiseno); // Actualizar valor de diseño
+      this.fc.horaConstruccion.setValue(this.horasConstruccion); // Actualizar valor de construcción
+      this.fc.horaPruebas.setValue(this.horasPruebas); // Actualizar valor de pruebas
+    }
+  }
+  
+
+  getFuncionData() {
+    this.funcionService.getFuncions().subscribe(
+      (data: Funcion[]) => {
         this.funciones = data;
       },
       error => {
-        console.log(error);
-        this.toastr.error('Error al obtener los datos de funciones');
+        console.error(error);
+        this.toastr.error('Error al obtener los datos de función');
       }
     );
   }
 
-  getEsfuerzos() {
-    this.esfuerzoService.gEsfuerzos().subscribe( // Corregido el nombre del método
-      data => {
-        this.esfuerzos = data;
-      },
-      error => {
-        console.log(error);
-        this.toastr.error('Error al obtener los datos de esfuerzos');
-      }
-    );
+  cancelCreateFunction() {
+    this.showCreateFunctionForm = false;
   }
 
   getMantenimiento() {
     this.mantenimientoUnidadService.getMantenimientos().subscribe(
-      data => {
+      (data: MantenimientoUnidad[]) => {
         this.mantenimientos = data;
       },
       error => {
-        console.log(error);
-        this.toastr.error('Error al obtener los datos de mantenimiento');
+        console.error(error);
+        this.toastr.error('Error al obtener los datos de mantenimiento de unidad');
       }
     );
   }
 
-  saveContenidoUfs() {
-    if (this.formCreaContenidoUfs.invalid) {
-      this.toastr.error('Por favor, complete el formulario correctamente');
-      return;    }
-  
-    const contenido: ContenidoUfs = this.formCreaContenidoUfs.value;
-    
-  
-  
-    this.contenidoUfsService.saveContenidoUfs(contenido).subscribe(
-      data => {
-        this.toastr.success('Contenido de unidad funcional creado exitosamente');
-        this.formCreaContenidoUfs.reset();
-        this.submitted = false;
-        this.getContenidoUfs();
-      },
-      error => {
-        console.log(error);
-        this.toastr.error('Error al crear el contenido de unidad funcional');
-      }
-    );
+  onMantenimientoChange(event: any) {
+  const mantenimientoId = event.target.value; // Extract the selected maintenance ID from the event
+  const selectedMantenimiento = this.mantenimientos.find(m => m.id === parseInt(mantenimientoId)); // Find the selected maintenance object
+
+  if (selectedMantenimiento) {
+    // If a maintenance object is found with the selected ID
+    this.obtenerHoras(selectedMantenimiento.peso); // Call obtenerHoras with the weight of the selected maintenance
+    this.horasConstruccion = 0; // Initialize or reset construction hours
+    this.horasDiseno = 0; // Initialize or reset design hours
+    this.horasPruebas = 0; // Initialize or reset testing hours
+  } else {
+    // If no maintenance object is found with the selected ID
+    console.error('No se encontró el mantenimiento seleccionado');
+    // Here you could show a message to the user or reset related variables
+    this.resetFormFields();
   }
-  
-  
+}
+
+
+  saveContenidoUfs() {
+    this.submitted = true;
+    if (this.formCreaContenidoUfs.valid) {
+      const contenidoUfsData = {
+        id: 0,
+        nombreCaso: this.fc.nombreCaso.value,
+        porcentajeConstruccion: this.fc.porcentajeConstruccion.value,
+        porcentajeDiseno: this.fc.porcentajeDiseno.value,
+        porcentajePruebas: this.fc.porcentajePruebas.value,
+        totalDiseno: null,
+        totalConstruccion: null,
+        totalPruebas: null,
+        esfuerzo: null,
+        funcion: this.fc.funcionSeleccionada.value ? this.fc.funcionSeleccionada.value : this.fc.funcion.value,
+        mantenimientoUnidad: this.fc.mantenimientoUnidad.value,
+        horaConstruccion: this.horasConstruccion,
+        horaDiseno: this.horasDiseno,
+        horaPruebas: this.horasPruebas
+
+
+      };
+
+      this.contenidoUfsService.saveContenidoUfs(contenidoUfsData).subscribe(
+        response => {
+          console.log(response);
+          this.toastr.success('Contenido de UFS creado exitosamente.');
+          this.resetForm();
+        },
+        error => {
+          console.error(error);
+          this.toastr.error('Error al crear el contenido de UFS');
+        }
+      );
+    } else {
+      this.toastr.error('Por favor completa los campos requeridos.');
+    }
+  }
+
+  saveFuncion() {
+    this.submitted = true;
+    if (this.formCreaFuncion.valid) {
+      const funcionData = {
+        id: 0,
+        funcion: this.formCreaFuncion.get('funcion').value,
+      };
+
+      this.funcionService.saveFuncion(funcionData).subscribe(
+        response => {
+          console.log(response);
+          this.toastr.success('Función creada exitosamente.');
+          this.formCreaFuncion.reset();
+          this.getFuncionData();
+          this.showCreateFunctionForm = false; // Ocultar el formulario de creación después de guardar
+        },
+        error => {
+          console.error(error);
+          this.toastr.error('Error al crear la función');
+        }
+      );
+    } else {
+      this.toastr.error('Por favor completa los campos requeridos.');
+    }
+  }
 
   onSubmit() {
     this.submitted = true;
-
     if (this.formCreaContenidoUfs.valid) {
       this.saveContenidoUfs();
+    } else {
+      this.toastr.error('Por favor, complete el formulario correctamente');
     }
   }
+
+  resetForm() {
+    this.submitted = false;
+    this.formCreaContenidoUfs.reset();
+    this.horasConstruccion = 0;
+    this.horasDiseno = 0;
+    this.horasPruebas = 0;
+
+  }
+
+  resetFormFields() {
+    this.fc.porcentajeConstruccion.setValue('');
+    this.fc.porcentajeDiseno.setValue('');
+    this.fc.porcentajePruebas.setValue('');
+  }
+
+
 }

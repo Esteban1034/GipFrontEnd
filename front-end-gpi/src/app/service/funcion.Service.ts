@@ -9,7 +9,7 @@ import { Funcion } from '../model/funcion';
   providedIn: 'root'
 })
 export class FuncionService {
-  private baseUrl = `${environment.baseUrl}/funcion`;
+  private baseUrl = `${environment.baseUrl}/funciones`;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -19,5 +19,11 @@ export class FuncionService {
     return this.httpClient.get<Funcion[]>(`${this.baseUrl}`);
   }
 
+    // Método para guardar un nuevo esfuerzo
+    saveFuncion(funcion: Funcion): Observable<Funcion> {
+      return this.httpClient.post<Funcion>(`${this.baseUrl}`,funcion);
+    }
+ 
+  
 
 }

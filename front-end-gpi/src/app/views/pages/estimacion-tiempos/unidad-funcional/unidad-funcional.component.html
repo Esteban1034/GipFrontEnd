@@ -5,168 +5,164 @@
   </ol>
 </nav>
 
-<div class="spinner-wrapper" style="display: none;" id="con_spinner" name="con_spinner">
+<div class="spinner-wrapper" style="display: none;" id="con_spinner">
   <div class="spinner"></div>
 </div>
 
-<div class="row justify-content-center" id="occ">
-  <div class="col-md-12 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <h6 class="card-title">Nuevo Contenido de Unidad Funcional</h6>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title">Nuevo Contenido de Unidad Funcional</h6>
+ <!-- Formulario para crear nueva función -->
 
-        <form [formGroup]="formCreaContenidoUfs" (ngSubmit)="onSubmit()">
-          <div class="form-row">
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="nombreCaso">Nombre del Caso</label>
-              <input type="text" formControlName="nombreCaso" class="form-control" id="nombreCaso" placeholder="Nombre del Caso">
-              <div class="invalid-feedback" *ngIf="submitted && fc.nombreCaso.errors">
-                <div *ngIf="fc.nombreCaso.errors.required">
-                  Este campo es requerido.
+          <form [formGroup]="formCreaContenidoUfs" (ngSubmit)="saveContenidoUfs()">
+            <div class="form-row">
+              <div class="form-group col-sm-12 col-md-6">
+                <label for="nombreCaso">Nombre del Caso</label>
+                <input type="text" formControlName="nombreCaso" class="form-control" id="nombreCaso" placeholder="Nombre del Caso">
+                <div class="invalid-feedback" *ngIf="submitted && fc.nombreCaso.invalid && fc.nombreCaso.touched">
+                  <div *ngIf="fc.nombreCaso.errors.required">
+                    Este campo es requerido.
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="porcentajeConstruccion">Porcentaje de Construcción</label>
-              <input type="number" formControlName="porcentajeConstruccion" class="form-control" id="porcentajeConstruccion" placeholder="Porcentaje de Construcción">
-              <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeConstruccion.errors">
-                <div *ngIf="fc.porcentajeConstruccion.errors.required">
-                  Este campo es requerido.
-                </div>
-              </div>
-            </div>
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="porcentajeDiseno">Porcentaje de Diseño</label>
-              <input type="number" formControlName="porcentajeDiseno" class="form-control" id="porcentajeDiseno" placeholder="Porcentaje de Diseño">
-              <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeDiseno.errors">
-                <div *ngIf="fc.porcentajeDiseno.errors.required">
-                  Este campo es requerido.
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="porcentajePruebas">Porcentaje de Pruebas</label>
-              <input type="number" formControlName="porcentajePruebas" class="form-control" id="porcentajePruebas" placeholder="Porcentaje de Pruebas">
-              <div class="invalid-feedback" *ngIf="submitted && fc.porcentajePruebas.errors">
-                <div *ngIf="fc.porcentajePruebas.errors.required">
-                  Este campo es requerido.
-                </div>
-              </div>
-            </div>
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="esfuerzo">Esfuerzo</label>
-              <select formControlName="esfuerzo" class="form-control" id="esfuerzo">
-                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
-                <option *ngFor="let esfuerzo of esfuerzos" [ngValue]="esfuerzo">{{ esfuerzo.nombre }}</option>
-              </select>
-              <div class="invalid-feedback" *ngIf="submitted && fc.esfuerzo.errors">
-                <div *ngIf="fc.esfuerzo.errors.required">
-                  Este campo es requerido.
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="funcion">Función</label>
-              <select formControlName="funcion" class="form-control" id="funcion">
-                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
-                <option *ngFor="let funcion of funciones" [ngValue]="funcion">{{ funcion.funcion }}</option>
-              </select>
-              <div class="invalid-feedback" *ngIf="submitted && fc.funcion.errors">
-                <div *ngIf="fc.funcion.errors.required">
+              <div class="form-group col-sm-12 col-md-6">
+                <label for="mantenimientoUnidad">Mantenimiento de Unidad</label>
+                <select formControlName="mantenimientoUnidad" class="form-control" id="mantenimientoUnidad" (change)="onMantenimientoChange($event)">
+                  <option [ngValue]="null" disabled hidden>Seleccionar opción</option>
+                  <option *ngFor="let mantenimiento of mantenimientos" [ngValue]="mantenimiento">{{ mantenimiento.nombre }} -- {{ mantenimiento.peso }}</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && fc.mantenimientoUnidad.invalid && fc.mantenimientoUnidad.touched">
                   Este campo es requerido.
                 </div>
               </div>
             </div>
 
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="totalConstruccion">Total de Construcción</label>
-              <input type="number" formControlName="totalConstruccion" class="form-control" id="totalConstruccion" placeholder="Total de Construcción">
-              <div class="invalid-feedback" *ngIf="submitted && fc.totalConstruccion.errors">
-                <div *ngIf="fc.totalConstruccion.errors.required">
-                  Este campo es requerido.
+            <div *ngIf="!showCreateFunctionForm">
+              <div class="form-group col-sm-12 col-md-6">
+                <label for="funcionSeleccionada">Función</label>
+                <select formControlName="funcionSeleccionada" class="form-control" id="funcionSeleccionada">
+                  <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
+                  <option *ngFor="let funcion of funciones" [ngValue]="funcion">{{ funcion.funcion }}</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && fc.funcionSeleccionada.errors">
+                  <div *ngIf="fc.funcionSeleccionada.errors.required">
+                    Este campo es requerido.
+                  </div>
                 </div>
               </div>
+              <button type="button" class="btn btn-primary" (click)="showCreateFunctionForm = true">Crear Nueva Función</button>
             </div>
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="totalDiseno">Total de Diseño</label>
-              <input type="number" formControlName="totalDiseno" class="form-control" id="totalDiseno" placeholder="Total de Diseño">
-              <div class="invalid-feedback" *ngIf="submitted && fc.totalDiseno.errors">
-                <div *ngIf="fc.totalDiseno.errors.required">
-                  Este campo es requerido.
+
+            <div *ngIf="showCreateFunctionForm">
+              <form [formGroup]="formCreaFuncion" (ngSubmit)="saveFuncion()">
+                <div class="form-group col-sm-12 col-md-6">
+                  <label for="funcion">Nombre de la Función</label>
+                  <input type="text" formControlName="funcion" class="form-control" id="funcion" placeholder="Nombre de la Función">
+                  <div class="invalid-feedback" *ngIf="formCreaFuncion.get('funcion').invalid && formCreaFuncion.get('funcion').touched">
+                    Este campo es requerido.
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary mr-2">Guardar Función</button>
+                <button type="button" class="btn btn-light" (click)="cancelCreateFunction()">Cancelar</button>
+              </form>
+            </div>
+
+            <!-- Mostrar porcentaje y hora para diseño -->
+            <div class="form-row" *ngIf="fc.mantenimientoUnidad.value">
+              <div class="form-group col-sm-12 col-md-6">
+                <label for="porcentajeDiseno">Porcentaje de Diseño</label>
+                <input type="text" formControlName="porcentajeDiseno" class="form-control" id="porcentajeDiseno">
+                <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeDiseno.invalid && fc.porcentajeDiseno.touched">
+                  <div *ngIf="fc.porcentajeDiseno.errors.required">
+                    Este campo es requerido.
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="totalPruebas">Total de Pruebas</label>
-              <input type="number" formControlName="totalPruebas" class="form-control" id="totalPruebas" placeholder="Total de Pruebas">
-              <div class="invalid-feedback" *ngIf="submitted && fc.totalPruebas.errors">
-                <div *ngIf="fc.totalPruebas.errors.required">
-                  Este campo es requerido.
-                </div>
+              <div class="form-group col-sm-12 col-md-6">
+                <label for="horaDiseno">Hora Diseño</label>
+                <input type="text" formControlName="horaDiseno" class="form-control" id="horaDiseno" [value]="horasDiseno">
               </div>
             </div>
-            
-            
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="mantenimientoUnidad">Mantenimiento de Unidad</label>
-              <select formControlName="mantenimientoUnidad" class="form-control" id="mantenimientoUnidad">
-                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
-                <option *ngFor="let mantenimiento of mantenimientos" [ngValue]="mantenimiento">{{ mantenimiento.nombre }}</option>
-              </select>
-              <div class="invalid-feedback" *ngIf="submitted && fc.mantenimientoUnidad.errors">
-                <div *ngIf="fc.mantenimientoUnidad.errors.required">
-                  Este campo es requerido.
+
+            <!-- Mostrar porcentaje y hora para construcción -->
+            <div class="form-row" *ngIf="fc.mantenimientoUnidad.value">
+              <div class="form-group col-sm-12 col-md-6">
+                <label for="porcentajeConstruccion">Porcentaje de Construcción</label>
+                <input type="text" formControlName="porcentajeConstruccion" class="form-control" id="porcentajeConstruccion">
+                <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeConstruccion.invalid && fc.porcentajeConstruccion.touched">
+                  <div *ngIf="fc.porcentajeConstruccion.errors.required">
+                    Este campo es requerido.
+                  </div>
                 </div>
               </div>
+              <div class="form-group col-sm-12 col-md-6">
+                <label for="horaConstruccion">Hora Construcción</label>
+                <input type="text" formControlName="horaConstruccion" class="form-control" id="horaConstruccion" [value]="horasConstruccion">
+              </div>
             </div>
-          </div>
-          <div class="form-row">
-            <div class="col-12">
-              <button id="btnGuardar" type="submit" class="btn btn-primary">Guardar y Continuar</button>
-              <button id="btnCancelar" routerLink="/estimacion-tiempos/formulario-datosBasicos-proyecto" class="btn btn-light">Cancelar</button>
+
+            <!-- Mostrar porcentaje y hora para pruebas -->
+            <div class="form-row" *ngIf="fc.mantenimientoUnidad.value">
+              <div class="form-group col-sm-12 col-md-6">
+                <label for="porcentajePruebas">Porcentaje de Pruebas</label>
+                <input type="text" formControlName="porcentajePruebas" class="form-control" id="porcentajePruebas">
+                <div class="invalid-feedback" *ngIf="submitted && fc.porcentajePruebas.invalid && fc.porcentajePruebas.touched">
+                  <div *ngIf="fc.porcentajePruebas.errors.required">
+                    Este campo es requerido.
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-sm-12 col-md-6">
+                <label for="horaPruebas">Hora Pruebas</label>
+                <input type="text" formControlName="horaPruebas" class="form-control" id="horaPruebas" [value]="horasPruebas">
+              </div>
             </div>
-          </div>
-        </form>
-        <h1>Listado de Contenido de Unidad Funcional</h1>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Nombre del Caso</th>
-              <th>Porcentaje de Construcción</th>
-              <th>Porcentaje de Diseño</th>
-              <th>Porcentaje de Pruebas</th>
-              <th>totalConstruccion</th>
-              <th>totalDiseno</th>
-              <th>totalPruebas</th>      
+
+            <div class="form-row">
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">Guardar y Continuar</button>
+                <button id="btnCancelar" routerLink="/estimacion-tiempos/formulario-datosBasicos-proyecto" class="btn btn-light">Cancelar</button>
+              </div>
+            </div>
+          </form>
+
          
-              <th>Esfuerzo</th>
-              <th>Función</th>
-              <th>Mantenimiento de Unidad</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let contenido of contenidoUfsList">
-              <td>{{ contenido.nombreCaso }}</td>
-              <td>{{ contenido.porcentajeConstruccion }}</td>
-              <td>{{ contenido.porcentajeDiseno }}</td>
-              <td>{{ contenido.porcentajePruebas }}</td>
-              <td>{{ contenido.totalConstruccion }}</td>
-              <td>{{ contenido.totalDiseno }}</td>
-              <td>{{ contenido.totalPruebas }}</td>
-              <td>{{ contenido.esfuerzo.nombre }}</td>
-              <td>{{ contenido.funcion.funcion }}</td>
-              <td>{{ contenido.mantenimientoUnidad.nombre }}</td>
-            </tr>
-          
-          </tbody>
-        </table>
+
+          <h1>Listado de Contenido de Unidad Funcional</h1>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nombre del Caso</th>
+                <th>Porcentaje de Construcción</th>
+                <th>Porcentaje de Diseño</th>
+                <th>Porcentaje de Pruebas</th>
+                <th>Total Construcción</th>
+                <th>Total Diseño</th>
+                <th>Total Pruebas</th>
+                <th>Esfuerzo</th>
+                <th>Función</th>
+                <th>Mantenimiento de Unidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let contenido of contenidoUfsList">
+                <td>{{ contenido.nombreCaso }}</td>
+                <td>{{ contenido.porcentajeConstruccion }}</td>
+                <td>{{ contenido.porcentajeDiseno }}</td>
+                <td>{{ contenido.porcentajePruebas }}</td>
+                <td>{{ contenido.totalConstruccion }}</td>
+                <td>{{ contenido.totalDiseno }}</td>
+                <td>{{ contenido.totalPruebas }}</td>
+                <td>{{ contenido.esfuerzo ? contenido.esfuerzo.nombre : '' }}</td>
+                <td>{{ contenido.funcion ? contenido.funcion.funcion : '' }}</td>
+                <td>{{ contenido.mantenimientoUnidad ? contenido.mantenimientoUnidad.nombre : '' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
