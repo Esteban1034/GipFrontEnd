@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -6,6 +7,7 @@ import { Esfuerzo } from 'src/app/model/esfuerzo';
 import { Funcion } from 'src/app/model/funcion';
 import { MantenimientoPesoHora } from 'src/app/model/mantenimiento-peso-hora';
 import { MantenimientoUnidad } from 'src/app/model/mantenimiento-unidad';
+import { Ufs } from 'src/app/model/ufs';
 import { ContenidoUfsService } from 'src/app/service/contenidoufs.service';
 import { EsfuerzoService } from 'src/app/service/esfuerzo.service';
 import { FuncionService } from 'src/app/service/funcion.Service';
@@ -19,6 +21,7 @@ import { MantenimientoUnidadService } from 'src/app/service/mantenimiento-unidad
 export class formularioUnidadFuncional implements OnInit {
   formCreaContenidoUfs: FormGroup;
   formCreaFuncion: FormGroup;
+  ufs: Ufs[] = []; // Variable para almacenar la lista de Ufs
 
   esfuerzos: Esfuerzo[] = [];
   funciones: Funcion[] = [];
@@ -28,6 +31,10 @@ export class formularioUnidadFuncional implements OnInit {
   horasDiseno: number = 0;
   horasConstruccion: number = 0;
   horasPruebas: number = 0;
+
+  totalAjusteDiseno: number = 0;
+  totalAjusteConstruccion: number = 0;
+  totalAjustePruebas: number = 0;
   showCreateFunctionForm: boolean = false;
 
   constructor(
@@ -62,7 +69,7 @@ export class formularioUnidadFuncional implements OnInit {
       funcionSeleccionada: [''],
       funcion: [''],
       mantenimientoUnidad: ['', Validators.required],
-    });
+       });
   }
 
   get fc() { return this.formCreaContenidoUfs.controls; }
@@ -88,6 +95,7 @@ export class formularioUnidadFuncional implements OnInit {
         this.horasPruebas = resultado.hora;
         // Actualizar los valores en el formulario si es necesario
         this.actualizarValoresFormulario();
+        this.calcularTotales(); // Llamar a calcularTotales para actualizar los totales
       },
       (error) => {
         console.error('Error al obtener horas:', error);
@@ -95,7 +103,7 @@ export class formularioUnidadFuncional implements OnInit {
       }
     );
   }
-  
+
   actualizarValoresFormulario() {
     if (this.fc.mantenimientoUnidad.value) {
       this.fc.horaDiseno.setValue(this.horasDiseno); // Actualizar valor de diseño
@@ -103,7 +111,16 @@ export class formularioUnidadFuncional implements OnInit {
       this.fc.horaPruebas.setValue(this.horasPruebas); // Actualizar valor de pruebas
     }
   }
-  
+
+  calcularTotales() {
+    const porcentajeConstruccion = parseFloat(this.fc.porcentajeConstruccion.value) || 0;
+    const porcentajeDiseno = parseFloat(this.fc.porcentajeDiseno.value) || 0;
+    const porcentajePruebas = parseFloat(this.fc.porcentajePruebas.value) || 0;
+
+    this.totalAjusteConstruccion = this.horasConstruccion * (porcentajeConstruccion/100) + this.horasConstruccion;
+    this.totalAjusteDiseno = this.horasDiseno * (porcentajeDiseno/100) + this.horasDiseno;
+    this.totalAjustePruebas = this.horasPruebas * (porcentajePruebas/100) + this.horasPruebas;
+  }
 
   getFuncionData() {
     this.funcionService.getFuncions().subscribe(
@@ -134,23 +151,22 @@ export class formularioUnidadFuncional implements OnInit {
   }
 
   onMantenimientoChange(event: any) {
-  const mantenimientoId = event.target.value; // Extract the selected maintenance ID from the event
-  const selectedMantenimiento = this.mantenimientos.find(m => m.id === parseInt(mantenimientoId)); // Find the selected maintenance object
+    const mantenimientoId = event.target.value; // Extract the selected maintenance ID from the event
+    const selectedMantenimiento = this.mantenimientos.find(m => m.id === parseInt(mantenimientoId)); // Find the selected maintenance object
 
-  if (selectedMantenimiento) {
-    // If a maintenance object is found with the selected ID
-    this.obtenerHoras(selectedMantenimiento.peso); // Call obtenerHoras with the weight of the selected maintenance
-    this.horasConstruccion = 0; // Initialize or reset construction hours
-    this.horasDiseno = 0; // Initialize or reset design hours
-    this.horasPruebas = 0; // Initialize or reset testing hours
-  } else {
-    // If no maintenance object is found with the selected ID
-    console.error('No se encontró el mantenimiento seleccionado');
-    // Here you could show a message to the user or reset related variables
-    this.resetFormFields();
+    if (selectedMantenimiento) {
+      // If a maintenance object is found with the selected ID
+      this.obtenerHoras(selectedMantenimiento.peso); // Call obtenerHoras with the weight of the selected maintenance
+      this.horasConstruccion = 0; // Initialize or reset construction hours
+      this.horasDiseno = 0; // Initialize or reset design hours
+      this.horasPruebas = 0; // Initialize or reset testing hours
+    } else {
+      // If no maintenance object is found with the selected ID
+      console.error('No se encontró el mantenimiento seleccionado');
+      // Here you could show a message to the user or reset related variables
+      this.resetFormFields();
+    }
   }
-}
-
 
   saveContenidoUfs() {
     this.submitted = true;
@@ -161,17 +177,16 @@ export class formularioUnidadFuncional implements OnInit {
         porcentajeConstruccion: this.fc.porcentajeConstruccion.value,
         porcentajeDiseno: this.fc.porcentajeDiseno.value,
         porcentajePruebas: this.fc.porcentajePruebas.value,
-        totalDiseno: null,
-        totalConstruccion: null,
-        totalPruebas: null,
+        totalDiseno: null, // Asignar total ajustado
+        totalConstruccion: null, // Asignar total ajustado
+        totalPruebas: null, // Asignar total ajustado
         esfuerzo: null,
         funcion: this.fc.funcionSeleccionada.value ? this.fc.funcionSeleccionada.value : this.fc.funcion.value,
         mantenimientoUnidad: this.fc.mantenimientoUnidad.value,
         horaConstruccion: this.horasConstruccion,
         horaDiseno: this.horasDiseno,
-        horaPruebas: this.horasPruebas
-
-
+        horaPruebas: this.horasPruebas,
+        ufs:null
       };
 
       this.contenidoUfsService.saveContenidoUfs(contenidoUfsData).subscribe(
@@ -231,14 +246,21 @@ export class formularioUnidadFuncional implements OnInit {
     this.horasConstruccion = 0;
     this.horasDiseno = 0;
     this.horasPruebas = 0;
-
+    this.totalAjusteDiseno = 0;
+    this.totalAjusteConstruccion = 0;
+    this.totalAjustePruebas = 0;
   }
 
   resetFormFields() {
-    this.fc.porcentajeConstruccion.setValue('');
+    // Reset the values of specific form controls
     this.fc.porcentajeDiseno.setValue('');
+    this.fc.porcentajeConstruccion.setValue('');
     this.fc.porcentajePruebas.setValue('');
+    this.horasDiseno = 0;
+    this.horasConstruccion = 0;
+    this.horasPruebas = 0;
+    this.totalAjusteDiseno = 0;
+    this.totalAjusteConstruccion = 0;
+    this.totalAjustePruebas = 0;
   }
-
-
 }

@@ -3,6 +3,7 @@
 import { Esfuerzo } from "./esfuerzo";
 import { Funcion } from "./funcion";
 import { MantenimientoUnidad } from "./mantenimiento-unidad";
+import { Ufs } from "./ufs";
 
 export class ContenidoUfs {
   id: number | null;
@@ -16,6 +17,7 @@ export class ContenidoUfs {
   esfuerzo: Esfuerzo;
   funcion: Funcion;
   mantenimientoUnidad: MantenimientoUnidad;
+  ufs: null;
 
   }
 

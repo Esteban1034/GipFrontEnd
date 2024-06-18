@@ -74,7 +74,7 @@
             <div class="form-row" *ngIf="fc.mantenimientoUnidad.value">
               <div class="form-group col-sm-12 col-md-6">
                 <label for="porcentajeDiseno">Porcentaje de Diseño</label>
-                <input type="text" formControlName="porcentajeDiseno" class="form-control" id="porcentajeDiseno">
+                <input type="text" formControlName="porcentajeDiseno" class="form-control" id="porcentajeDiseno"(ngModelChange)="calcularTotales()">
                 <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeDiseno.invalid && fc.porcentajeDiseno.touched">
                   <div *ngIf="fc.porcentajeDiseno.errors.required">
                     Este campo es requerido.
@@ -87,11 +87,16 @@
               </div>
             </div>
 
+            <div class="form-group col-sm-12 col-md-6">
+              <label for="totalAjusteDiseno">Total con Ajuste Diseño</label>
+              <input type="text" class="form-control" id="totalAjusteDiseno" [value]="totalAjusteDiseno" readonly>
+            </div>
+
             <!-- Mostrar porcentaje y hora para construcción -->
             <div class="form-row" *ngIf="fc.mantenimientoUnidad.value">
               <div class="form-group col-sm-12 col-md-6">
-                <label for="porcentajeConstruccion">Porcentaje de Construcción</label>
-                <input type="text" formControlName="porcentajeConstruccion" class="form-control" id="porcentajeConstruccion">
+                <label for="porcentajeConstruccion">Porcentaje Construcción</label>
+                <input type="text" formControlName="porcentajeConstruccion" class="form-control" id="porcentajeConstruccion" (ngModelChange)="calcularTotales()">
                 <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeConstruccion.invalid && fc.porcentajeConstruccion.touched">
                   <div *ngIf="fc.porcentajeConstruccion.errors.required">
                     Este campo es requerido.
@@ -104,11 +109,16 @@
               </div>
             </div>
 
+            <div class="form-group col-sm-12 col-md-6">
+              <label for="totalAjusteConstruccion">Total con Ajuste Construcción</label>
+              <input type="text" class="form-control" id="totalAjusteConstruccion" [value]="totalAjusteConstruccion" readonly>
+            </div>
+
             <!-- Mostrar porcentaje y hora para pruebas -->
             <div class="form-row" *ngIf="fc.mantenimientoUnidad.value">
               <div class="form-group col-sm-12 col-md-6">
                 <label for="porcentajePruebas">Porcentaje de Pruebas</label>
-                <input type="text" formControlName="porcentajePruebas" class="form-control" id="porcentajePruebas">
+                <input type="text" formControlName="porcentajePruebas" class="form-control" id="porcentajePruebas"(ngModelChange)="calcularTotales()">
                 <div class="invalid-feedback" *ngIf="submitted && fc.porcentajePruebas.invalid && fc.porcentajePruebas.touched">
                   <div *ngIf="fc.porcentajePruebas.errors.required">
                     Este campo es requerido.
@@ -116,9 +126,15 @@
                 </div>
               </div>
               <div class="form-group col-sm-12 col-md-6">
-                <label for="horaPruebas">Hora Pruebas</label>
-                <input type="text" formControlName="horaPruebas" class="form-control" id="horaPruebas" [value]="horasPruebas">
+                <label for="horasPruebas">Hora Pruebas</label>
+                <input type="text" formControlName="horasPruebas" class="form-control" id="horasPruebas" [value]="horasPruebas">
               </div>
+            </div>
+
+
+            <div class="form-group col-sm-12 col-md-6">
+              <label for="totalAjustePruebas">Total con Ajuste Pruebas</label>
+              <input type="text" class="form-control" id="totalAjustePruebas" [value]="totalAjustePruebas" readonly>
             </div>
 
             <div class="form-row">
