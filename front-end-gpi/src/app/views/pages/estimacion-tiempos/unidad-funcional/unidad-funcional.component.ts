@@ -31,7 +31,6 @@ export class formularioUnidadFuncional implements OnInit {
   horasDiseno: number = 0;
   horasConstruccion: number = 0;
   horasPruebas: number = 0;
-
   totalAjusteDiseno: number = 0;
   totalAjusteConstruccion: number = 0;
   totalAjustePruebas: number = 0;
@@ -52,6 +51,7 @@ export class formularioUnidadFuncional implements OnInit {
     this.buildFuncionForm();
     this.getMantenimiento();
     this.getContenidoUfs();
+    this.getEsfuerzos();
   }
 
   buildFuncionForm() {
@@ -94,6 +94,7 @@ export class formularioUnidadFuncional implements OnInit {
         this.horasDiseno = resultado.hora;
         this.horasPruebas = resultado.hora;
         // Actualizar los valores en el formulario si es necesario
+        this.ajustarHorasPorEsfuerzo(); // Ajustar las horas por esfuerzo
         this.actualizarValoresFormulario();
         this.calcularTotales(); // Llamar a calcularTotales para actualizar los totales
       },
@@ -103,6 +104,34 @@ export class formularioUnidadFuncional implements OnInit {
       }
     );
   }
+
+  getEsfuerzos() {
+    this.esfuerzoService.gEsfuerzos().subscribe(
+      (data: Esfuerzo[]) => {
+        this.esfuerzos = data;
+      },
+      error => {
+        console.error(error);
+        this.toastr.error('Error al obtener los datos de esfuerzo');
+      }
+    );
+  }
+
+  ajustarHorasPorEsfuerzo() {
+    const esfuerzoDiseño = this.esfuerzos.find(e => e.nombre === 'Diseño');
+    const esfuerzoConstruccion = this.esfuerzos.find(e => e.nombre === 'Construcción');
+    const esfuerzoPruebas = this.esfuerzos.find(e => e.nombre === 'Pruebas');
+    
+    if (esfuerzoConstruccion) {
+      this.horasConstruccion = this.horasConstruccion * (esfuerzoConstruccion.porcentaje)/(esfuerzoDiseño.porcentaje)
+    }
+    
+    if (esfuerzoPruebas) {
+      this.horasPruebas = this.horasPruebas * (esfuerzoPruebas.porcentaje)/(esfuerzoDiseño.porcentaje)
+    }
+  }
+
+
 
   actualizarValoresFormulario() {
     if (this.fc.mantenimientoUnidad.value) {
@@ -133,6 +162,8 @@ export class formularioUnidadFuncional implements OnInit {
       }
     );
   }
+
+  
 
   cancelCreateFunction() {
     this.showCreateFunctionForm = false;
