@@ -133,11 +133,14 @@ onSelectEstado(event: MatSelectChange) {
               if (value.id == event.value) this.filtroClienteProyecto = value.nombre;
           }
           break;
-      case "Proyec":
-          for (const value of Object.values(this.proyectos)) {
-              if (value.id == event.value) this.filtroProyecto = value.nombre;
-          }
-          break;
+          case "Proyec":
+            for (const value of Object.values(this.proyectos)) {
+                if (value.id == event.value) {
+                    this.filtroProyecto = value.nombre + " - " + value.descripcion;
+                }
+            }
+            break;
+        
   }
   
   let valoresValidos: EstimacionesString[] = [];
@@ -168,6 +171,7 @@ onSelectEstado(event: MatSelectChange) {
     this.filtroProyecto = '';
     this.estadoChecked = false;
     this.clienteChecked = false;
+    this.proyectoChecked = false;
     this.resetSelect();
 }
   clearFiltroEstado(event: MatCheckboxChange) {

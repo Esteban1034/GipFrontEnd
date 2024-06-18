@@ -2,15 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Modelo } from '../model/modelo';
 import { HttpHeaderApp } from './header';
+import { Modelo } from '../model/modelo';
 
 @Injectable({
     providedIn: 'root'
   })
   export class ModeloService {
 
-    private baseUrl = environment.baseUrl + "/Modelo";
+    private baseUrl = environment.baseUrl + "/modelo";
 
     constructor(private httpClient: HttpClient, private headers: HttpHeaderApp) { }
     

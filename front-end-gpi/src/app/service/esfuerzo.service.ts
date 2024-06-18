@@ -12,7 +12,12 @@ export class EsfuerzoService {
 
   constructor(private httpClient: HttpClient) { }
 
- 
+  // Método para guardar un nuevo esfuerzo
+  savEsfuerzos(esfuerzo: Esfuerzo): Observable<Esfuerzo> {
+    return this.httpClient.post<Esfuerzo>(`${this.baseUrl}`, esfuerzo);
+  }
+
+  // Método para obtener todos los esfuerzos
   gEsfuerzos(): Observable<Esfuerzo[]> {
     return this.httpClient.get<Esfuerzo[]>(`${this.baseUrl}`);
   }

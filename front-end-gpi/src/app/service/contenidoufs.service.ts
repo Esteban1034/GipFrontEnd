@@ -1,41 +1,48 @@
+// contenido-ufs.service.ts
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { HttpHeaderApp } from './header';
 import { ContenidoUfs } from '../model/contenido-ufs';
-import { MantenimientoUnidad } from '../model/mantenimiento-unidad';
-import { Funcion } from '../model/funcion';
-import { Esfuerzo } from '../model/esfuerzo';
+import { MantenimientoPesoHora } from '../model/mantenimiento-peso-hora';
+import { HttpHeaderApp } from './header';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContenidoUfsService {
   private baseUrl = `${environment.baseUrl}/contenido-ufs`;
-
-  constructor(private httpClient: HttpClient, private headers: HttpHeaderApp) { }
-
-  private header = this.headers.headerPrivate();
- 
   
+  private header = this.headers.headerPrivate();
+    
+
+    constructor(private httpClient: HttpClient, private headers: HttpHeaderApp) { }
+
   getContenidoUfs(): Observable<ContenidoUfs[]> {
     return this.httpClient.get<ContenidoUfs[]>(`${this.baseUrl}`, { headers: this.header });
   }
 
-  getContenidoUfsById(id: string): Observable<ContenidoUfs> {
-    return this.httpClient.get<ContenidoUfs>(`${this.baseUrl}/${id}`, { headers: this.header });
+
+  obtenerHoras(peso: number): Observable<MantenimientoPesoHora | any> {
+    return this.httpClient.get(`${this.baseUrl}/obtenerHoras/${peso}`);
   }
 
-  saveContenidoUfs(contenidoUfs: ContenidoUfs): Observable<ContenidoUfs> {
-    return this.httpClient.post<ContenidoUfs>(`${this.baseUrl}`, contenidoUfs, { headers: this.header });
+  saveContenidoUfs(contenidoUfs: ContenidoUfs): Observable<Object> {
+    return this.httpClient.post(`${this.baseUrl}`,contenidoUfs, { headers: this.header });
   }
 
-  deleteContenidoUfs(id: string): Observable<ContenidoUfs> {
+  deleteContenidoUfs(id: number): Observable<ContenidoUfs> {
     return this.httpClient.delete<ContenidoUfs>(`${this.baseUrl}/${id}`, { headers: this.header });
   }
-
-  updateContenidoUfs(id: string, contenidoUfs: ContenidoUfs): Observable<ContenidoUfs> {
+  updateContenidoUfs(id: number, contenidoUfs: ContenidoUfs): Observable<ContenidoUfs> {
     return this.httpClient.put<ContenidoUfs>(`${this.baseUrl}/${id}`, contenidoUfs, { headers: this.header });
   }
+  
+
+  getContenidoUfsById(id: number): Observable<ContenidoUfs> {
+    return this.httpClient.get<ContenidoUfs>(`${this.baseUrl}/contenido-ufs/${id}`);
+  }
+
+
 }
