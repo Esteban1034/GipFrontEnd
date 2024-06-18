@@ -28,6 +28,7 @@ import { EstimacionTiempos } from 'src/app/model/estimacion-ufs';
 import { EstimacionTiempoService } from 'src/app/service/estimacion-tiempos.service';
 import { Ufs } from 'src/app/model/ufs';
 import { ActividadesComplementarias } from 'src/app/model/actividades-complementarias';
+import { EstimacionUfsDTO } from 'src/app/model/estimacion-ufsDTO';
 
 
 @Component({
@@ -40,6 +41,19 @@ export class crear_estimacion  implements OnInit {
 
     modelos: Modelo[]=[];
     TiEs:Modelo;
+    selectUfs:Ufs;
+    ufsOptions = [
+        { id: 1, nombre: 'UF1' },
+        { id: 2, nombre: 'UF2' },
+        { id: 3, nombre: 'UF3' },
+        { id: 4, nombre: 'UF4' },
+        { id: 5, nombre: 'UF5' },
+        { id: 6, nombre: 'UF6' },
+        { id: 7, nombre: 'UF7' },
+        { id: 8, nombre: 'UF8' },
+        { id: 9, nombre: 'UF9' },
+        { id: 10, nombre: 'UF10' }
+      ];
 
     Directores: Empleado[]=[];
     TiEsDi: Empleado;
@@ -123,6 +137,9 @@ export class crear_estimacion  implements OnInit {
 
     buildDatosIForm() {
         this.formDatosIniciales = this.FBService.group({
+        unidadFuncional:['', [
+            Validators.required
+        ]],
         Director:['', [
             Validators.required,
         ]],
@@ -195,28 +212,31 @@ export class crear_estimacion  implements OnInit {
     }
 
     saveProyecto() {
-        let estimacion: EstimacionTiempos = new EstimacionTiempos();
-        estimacion.ufs = new Ufs();
-        estimacion.fechaCreacion = this.estimacionTiempos.fechaCreacion;
-        estimacion.recurso = this.TiEsDi;
-        estimacion.modelo = this.TiEs;
-        estimacion.proyecto = this.TiEsP;
-        estimacion.etapaProyecto = this.TiEsEt;
-        estimacion.tipoProyecto = this.TiEsCV;
-        estimacion.actividadesComplementarias = new ActividadesComplementarias();
-        console.log(estimacion);
-        this.estimacionTiempoService.createEstimacionTiempoList(estimacion).subscribe(data => {
-            this.toastr.success('Proyecto guardado correctamente!');
-            this.hideSpinner();
+        let estimacionUfsDTO: EstimacionUfsDTO = {
+          ufId: this.selectUfs.id, 
+          estimacionUfs: {
+            fechaCreacion: this.estimacionTiempos.fechaCreacion,
+            recurso: this.TiEsDi,
+            modelo: this.TiEs,
+            proyecto: this.TiEsP,
+            etapaProyecto: this.TiEsEt,
+            tipoProyecto: this.TiEsCV,
+            actividadesComplementarias: new ActividadesComplementarias()
+          }
+        };
+        console.log(estimacionUfsDTO);
+      
+        this.estimacionTiempoService.createEstimacionTiempoList(estimacionUfsDTO).subscribe(data => {
+          this.toastr.success('Proyecto guardado correctamente!');
+          this.hideSpinner();
         }, error => {
-            setTimeout(() => {
-                this.hideSpinner();
-            }, 4000);
-            console.log(error);
-            this.toastr.error(error.error);
+          setTimeout(() => {
+            this.hideSpinner();
+          }, 4000);
+          console.log(error);
+          this.toastr.error(error.error);
         });
-    }
-
+      }
 
     
     onSubmit(): void {

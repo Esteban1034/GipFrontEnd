@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpHeaderApp } from './header';
 import { EstimacionTiempos } from '../model/estimacion-ufs';
+import { EstimacionUfsDTO } from '../model/estimacion-ufsDTO';
 
 @Injectable({
     providedIn: 'root'
@@ -26,8 +27,8 @@ export class EstimacionTiempoService {
         return this.httpClient.get<EstimacionTiempos>(`${this.baseUrl}/${id}`, { headers: this.header });
     }
 
-    createEstimacionTiempoList(Estimacion: EstimacionTiempos): Observable<Object> {
-        return this.httpClient.post(`${this.baseUrl}`,Estimacion, { headers: this.header });
+    createEstimacionTiempoList(EstimacionDto: EstimacionUfsDTO): Observable<Object> {
+        return this.httpClient.post(`${this.baseUrl}`,EstimacionDto, { headers: this.header });
     }
 
     deleteEstimacionTiempoList(id:string): Observable<EstimacionTiempos> {

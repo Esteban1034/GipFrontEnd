@@ -140,6 +140,4 @@ export class FormClientesComponent implements OnInit {
         document.getElementById('occ').style.display = 'block';
     }
 
-
-
 }

@@ -5,6 +5,7 @@ import { Modelo } from "./modelo";
 import { Proyecto } from "./proyecto";
 import { TipoProyecto } from "./tipo-proyecto";
 import { Ufs } from "./ufs";
+
 export class EstimacionTiempos {
   id: number;
   proyecto: Proyecto;
