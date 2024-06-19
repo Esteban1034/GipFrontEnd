@@ -28,26 +28,15 @@ export class EstimacionesTiempoComponent implements OnInit {
   dataSource = new MatTableDataSource(this.castListObjectToStringList(this.estimaciones));
   estimacionesTexto: EstimacionesString[] = [];
   idToDelete: number;
-  permissionP: boolean = true;
-  permissionF: boolean = true;
-
   checked: boolean = false;
-
-  proyectoFiltro: Proyecto[] = [];
   clientesProyectos: Cliente[] = [];
   pro: Proyecto[] = [];
-
   estadoChecked: boolean = false;
   clienteChecked: boolean = false;
-  proyectoChecked: boolean = false;
-
   filtroEstadoPropuesta: string = '';
   filtroClienteProyecto: string = '';
-  filtroEtapaProyecto: string = '';
   limpiarFiltroEstado = '';
   limpiarFiltroCliente = '';
-  limpiarFiltroProyecto = '';
-  filtroProyecto: string = '';
   
   constructor(private estimacionTiempoService: EstimacionTiempoService, 
     private modalService: NgbModal,
@@ -76,31 +65,20 @@ export class EstimacionesTiempoComponent implements OnInit {
 getEstimaciones() {
   let estadoPropues = new Map();
   let clienteProy = new Map();
-  let proProy = new Map();
 
   this.estimacionTiempoService.getEstimacionTiempoList().subscribe(
     (data) => {
       console.log('Datos recibidos:', data);
       this.estimaciones = data;
 
-      // Limpiar arreglos antes de agregar nuevos datos
-      this.proyectos = [];
       this.client = [];
       this.estadoPropues = [];
 
-      // Llenar mapas con datos de clientes, proyectos y estados de propuesta
       this.estimaciones.forEach(estimacion => {
         estadoPropues.set(estimacion.id, estimacion.proyecto.estadoPropuesta);
         clienteProy.set(estimacion.id, estimacion.proyecto.cliente);
-        proProy.set(estimacion.id, estimacion.proyecto);
       });
 
-      // Agregar proyectos y clientes únicos a los arreglos
-      proProy.forEach(proyecto => {
-        if (!this.proyectos.some(p => p.id === proyecto.id)) {
-          this.proyectos.push(proyecto);
-        }
-      });
       clienteProy.forEach(cliente => {
         if (!this.client.some(c => c.id === cliente.id)) {
           this.client.push(cliente);
@@ -112,7 +90,6 @@ getEstimaciones() {
         }
       });
 
-      // Asignar datos a dataSource
       this.estimacionesTexto = this.castListObjectToStringList(data);
       this.dataSource = new MatTableDataSource(this.estimacionesTexto);
       this.dataSource.sort = this.sort;
@@ -133,23 +110,15 @@ onSelectEstado(event: MatSelectChange) {
               if (value.id == event.value) this.filtroClienteProyecto = value.nombre;
           }
           break;
-          case "Proyec":
-            for (const value of Object.values(this.proyectos)) {
-                if (value.id == event.value) {
-                    this.filtroProyecto = value.nombre + " - " + value.descripcion;
-                }
-            }
-            break;
-        
+                 
   }
   
   let valoresValidos: EstimacionesString[] = [];
   this.estimacionesTexto.forEach(row => {
       let estadoPropuestaValido = this.estadoChecked ? row.estadoPropuesta == this.filtroEstadoPropuesta : true;
       let clienteValido = this.clienteChecked ? row.cliente == this.filtroClienteProyecto : true;
-      let proyectoValido = this.proyectoChecked ? row.proyecto == this.filtroProyecto : true;
 
-      if (estadoPropuestaValido && clienteValido && proyectoValido) {
+      if (estadoPropuestaValido && clienteValido) {
           valoresValidos.push(row);
       }
   });
@@ -168,10 +137,8 @@ onSelectEstado(event: MatSelectChange) {
     if (!event.checked) this.dataSource.data = this.estimacionesTexto;
     this.filtroEstadoPropuesta = '';
     this.filtroClienteProyecto = '';
-    this.filtroProyecto = '';
     this.estadoChecked = false;
     this.clienteChecked = false;
-    this.proyectoChecked = false;
     this.resetSelect();
 }
   clearFiltroEstado(event: MatCheckboxChange) {
@@ -180,14 +147,11 @@ onSelectEstado(event: MatSelectChange) {
 clearFiltroCliente(event: MatCheckboxChange) {
     if (!event.checked) this.limpiarFiltroCliente = '';
 }
-clearFiltroProyecto(event: MatCheckboxChange) {
-  if (!event.checked) this.limpiarFiltroProyecto = '';
-}
+
 
 resetSelect() {
 this.limpiarFiltroEstado = '';
 this.limpiarFiltroCliente = '';
-this.limpiarFiltroProyecto = '';
 }
 
 ver(row: any) {
@@ -230,8 +194,6 @@ return a.toString().localeCompare(b.toString(), undefined, { numeric: true }) * 
 
 onCondition(activo: string, orden: boolean, a: EstimacionesString, b: EstimacionesString) {
 switch (activo) {
-case 'proyecto':
-return this.compare(a.proyecto, b.proyecto, orden);
 case 'cliente':
 return this.compare(a.cliente, b.cliente, orden);
 case 'estadopropuesta':

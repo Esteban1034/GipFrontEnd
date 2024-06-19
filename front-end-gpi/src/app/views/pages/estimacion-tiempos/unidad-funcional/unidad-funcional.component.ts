@@ -90,13 +90,12 @@ export class formularioUnidadFuncional implements OnInit {
     this.contenidoUfsService.obtenerHoras(peso).subscribe(
       (resultado: any) => {
         console.log('Resultado de obtenerHoras:', resultado);
-        this.horasConstruccion = resultado.hora; // Asignar las horas obtenidas
-        this.horasDiseno = resultado.hora;
-        this.horasPruebas = resultado.hora;
-        // Actualizar los valores en el formulario si es necesario
-        this.ajustarHorasPorEsfuerzo(); // Ajustar las horas por esfuerzo
+        this.horasConstruccion = this.redondearHoras(resultado.hora); // Asignar las horas obtenidas
+        this.horasDiseno = this.redondearHoras(resultado.hora);
+        this.horasPruebas = this.redondearHoras(resultado.hora);
+        this.ajustarHorasPorEsfuerzo();
         this.actualizarValoresFormulario();
-        this.calcularTotales(); // Llamar a calcularTotales para actualizar los totales
+        this.calcularTotales();
       },
       (error) => {
         console.error('Error al obtener horas:', error);
@@ -123,15 +122,17 @@ export class formularioUnidadFuncional implements OnInit {
     const esfuerzoPruebas = this.esfuerzos.find(e => e.nombre === 'Pruebas');
     
     if (esfuerzoConstruccion) {
-      this.horasConstruccion = this.horasConstruccion * (esfuerzoConstruccion.porcentaje)/(esfuerzoDiseño.porcentaje)
+      this.horasConstruccion = this.redondearHoras(this.horasConstruccion * (esfuerzoConstruccion.porcentaje)/(esfuerzoDiseño.porcentaje));
     }
     
     if (esfuerzoPruebas) {
-      this.horasPruebas = this.horasPruebas * (esfuerzoPruebas.porcentaje)/(esfuerzoDiseño.porcentaje)
+      this.horasPruebas = this.redondearHoras(this.horasPruebas * (esfuerzoPruebas.porcentaje)/(esfuerzoDiseño.porcentaje));
     }
   }
-
-
+  
+  redondearHoras(valor: number): number {
+    return Math.ceil(valor * 10) / 10;
+  }
 
   actualizarValoresFormulario() {
     if (this.fc.mantenimientoUnidad.value) {
