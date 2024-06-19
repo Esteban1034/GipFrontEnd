@@ -38,7 +38,6 @@ export class ContenidoUfsService {
   updateContenidoUfs(id: number, contenidoUfs: ContenidoUfs): Observable<ContenidoUfs> {
     return this.httpClient.put<ContenidoUfs>(`${this.baseUrl}/${id}`, contenidoUfs, { headers: this.header });
   }
-  
 
   getContenidoUfsById(id: number): Observable<ContenidoUfs> {
     return this.httpClient.get<ContenidoUfs>(`${this.baseUrl}/contenido-ufs/${id}`);
