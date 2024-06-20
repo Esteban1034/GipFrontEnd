@@ -21,6 +21,7 @@ export class Mantenimiento_unidadprogramacion implements OnInit {
     mantenimientosUnidad: MantenimientoUnidad[] = [];
     peso: number = 0;
     nombreUnidad: string = "";
+    mantenimientoSeleccionado: MantenimientoUnidad = new MantenimientoUnidad();
 
     constructor(private mantenimientoUnidadServ: MantenimientoUnidadService) { }
 
@@ -51,6 +52,10 @@ export class Mantenimiento_unidadprogramacion implements OnInit {
     }
     cancelarUnidad(){
         this.unidadNueva = null;
+    }
+
+    eliminarUnidad(){
+        
     }
 }
 
