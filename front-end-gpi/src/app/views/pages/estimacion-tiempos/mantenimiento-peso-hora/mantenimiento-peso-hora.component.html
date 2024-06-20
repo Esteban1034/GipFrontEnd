@@ -7,4 +7,85 @@
 </nav>
 <div class="body">
     <h6 class="card-title"> Vista de parametría relación peso-hora </h6>
-</div>
+    <div class="main-container" style="background-color: #ffffff; padding: 40px; border-radius: 8px; color: #000;">
+
+        <div class="separated-buttons">
+          <button class="btn btn-primary" (click)="crearUnidad()">
+              Crear Peso-Hora
+          </button>
+          <button class="btn btn-primary" (click)="visualizarUnidad()">
+              Visualizar Peso-Hora
+          </button>
+        </div>
+      
+        
+          <form *ngIf="validador">
+        
+            <div class="input-section">
+              <div class="form-group col-12">
+                <label for="unit-name-1">Valor del nuevo Peso de Programación</label>
+                <input [(ngModel)]="unidadNueva.nombre" formControlName="nombreNuevo" type="text" name="nombreNuevo" class="form-control" 
+                  placeholder="Ingrese el nombre">
+              </div>
+             </div>
+        
+            <div class="input-section">
+              <div class="form-group col-12">
+                <label for="unit-weight-1">Hora del peso de Programación</label>
+                 <select [(ngModel)]="unidadNueva.peso" 
+                   formControlName="pesoNuevo" type="text" name="pesoNuevo" class="form-control">
+                  <option [ngValue]="null" [disabled]="true" [hidden]="true">Seleccione el peso</option>
+                  <option *ngFor="let p of pesos" [ngValue]="p">{{ p }}</option>
+                  </select>
+              </div>
+            </div>
+        
+            <div class="action-buttons">
+              <button class="btn btn-outline-primary" type="submit" (click)="guardarUnidad()">CREAR</button>
+              <button class="btn btn-outline-primary" type="button" (click)="cancelarUnidad()">CANCELAR</button>
+            </div>
+        
+          </form>
+  
+          <form *ngIf="!validador">
+            <div class="input-section">
+              <div class="form-group col-12">
+                <label for="unit-weight-1">peso del mantenimiento</label>
+                 <select [(ngModel)]="unidadNueva.peso" 
+                   formControlName="pesoNuevo" type="text" name="pesoNuevo" class="form-control">
+                  <option [ngValue]="null" [disabled]="true" [hidden]="true">Seleccione el peso</option>
+                  <option *ngFor="let mantimientos of mantenimientosUnidad" [ngValue]="mantimientos">{{ mantimientos.nombre }}</option>
+                  </select>
+              </div>
+            </div>
+            <div>
+              <button  class="btn btn-primary" (click)="buscarUnidad()">
+                Buscar
+              </button>
+            </div>
+             
+            <form *ngIf="!validadorBuscar">
+              <div class="form-group col-12">
+                <label for="unit-name-1">Peso de Programación</label>
+                <input [(ngModel)]="unidadNueva.nombre" formControlName="nombreNuevo" type="text" name="nombreNuevo" class="form-control" 
+                  placeholder="Ingrese el nombre">
+              </div>
+  
+              <div class="input-section">
+                <div class="form-group col-12">
+                  <label for="unit-weight-1">Peso de la Unidad de Programación</label>
+                   <select [(ngModel)]="unidadNueva.peso" 
+                     formControlName="pesoNuevo" type="text" name="pesoNuevo" class="form-control">
+                    <option [ngValue]="null" [disabled]="true" [hidden]="true">Seleccione el peso</option>
+                    <option *ngFor="let p of pesos" [ngValue]="p">{{ p }}</option>
+                    </select>
+                </div>
+              </div>
+  
+              <div class="action-buttons">
+                <button class="btn btn-outline-primary" type="submit" (click)="guardarUnidad()">ACTUALIZAR</button>
+                <button class="btn btn-outline-primary" type="button">ELIMINAR</button>
+              </div>
+            </form>
+          </form>
+  </div>
