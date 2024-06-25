@@ -137,9 +137,6 @@ export class crear_estimacion  implements OnInit {
 
     buildDatosIForm() {
         this.formDatosIniciales = this.FBService.group({
-        unidadFuncional:['', [
-            Validators.required
-        ]],
         Director:['', [
             Validators.required,
         ]],
@@ -213,7 +210,7 @@ export class crear_estimacion  implements OnInit {
 
     saveProyecto() {
         let estimacionUfsDTO: EstimacionUfsDTO = {
-          ufId: this.selectUfs.id, 
+          ufId: null, 
           estimacionUfs: {
             fechaCreacion: this.estimacionTiempos.fechaCreacion,
             recurso: this.TiEsDi,
