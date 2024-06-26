@@ -1,6 +1,7 @@
 // contenido-ufs.ts
 
 import { Esfuerzo } from "./esfuerzo";
+import { EstimacionTiempos } from "./estimacion-ufs";
 import { Funcion } from "./funcion";
 import { MantenimientoUnidad } from "./mantenimiento-unidad";
 import { Ufs } from "./ufs";
@@ -17,7 +18,9 @@ export class ContenidoUfs {
   esfuerzo: Esfuerzo;
   funcion: Funcion;
   mantenimientoUnidad: MantenimientoUnidad;
-  ufs: null;
+  ufs: Ufs;
+  estimacionUfs: EstimacionTiempos;
+
   }
 
   

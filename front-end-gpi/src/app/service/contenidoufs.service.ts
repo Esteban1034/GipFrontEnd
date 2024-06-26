@@ -28,6 +28,11 @@ export class ContenidoUfsService {
     return this.httpClient.get(`${this.baseUrl}/obtenerHoras/${peso}`);
   }
 
+  getUltimoContenidoUfs(): Observable<ContenidoUfs> {
+    return this.httpClient.get<ContenidoUfs>(`${this.baseUrl}/ultimo`);
+  }
+
+  
   saveContenidoUfs(contenidoUfs: ContenidoUfs): Observable<Object> {
     return this.httpClient.post(`${this.baseUrl}`,contenidoUfs, { headers: this.header });
   }
