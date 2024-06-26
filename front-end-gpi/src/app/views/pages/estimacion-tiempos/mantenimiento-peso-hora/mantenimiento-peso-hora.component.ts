@@ -4,6 +4,8 @@ import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { MantenimientoUnidad } from 'src/app/model/mantenimiento-unidad';
+import { MantenimientoUnidadService } from 'src/app/service/mantenimiento-unidad-service';
 
 
 @Component({
@@ -12,9 +14,42 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
     styleUrls: ['./mantenimiento-peso-hora.component.scss']
 })
 export class mantenimiento_peso implements OnInit {
+    validador: boolean = true; 
+    validadorBuscar: boolean = true;
+    unidadNueva: MantenimientoUnidad = new MantenimientoUnidad();
+    pesos: number[] = [1,2,3,4,5,6,7,8,9,10,22,34,53,23];
+    mantenimientosUnidad: MantenimientoUnidad[] = [];
+
+    constructor(private mantenimientoUnidadServ: MantenimientoUnidadService) { }
+
     ngOnInit(): void {
-        throw new Error('Method not implemented.');
+        this.mantenimientoUnidadServ.getMantenimientos().subscribe(data =>{
+            this.mantenimientosUnidad = data;
+        });
+    }
+
+    crearUnidad(){
+        this.validador = true;
+        this.validadorBuscar = true;
+    }
+
+    visualizarUnidad(){
+        this.validador = false;
+    }
+
+    guardarUnidad(){
+        console.log(this.unidadNueva);
+    }
+
+    buscarUnidad(){
+        this.validadorBuscar = false;
+        console.log("imprimir")
+    }
+    cancelarUnidad(){
+        this.unidadNueva = null;
     }
 }
+
+
 
 

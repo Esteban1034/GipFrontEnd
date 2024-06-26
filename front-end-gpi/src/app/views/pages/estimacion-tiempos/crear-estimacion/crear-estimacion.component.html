@@ -40,21 +40,21 @@
                 <form *ngIf="TiEs !== undefined" [formGroup]="formDatosIniciales" (ngSubmit)="onSubmit()">
                   <div class="form-row" >
                       <div class="form-group col-sm-12 col-md-4">
-                          <label for="Director">Director de proyecto</label>
-                          <select [(ngModel)]="TiEsDi"
-                              [ngClass]="{'is-invalid': submittedPp && fpp.Director.errors}" id="Director" autocomplete="off"
-                              name="Director" formControlName="Director" class="form-control">
+                          <label for="Director">Seleccionar Cliente</label>
+                          <select [(ngModel)]="selectedClienteId" (change)="onClienteSelected()"
+                              [ngClass]="{'is-invalid': submittedPp && fpp.Cliente.errors}" id="Cliente" autocomplete="off"
+                              name="Cliente">
                               <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
-                              <option *ngFor="let D of Directores" [ngValue]="D">{{D.nombre}}</option>
+                              <option *ngFor="let Cl of clientes" [ngValue]="Cl.id">{{Cl.nombre}}</option>
                           </select>
-                           <div class="invalid-feedback" *ngIf="submittedPp && fpp.Director.errors">
-                              <div *ngIf="fpp.Director.errors.required">
+                           <div class="invalid-feedback" *ngIf="submittedPp && fpp.Cliente.errors">
+                              <div *ngIf="fpp.Cliente.errors.required">
                                   Este campo es requerido.
                               </div>
                            </div>
                       </div>
                       <div class="form-group col-sm-12 col-md-4">
-                        <label for="NombreProyecto">Nombre del proyecto</label>
+                        <label for="NombreProyecto">Proyectos Asociados</label>
                         <select [(ngModel)]="TiEsP"
                             [ngClass]="{'is-invalid': submittedPp && fpp.NombreProyecto.errors}" id="NombreProyecto" autocomplete="off"
                             name="NombreProyecto" formControlName="NombreProyecto" class="form-control">
@@ -81,35 +81,7 @@
                      </div>
                   </div>
                   <div  class="form-row">
-                    <div class="form-group col-sm-12 col-md-4">
-                        <label for="TipoProyecto">Tipo de proyecto</label>
-                        <select [(ngModel)]="TiEsEt"
-                            [ngClass]="{'is-invalid': submittedPp && fpp.TipoProyecto.errors}" id="TipoProyecto" autocomplete="off"
-                            name="TipoProyecto" formControlName="TipoProyecto" class="form-control">
-                            <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
-                            <option *ngFor="let TP of TipoProyecto" [ngValue]="TP">{{TP.etapa}}</option>
-                        </select>
-                            <div class="invalid-feedback" *ngIf="submittedPp && fpp.TipoProyecto.errors">
-                           <div *ngIf="fpp.TipoProyecto.errors.required">
-                                Este campo es requerido.
-                            </div>
-                         </div> 
-                    </div>
-                  <div class="form-group col-sm-12 col-md-4">
-                      <label for="cicloVida">Ciclo de vida del proyecto</label>
-                      <select [(ngModel)]="TiEsCV"
-                          [ngClass]="{'is-invalid': submittedPp && fpp.cicloVida.errors}" id="cicloVida" autocomplete="off"
-                          name="cicloVida" formControlName="cicloVida" class="form-control">
-                          <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
-                          <option *ngFor="let CV of CicloDeVidaProyecto" [ngValue]="CV">{{CV.tipo}}</option>
-                      </select>
-                          <div class="invalid-feedback" *ngIf="submittedPp && fpp.cicloVida.errors">
-                          <div *ngIf="fpp.cicloVida.errors.required">
-                              Este campo es requerido.
-                          </div>
-                        </div> 
-                  </div>
-                  <div class="form-group col-sm-12 col-md-4">
+                  <!-- <div class="form-group col-sm-12 col-md-4">
                     <label for="cicloVida">Unidades funcionales</label>
                     <select [(ngModel)]="selectUfs"
                         [ngClass]="{'is-invalid': submittedPp && fpp.unidadFuncional.errors}" id="unidadFuncional" 
@@ -122,7 +94,7 @@
                             Este campo es requerido.
                         </div>
                       </div> 
-                </div>
+                </div> -->
               </div>
                   <div class="form-row">
                       <div class="col-12">

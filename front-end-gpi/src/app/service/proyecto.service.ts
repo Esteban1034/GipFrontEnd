@@ -68,6 +68,10 @@ export class ProyectoService {
         return this.httpClient.get<Proyecto[]>(`${this.baseUrl}/proyectos-by-codigo-cliente/${codigo}/${idCliente}`, { headers: this.header });
     }
 
+    findByClienteIdConEtapaPRP(idCliente: number): Observable<Proyecto[]> {
+        return this.httpClient.get<Proyecto[]>(`${this.baseUrl}/${idCliente}/etapa-prp`, { headers: this.header });
+    }
+
     findByCodigoAndComponente(codigo: string, idComponente: number): Observable<Proyecto[]> {
         return this.httpClient.get<Proyecto[]>(`${this.baseUrl}/proyectos-by-codigo-componente/${codigo}/${idComponente}`, { headers: this.header });
     }

@@ -29,6 +29,8 @@ import { EstimacionTiempoService } from 'src/app/service/estimacion-tiempos.serv
 import { Ufs } from 'src/app/model/ufs';
 import { ActividadesComplementarias } from 'src/app/model/actividades-complementarias';
 import { EstimacionUfsDTO } from 'src/app/model/estimacion-ufsDTO';
+import { Cliente } from 'src/app/model/cliente';
+import { ClienteService } from 'src/app/service/cliente.service';
 
 
 @Component({
@@ -42,23 +44,13 @@ export class crear_estimacion  implements OnInit {
     modelos: Modelo[]=[];
     TiEs:Modelo;
     selectUfs:Ufs;
-    ufsOptions = [
-        { id: 1, nombre: 'UF1' },
-        { id: 2, nombre: 'UF2' },
-        { id: 3, nombre: 'UF3' },
-        { id: 4, nombre: 'UF4' },
-        { id: 5, nombre: 'UF5' },
-        { id: 6, nombre: 'UF6' },
-        { id: 7, nombre: 'UF7' },
-        { id: 8, nombre: 'UF8' },
-        { id: 9, nombre: 'UF9' },
-        { id: 10, nombre: 'UF10' }
-      ];
 
     Directores: Empleado[]=[];
     TiEsDi: Empleado;
 
+    clientes: Cliente[]=[];
     proyectos: Proyecto[]=[];
+    selectedClienteId: number| null = null;
     TiEsP:Proyecto;
 
     //
@@ -92,6 +84,7 @@ export class crear_estimacion  implements OnInit {
         private ProyectoService: ProyectoService,
     //  private estadoService: EstadoProyectoService,
         private CicloVidaService: TipoProyectoService,
+        private clienteService: ClienteService,
         private tipoService: EtapaProyetoService,
         private estimacionTiempoService: EstimacionTiempoService,
 
@@ -112,9 +105,8 @@ export class crear_estimacion  implements OnInit {
 
       /////////////////////
        this.getModelos();
+       this.getClientes();
        this.getDirectoresPEstimacion();
-       this.getProyectoList();
-       this.getEstadosProyecto();
        this.getTipoProyecto();
       ///////////////////// 
         //
@@ -137,22 +129,13 @@ export class crear_estimacion  implements OnInit {
 
     buildDatosIForm() {
         this.formDatosIniciales = this.FBService.group({
-        unidadFuncional:['', [
-            Validators.required
-        ]],
-        Director:['', [
+        Cliente:['', [
             Validators.required,
         ]],
         NombreProyecto:['', [
             Validators.required,
         ]],
         fechaCreacion:['', [
-            Validators.required,
-        ]],
-        TipoProyecto:['', [
-            Validators.required,
-        ]],
-        cicloVida:['', [
             Validators.required,
         ]],
      })
@@ -165,19 +148,27 @@ export class crear_estimacion  implements OnInit {
         };
     }
     //
+    getClientes(){
+        this.clienteService.getClientesList().subscribe(data=>{
+            this.clientes = data;
+        },error=>{
+            console.log(error);
+            this.toastr.error(error.error)
+        })
+    }
+
+    onClienteSelected(){
+        if(this.selectedClienteId != null){
+            this.ProyectoService.findByClienteIdConEtapaPRP(this.selectedClienteId).subscribe(data=>{
+                this.proyectos = data,
+                error => console.error(error)
+            })
+        }
+    }
 
     getModelos() {
         this.modeloService.getAllModelos().subscribe(data => {
             this.modelos = data;
-        }, error => {
-            console.log(error);
-            this.toastr.error(error.error);
-        });
-    }
-
-    getProyectoList(){
-        this.ProyectoService.findByEtapa(1).subscribe(data => {
-            this.proyectos = data;
         }, error => {
             console.log(error);
             this.toastr.error(error.error);
@@ -202,18 +193,9 @@ export class crear_estimacion  implements OnInit {
         });
     }
 
-    getEstadosProyecto(){
-        this.CicloVidaService.getTiposList().subscribe(data => {
-            this.CicloDeVidaProyecto = data;
-        }, error => {
-            console.log(error);
-            this.toastr.error(error.error);
-        });
-    }
-
     saveProyecto() {
         let estimacionUfsDTO: EstimacionUfsDTO = {
-          ufId: this.selectUfs.id, 
+          ufId: null, 
           estimacionUfs: {
             fechaCreacion: this.estimacionTiempos.fechaCreacion,
             recurso: this.TiEsDi,
