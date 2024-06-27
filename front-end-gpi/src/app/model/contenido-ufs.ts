@@ -4,6 +4,7 @@ import { Esfuerzo } from "./esfuerzo";
 import { EstimacionTiempos } from "./estimacion-ufs";
 import { Funcion } from "./funcion";
 import { MantenimientoUnidad } from "./mantenimiento-unidad";
+import { SubFuncion } from "./subFuncion";
 import { Ufs } from "./ufs";
 
 export class ContenidoUfs {
@@ -16,8 +17,7 @@ export class ContenidoUfs {
   totalConstruccion: number;
   totalPruebas: number;
   esfuerzo: Esfuerzo;
-  funcion: Funcion;
-  mantenimientoUnidad: MantenimientoUnidad;
+  subfuncion: SubFuncion;
   ufs: Ufs;
   estimacionUfs: EstimacionTiempos;
 

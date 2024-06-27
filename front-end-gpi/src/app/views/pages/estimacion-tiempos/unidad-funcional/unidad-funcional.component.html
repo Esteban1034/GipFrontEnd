@@ -14,15 +14,49 @@
   <button (click)="cargarUltimoContenidoUfs()">Cargar Último Contenido</button>
 </div>
 
-<button (click)="editarUltimoContenido()">Editar Último Contenido</button>
 
 <div class="row justify-content-center" id="occ">
   <div class="col-md-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
         <h6 class="card-title">Nuevo Contenido de Unidad Funcional</h6>
-        <button type="button" class="btn btn-primary mb-4" (click)="toggleNuevoUfsForm()">Nuevo UFS 2</button>
+      
+        
+        <button id="botonCrearUfs" type="button" class="btn btn-primary mb-4 mr-3" (click)="toggleNuevoUfsForm()">ID UFS 1 Crear Siguiente ID UFS</button>
 
+
+        <form *ngIf="!showNuevoUfsForm && ultimoContenidoUfs " [formGroup]="formSubfuncion" (ngSubmit)="saveSubfuncion()">
+
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="funcion">Función</label>
+            <select formControlName="funcion" class="form-control" id="funcion">
+              <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
+              <option *ngFor="let funcion of funciones" [ngValue]="funcion">{{ funcion.funcion }}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="submitted && formSubfuncion.controls.funcion.errors">
+              <div *ngIf="formSubfuncion.controls.funcion.errors.required">Este campo es requerido.</div>
+            </div>
+          </div>
+          <div class="form-group col-sm-12 col-md-8">
+            <label for="descripcion">Descripción</label>
+            <textarea formControlName="descripcion" class="form-control" id="descripcion" rows="3" placeholder="Descripción de la Subfunción"></textarea>
+            <div class="invalid-feedback" *ngIf="submitted && formSubfuncion.controls.descripcion.invalid && formSubfuncion.controls.descripcion.touched">
+              <div *ngIf="formSubfuncion.controls.descripcion.errors.required">Este campo es requerido.</div>
+            </div>
+          </div>
+          <div class="form-group col-sm-12 col-md-8">
+            <label for="mantenimientoUnidad">Mantenimiento de Unidad</label>
+            <select formControlName="mantenimientoUnidad" class="form-control" id="mantenimientoUnidad" (change)="onMantenimientoChange($event)">
+              <option [ngValue]="null" disabled hidden>Seleccionar opción</option>
+              <option *ngFor="let mantenimiento of mantenimientos" [ngValue]="mantenimiento">{{ mantenimiento.nombre }} -- {{ mantenimiento.peso }}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="submitted && formSubfuncion.controls.mantenimientoUnidad.invalid && formSubfuncion.controls.mantenimientoUnidad.touched">
+              Este campo es requerido.
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar Subfunción</button>
+        </form>
+        
 
         <form *ngIf="!showNuevoUfsForm && ultimoContenidoUfs " [formGroup]="formCreaContenidoUfs" (ngSubmit)="saveContenidoUfs()">
           <div class="form-row">
@@ -33,117 +67,112 @@
                 <div *ngIf="fc.nombreCaso.errors.required">Este campo es requerido.</div>
               </div>
             </div>
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="mantenimientoUnidad">Mantenimiento de Unidad</label>
-              <select formControlName="mantenimientoUnidad" class="form-control" id="mantenimientoUnidad" (change)="onMantenimientoChange($event)">
-                <option [ngValue]="null" disabled hidden>Seleccionar opción</option>
-                <option *ngFor="let mantenimiento of mantenimientos" [ngValue]="mantenimiento">{{ mantenimiento.nombre }} -- {{ mantenimiento.peso }}</option>
-              </select>
-              <div class="invalid-feedback" *ngIf="submitted && fc.mantenimientoUnidad.invalid && fc.mantenimientoUnidad.touched">
-                Este campo es requerido.
-              </div>
-            </div>
-          </div>
+            <!-- Inicio del formulario de Subfuncion -->
           
-          <div *ngIf="!showCreateFunctionForm" class="form-row">
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="funcionSeleccionada">Función</label>
-              <select formControlName="funcionSeleccionada" class="form-control" id="funcionSeleccionada">
-                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
-                <option *ngFor="let funcion of funciones" [ngValue]="funcion">{{ funcion.funcion }}</option>
-              </select>
-              <div class="invalid-feedback" *ngIf="submitted && fc.funcionSeleccionada.errors">
-                <div *ngIf="fc.funcionSeleccionada.errors.required">Este campo es requerido.</div>
-              </div>
-            </div>
-            <div class="form-group col-sm-12 col-md-6">
-              <button type="button" class="btn btn-primary mt-4" (click)="showCreateFunctionForm = true">Crear Nueva Función</button>
-            </div>
+
+        
           </div>
 
-          <div *ngIf="showCreateFunctionForm">
-            <form [formGroup]="formCreaFuncion" (ngSubmit)="saveFuncion()">
-              <div class="form-group col-sm-12 col-md-6">
-                <label for="funcion">Nombre de la Función</label>
-                <input type="text" formControlName="funcion" class="form-control" id="funcion" placeholder="Nombre de la Función">
-                <div class="invalid-feedback" *ngIf="formCreaFuncion.get('funcion').invalid && formCreaFuncion.get('funcion').touched">
-                  Este campo es requerido.
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="col-12">
-                  <button type="submit" class="btn btn-primary mr-2">Guardar Función</button>
-                  <button type="button" class="btn btn-light" (click)="cancelCreateFunction()">Cancelar</button>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <h6 class="card-title">Porcentajes y Horas</h6>
-          <div class="form-row">
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="porcentajeDiseno">Porcentaje de Diseño</label>
-              <input type="text" formControlName="porcentajeDiseno" class="form-control" id="porcentajeDiseno" (ngModelChange)="calcularTotales()">
-              <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeDiseno.invalid && fc.porcentajeDiseno.touched">
-                <div *ngIf="fc.porcentajeDiseno.errors.required">Este campo es requerido.</div>
-              </div>
-            </div>
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="horaDiseno">Hora Diseño</label>
-              <input type="text" formControlName="horaDiseno" class="form-control" id="horaDiseno" [value]="horasDiseno" readonly>
-            </div>
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="totalAjusteDiseno">Total con Ajuste Diseño</label>
-              <input type="text" class="form-control" id="totalAjusteDiseno" [value]="totalAjusteDiseno" readonly>
+        <h6 class="card-title">Porcentajes y Horas</h6>
+        <div class="form-row">
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="porcentajeDiseno">Porcentaje de Diseño</label>
+            <input type="text" formControlName="porcentajeDiseno" class="form-control" id="porcentajeDiseno" (ngModelChange)="calcularTotales()">
+            <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeDiseno.invalid && fc.porcentajeDiseno.touched">
+              <div *ngIf="fc.porcentajeDiseno.errors.required">Este campo es requerido.</div>
             </div>
           </div>
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="horaDiseno">Hora Diseño</label>
+            <input type="text" formControlName="horaDiseno" class="form-control" id="horaDiseno" [value]="horasDiseno" readonly>
+          </div>
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="totalAjusteDiseno">Total con Ajuste Diseño</label>
+            <input type="text" class="form-control" id="totalAjusteDiseno" [value]="totalAjusteDiseno" readonly>
+          </div>
+        </div>
 
-          <div class="form-row">
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="porcentajeConstruccion">Porcentaje Construcción</label>
-              <input type="text" formControlName="porcentajeConstruccion" class="form-control" id="porcentajeConstruccion" (ngModelChange)="calcularTotales()">
-              <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeConstruccion.invalid && fc.porcentajeConstruccion.touched">
-                <div *ngIf="fc.porcentajeConstruccion.errors.required">Este campo es requerido.</div>
-              </div>
-            </div>
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="horaConstruccion">Hora Construcción</label>
-              <input type="text" formControlName="horaConstruccion" class="form-control" id="horaConstruccion" [value]="horasConstruccion" readonly>
-            </div>
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="totalAjusteConstruccion">Total con Ajuste Construcción</label>
-              <input type="text" class="form-control" id="totalAjusteConstruccion" [value]="totalAjusteConstruccion" readonly>
+        <div class="form-row">
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="porcentajeConstruccion">Porcentaje Construcción</label>
+            <input type="text" formControlName="porcentajeConstruccion" class="form-control" id="porcentajeConstruccion" (ngModelChange)="calcularTotales()">
+            <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeConstruccion.invalid && fc.porcentajeConstruccion.touched">
+              <div *ngIf="fc.porcentajeConstruccion.errors.required">Este campo es requerido.</div>
             </div>
           </div>
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="horaConstruccion">Hora Construcción</label>
+            <input type="text" formControlName="horaConstruccion" class="form-control" id="horaConstruccion" [value]="horasConstruccion" readonly>
+          </div>
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="totalAjusteConstruccion">Total con Ajuste Construcción</label>
+            <input type="text" class="form-control" id="totalAjusteConstruccion" [value]="totalAjusteConstruccion" readonly>
+          </div>
+        </div>
 
-          <div class="form-row">
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="porcentajePruebas">Porcentaje Pruebas</label>
-              <input type="text" formControlName="porcentajePruebas" class="form-control" id="porcentajePruebas" (ngModelChange)="calcularTotales()">
-              <div class="invalid-feedback" *ngIf="submitted && fc.porcentajePruebas.invalid && fc.porcentajePruebas.touched">
-                <div *ngIf="fc.porcentajePruebas.errors.required">Este campo es requerido.</div>
-              </div>
-            </div>
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="horaPruebas">Hora Pruebas</label>
-              <input type="text" formControlName="horaPruebas" class="form-control" id="horaPruebas" [value]="horasPruebas" readonly>
-            </div>
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="totalAjustePruebas">Total con Ajuste Pruebas</label>
-              <input type="text" class="form-control" id="totalAjustePruebas" [value]="totalAjustePruebas" readonly>
+        <div class="form-row">
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="porcentajePruebas">Porcentaje Pruebas</label>
+            <input type="text" formControlName="porcentajePruebas" class="form-control" id="porcentajePruebas" (ngModelChange)="calcularTotales()">
+            <div class="invalid-feedback" *ngIf="submitted && fc.porcentajePruebas.invalid && fc.porcentajePruebas.touched">
+              <div *ngIf="fc.porcentajePruebas.errors.required">Este campo es requerido.</div>
             </div>
           </div>
-
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary mr-2">Guardar</button>
-            <button type="button" class="btn btn-light" routerLink="/contenidoUfs/lista">Cancelar</button>
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="horaPruebas">Hora Pruebas</label>
+            <input type="text" formControlName="horaPruebas" class="form-control" id="horaPruebas" [value]="horasPruebas" readonly>
           </div>
-        </form>
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="totalAjustePruebas">Total con Ajuste Pruebas</label>
+            <input type="text" class="form-control" id="totalAjustePruebas" [value]="totalAjustePruebas" readonly>
+          </div>
+        </div>
 
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary mr-2">Guardar</button>
+          <button type="button" class="btn btn-light" routerLink="/contenidoUfs/lista">Cancelar</button>
+        </div>
+
+        <!-- Form closing tag for the first form -->
+      </form>
+
+   <!-- Inicio del formulario de Subfuncion -->
+   <form *ngIf="showNuevoUfsForm && ultimoContenidoUfs " [formGroup]="formSubfuncion" (ngSubmit)="saveSubfuncion()">
+    <div *ngIf="nuevoIdUfs" class="alert alert-success mt-4">
+      Trabajando en la UFS {{ nuevoIdUfs }}
+    </div>
+    
+    <div class="form-group col-sm-12 col-md-4">
+      <label for="funcion">Función</label>
+      <select formControlName="funcion" class="form-control" id="funcion">
+        <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
+        <option *ngFor="let funcion of funciones" [ngValue]="funcion">{{ funcion.funcion }}</option>
+      </select>
+      <div class="invalid-feedback" *ngIf="submitted && formSubfuncion.controls.funcion.errors">
+        <div *ngIf="formSubfuncion.controls.funcion.errors.required">Este campo es requerido.</div>
+      </div>
+    </div>
+    <div class="form-group col-sm-12 col-md-8">
+      <label for="descripcion">Descripción</label>
+      <textarea formControlName="descripcion" class="form-control" id="descripcion" rows="3" placeholder="Descripción de la Subfunción"></textarea>
+      <div class="invalid-feedback" *ngIf="submitted && formSubfuncion.controls.descripcion.invalid && formSubfuncion.controls.descripcion.touched">
+        <div *ngIf="formSubfuncion.controls.descripcion.errors.required">Este campo es requerido.</div>
+      </div>
+    </div>
+    <div class="form-group col-sm-12 col-md-8">
+      <label for="mantenimientoUnidad">Mantenimiento de Unidad</label>
+      <select formControlName="mantenimientoUnidad" class="form-control" id="mantenimientoUnidad" (change)="onMantenimientoChange($event)">
+        <option [ngValue]="null" disabled hidden>Seleccionar opción</option>
+        <option *ngFor="let mantenimiento of mantenimientos" [ngValue]="mantenimiento">{{ mantenimiento.nombre }} -- {{ mantenimiento.peso }}</option>
+      </select>
+      <div class="invalid-feedback" *ngIf="submitted && formSubfuncion.controls.mantenimientoUnidad.invalid && formSubfuncion.controls.mantenimientoUnidad.touched">
+        Este campo es requerido.
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar Subfunción</button>
+  </form>
 
         <form *ngIf="showNuevoUfsForm && ultimoContenidoUfs " [formGroup]="formCrearNuevoUfs" (ngSubmit)="crearNuevoUFS()">
-   
-  
           <div class="form-row">
             <div class="form-group col-sm-12 col-md-6">
               <label for="nombreCaso">Nombre del Caso</label>
@@ -152,106 +181,65 @@
                 <div *ngIf="fc.nombreCaso.errors.required">Este campo es requerido.</div>
               </div>
             </div>
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="mantenimientoUnidad">Mantenimiento de Unidad</label>
-              <select formControlName="mantenimientoUnidad" class="form-control" id="mantenimientoUnidad" (change)="onMantenimientoChange($event)">
-                <option [ngValue]="null" disabled hidden>Seleccionar opción</option>
-                <option *ngFor="let mantenimiento of mantenimientos" [ngValue]="mantenimiento">{{ mantenimiento.nombre }} -- {{ mantenimiento.peso }}</option>
-              </select>
-              <div class="invalid-feedback" *ngIf="submitted && fc.mantenimientoUnidad.invalid && fc.mantenimientoUnidad.touched">
-                Este campo es requerido.
-              </div>
-            </div>
+         
+            
           </div>
-          
-          <div *ngIf="!showCreateFunctionForm" class="form-row">
-            <div class="form-group col-sm-12 col-md-6">
-              <label for="funcionSeleccionada">Función</label>
-              <select formControlName="funcionSeleccionada" class="form-control" id="funcionSeleccionada">
-                <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccionar opción</option>
-                <option *ngFor="let funcion of funciones" [ngValue]="funcion">{{ funcion.funcion }}</option>
-              </select>
-              <div class="invalid-feedback" *ngIf="submitted && fc.funcionSeleccionada.errors">
-                <div *ngIf="fc.funcionSeleccionada.errors.required">Este campo es requerido.</div>
-              </div>
-            </div>
-            <div class="form-group col-sm-12 col-md-6">
-              <button type="button" class="btn btn-primary mt-4" (click)="showCreateFunctionForm = true">Crear Nueva Función</button>
-            </div>
-          </div>
+     
 
-          <div *ngIf="showCreateFunctionForm">
-            <form [formGroup]="formCreaFuncion" (ngSubmit)="saveFuncion()">
-              <div class="form-group col-sm-12 col-md-6">
-                <label for="funcion">Nombre de la Función</label>
-                <input type="text" formControlName="funcion" class="form-control" id="funcion" placeholder="Nombre de la Función">
-                <div class="invalid-feedback" *ngIf="formCreaFuncion.get('funcion').invalid && formCreaFuncion.get('funcion').touched">
-                  Este campo es requerido.
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="col-12">
-                  <button type="submit" class="btn btn-primary mr-2">Guardar Función</button>
-                  <button type="button" class="btn btn-light" (click)="cancelCreateFunction()">Cancelar</button>
-                </div>
-              </div>
-            </form>
+        <h6 class="card-title">Porcentajes y Horas</h6>
+        <div class="form-row">
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="porcentajeDiseno">Porcentaje de Diseño</label>
+            <input type="text" formControlName="porcentajeDiseno" class="form-control" id="porcentajeDiseno" (ngModelChange)="calcularTotales()">
+            <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeDiseno.invalid && fc.porcentajeDiseno.touched">
+              <div *ngIf="fc.porcentajeDiseno.errors.required">Este campo es requerido.</div>
+            </div>
           </div>
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="horaDiseno">Hora Diseño</label>
+            <input type="text" formControlName="horaDiseno" class="form-control" id="horaDiseno" [value]="horasDiseno" readonly>
+          </div>
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="totalAjusteDiseno">Total con Ajuste Diseño</label>
+            <input type="text" class="form-control" id="totalAjusteDiseno" [value]="totalAjusteDiseno" readonly>
+          </div>
+        </div>
 
-          <h6 class="card-title">Porcentajes y Horas</h6>
-          <div class="form-row">
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="porcentajeDiseno">Porcentaje de Diseño</label>
-              <input type="text" formControlName="porcentajeDiseno" class="form-control" id="porcentajeDiseno" (ngModelChange)="calcularTotales()">
-              <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeDiseno.invalid && fc.porcentajeDiseno.touched">
-                <div *ngIf="fc.porcentajeDiseno.errors.required">Este campo es requerido.</div>
-              </div>
-            </div>
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="horaDiseno">Hora Diseño</label>
-              <input type="text" formControlName="horaDiseno" class="form-control" id="horaDiseno" [value]="horasDiseno" readonly>
-            </div>
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="totalAjusteDiseno">Total con Ajuste Diseño</label>
-              <input type="text" class="form-control" id="totalAjusteDiseno" [value]="totalAjusteDiseno" readonly>
+        <div class="form-row">
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="porcentajeConstruccion">Porcentaje Construcción</label>
+            <input type="text" formControlName="porcentajeConstruccion" class="form-control" id="porcentajeConstruccion" (ngModelChange)="calcularTotales()">
+            <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeConstruccion.invalid && fc.porcentajeConstruccion.touched">
+              <div *ngIf="fc.porcentajeConstruccion.errors.required">Este campo es requerido.</div>
             </div>
           </div>
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="horaConstruccion">Hora Construcción</label>
+            <input type="text" formControlName="horaConstruccion" class="form-control" id="horaConstruccion" [value]="horasConstruccion" readonly>
+          </div>
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="totalAjusteConstruccion">Total con Ajuste Construcción</label>
+            <input type="text" class="form-control" id="totalAjusteConstruccion" [value]="totalAjusteConstruccion" readonly>
+          </div>
+        </div>
 
-          <div class="form-row">
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="porcentajeConstruccion">Porcentaje Construcción</label>
-              <input type="text" formControlName="porcentajeConstruccion" class="form-control" id="porcentajeConstruccion" (ngModelChange)="calcularTotales()">
-              <div class="invalid-feedback" *ngIf="submitted && fc.porcentajeConstruccion.invalid && fc.porcentajeConstruccion.touched">
-                <div *ngIf="fc.porcentajeConstruccion.errors.required">Este campo es requerido.</div>
-              </div>
-            </div>
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="horaConstruccion">Hora Construcción</label>
-              <input type="text" formControlName="horaConstruccion" class="form-control" id="horaConstruccion" [value]="horasConstruccion" readonly>
-            </div>
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="totalAjusteConstruccion">Total con Ajuste Construcción</label>
-              <input type="text" class="form-control" id="totalAjusteConstruccion" [value]="totalAjusteConstruccion" readonly>
+        <div class="form-row">
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="porcentajePruebas">Porcentaje Pruebas</label>
+            <input type="text" formControlName="porcentajePruebas" class="form-control" id="porcentajePruebas" (ngModelChange)="calcularTotales()">
+            <div class="invalid-feedback" *ngIf="submitted && fc.porcentajePruebas.invalid && fc.porcentajePruebas.touched">
+              <div *ngIf="fc.porcentajePruebas.errors.required">Este campo es requerido.</div>
             </div>
           </div>
-
-          <div class="form-row">
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="porcentajePruebas">Porcentaje Pruebas</label>
-              <input type="text" formControlName="porcentajePruebas" class="form-control" id="porcentajePruebas" (ngModelChange)="calcularTotales()">
-              <div class="invalid-feedback" *ngIf="submitted && fc.porcentajePruebas.invalid && fc.porcentajePruebas.touched">
-                <div *ngIf="fc.porcentajePruebas.errors.required">Este campo es requerido.</div>
-              </div>
-            </div>
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="horaPruebas">Hora Pruebas</label>
-              <input type="text" formControlName="horaPruebas" class="form-control" id="horaPruebas" [value]="horasPruebas" readonly>
-            </div>
-            <div class="form-group col-sm-12 col-md-4">
-              <label for="totalAjustePruebas">Total con Ajuste Pruebas</label>
-              <input type="text" class="form-control" id="totalAjustePruebas" [value]="totalAjustePruebas" readonly>
-            </div>
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="horaPruebas">Hora Pruebas</label>
+            <input type="text" formControlName="horaPruebas" class="form-control" id="horaPruebas" [value]="horasPruebas" readonly>
           </div>
+          <div class="form-group col-sm-12 col-md-4">
+            <label for="totalAjustePruebas">Total con Ajuste Pruebas</label>
+            <input type="text" class="form-control" id="totalAjustePruebas" [value]="totalAjustePruebas" readonly>
+          </div>
+        </div>
 
           <div class="form-group">
             <button type="submit" class="btn btn-primary mr-2" >Guardar</button>
@@ -259,6 +247,8 @@
             <button type="button" class="btn btn-light" routerLink="/contenidoUfs/lista">Cancelar</button>
 
           </div>
+
+         
         </form>
 
      
@@ -269,13 +259,7 @@
               <th>Nombre del Caso</th>
               <th>Porcentaje de Construcción</th>
               <th>Porcentaje de Diseño</th>
-              <th>Porcentaje de Pruebas</th>
-              <th>Total Construcción</th>
-              <th>Total Diseño</th>
-              <th>Total Pruebas</th>
-              <th>Esfuerzo</th>
-              <th>Función</th>
-              <th>Mantenimiento de Unidad</th>
+              <th>Porcentaje de Pruebas</th>             
             </tr>
           </thead>
           <tbody>
@@ -284,17 +268,10 @@
               <td>{{ contenido.porcentajeConstruccion }}</td>
               <td>{{ contenido.porcentajeDiseno }}</td>
               <td>{{ contenido.porcentajePruebas }}</td>
-              <td>{{ contenido.totalConstruccion }}</td>
-              <td>{{ contenido.totalDiseno }}</td>
-              <td>{{ contenido.totalPruebas }}</td>
-              <td>{{ contenido.esfuerzo ? contenido.esfuerzo.nombre : '' }}</td>
-              <td>{{ contenido.funcion ? contenido.funcion.funcion : '' }}</td>
-              <td>{{ contenido.mantenimientoUnidad ? contenido.mantenimientoUnidad.nombre : '' }}</td>
             </tr>
           </tbody>
-        
-
         </table>
+        
       </div>
     </div>
   </div>

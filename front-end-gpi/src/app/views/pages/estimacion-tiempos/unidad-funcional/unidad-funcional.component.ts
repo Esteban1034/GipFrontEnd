@@ -9,11 +9,13 @@ import { EstimacionTiempos } from 'src/app/model/estimacion-ufs';
 import { Funcion } from 'src/app/model/funcion';
 import { MantenimientoPesoHora } from 'src/app/model/mantenimiento-peso-hora';
 import { MantenimientoUnidad } from 'src/app/model/mantenimiento-unidad';
+import { SubFuncion } from 'src/app/model/subFuncion';
 import { Ufs } from 'src/app/model/ufs';
 import { ContenidoUfsService } from 'src/app/service/contenidoufs.service';
 import { EsfuerzoService } from 'src/app/service/esfuerzo.service';
 import { FuncionService } from 'src/app/service/funcion.Service';
 import { MantenimientoUnidadService } from 'src/app/service/mantenimiento-unidad-service';
+import { SubFuncionService } from 'src/app/service/subfuncion.Service copy';
 
 @Component({
   selector: 'app-unidad-funcional',
@@ -24,12 +26,16 @@ export class formularioUnidadFuncional implements OnInit {
   formCreaContenidoUfs: FormGroup;
   formCrearNuevoUfs: FormGroup;
   formCreaFuncion: FormGroup;
+
+  formSubfuncion: FormGroup;
+
   ufs: Ufs[] = [];
   estimaciones: EstimacionTiempos[] = [];
   contenidoUfsSeleccionado: ContenidoUfs | null = null;
   mostrarFormularioEdicion: boolean = false;
   esfuerzos: Esfuerzo[] = [];
   funciones: Funcion[] = [];
+  subfuncion:SubFuncion[] = [];
   mantenimientos: MantenimientoUnidad[] = [];
   contenidoUfsList: ContenidoUfs[] = [];
   submitted: boolean = false;
@@ -40,7 +46,8 @@ export class formularioUnidadFuncional implements OnInit {
   totalAjusteConstruccion: number = 0;
   totalAjustePruebas: number = 0;
   showCreateFunctionForm: boolean = false;
-  showNuevoUfsForm: boolean | null = null;
+  showNuevoUfsForm = false;
+  botonNuevoUfsHabilitado = true;
   ultimoIdIncrementado: number | null = null;
   nuevoIdUfs: number = 1; // Declaración inicial
   ultimoContenidoUfs: ContenidoUfs | null = null;
@@ -52,6 +59,7 @@ export class formularioUnidadFuncional implements OnInit {
   totalDiseno: number = 0;
   totalPrueba: number = 0;
   ultimoIdUfsCreado: number = 4; // Iniciar en 3 o el valor que corresponda según tu lógica
+  subfuncionId: number | undefined; // Declaración de subfuncionId
 
   constructor(
     private formBuilder: FormBuilder,
@@ -59,6 +67,7 @@ export class formularioUnidadFuncional implements OnInit {
     private contenidoUfsService: ContenidoUfsService,
     private esfuerzoService: EsfuerzoService,
     private funcionService: FuncionService,
+    private subfuncionService:SubFuncionService,
     private toastr: ToastrService
   ) {}
 
@@ -71,11 +80,38 @@ export class formularioUnidadFuncional implements OnInit {
     this.getContenidoUfs();
     this.getEsfuerzos();
     this.cargarUltimoContenidoUfs();
+    this.buildFormSubfun();
 
   }
 
+  buildFormSubfun() {
+    this.formSubfuncion = this.formBuilder.group({
+      descripcion: ['', Validators.required],
+      funcion:['', Validators.required],
+      mantenimientoUnidad:['', Validators.required],
+    });
+  }
+  buildFuncionForm() {
+    this.formCreaFuncion = this.formBuilder.group({
+      funcion: ['', Validators.required],
+    });
+  }
 
-
+  buildForm() {
+    this.formCreaContenidoUfs = this.formBuilder.group({
+      nombreCaso: ['', Validators.required],
+      porcentajeConstruccion: ['', Validators.required],
+      porcentajeDiseno: ['', Validators.required],
+      porcentajePruebas:  ['', Validators.required],
+      subfuncion: this.formBuilder.group({
+        id: [''], // Puedes añadir validadores según sea necesario
+        descripcion: [''], // Puedes añadir validadores según sea necesario
+        funcion: [''], // Requerido según tu lógica de negocio
+        mantenimientoUnidad: [''], // Requerido según tu lógica de negocio
+      })
+    });
+  }
+  
 
  buildForms() {
     this.formCrearNuevoUfs  = this.formBuilder.group({
@@ -83,12 +119,16 @@ export class formularioUnidadFuncional implements OnInit {
       porcentajeConstruccion: ['', Validators.required],
       porcentajeDiseno: ['', Validators.required],
       porcentajePruebas: ['', Validators.required],
-      funcionSeleccionada: [''],
-      funcion: [''],
-      mantenimientoUnidad: ['', Validators.required],
-       });
+      subfuncion: this.formBuilder.group({
+        id: [''], // Puedes añadir validadores según sea necesario
+        descripcion: [''], // Puedes añadir validadores según sea necesario
+        funcion: [''], // Requerido según tu lógica de negocio
+        mantenimientoUnidad: [''], // Requerido según tu lógica de negocio
+      })
+    });
   }
 
+  get fc() { return this.formCreaContenidoUfs.controls; }
 
   mostrarFormularioNuevoUfs() {
     this.actualizarNuevoIdUfs(); // Actualizar el nuevo ID de UFS al mostrar el formulario
@@ -102,6 +142,7 @@ export class formularioUnidadFuncional implements OnInit {
       (ultimoContenido: ContenidoUfs) => {
         this.ultimoContenidoUfs = ultimoContenido;
         this.actualizarNuevoIdUfs();
+        this.editarUltimoContenido();
       },
       error => {
         console.error('Error al obtener el último contenido de UFS:', error);
@@ -112,11 +153,26 @@ export class formularioUnidadFuncional implements OnInit {
     // Incrementar el último ID creado para obtener el siguiente
     this.ultimoIdUfsCreado++;
     this.nuevoIdUfs = this.ultimoIdUfsCreado;
+    
+    // Mostrar la alerta con Toastr
+    this.toastr.success('', `Siguiente ID de UFS: ${this.nuevoIdUfs}`);
+    
     console.log('Siguiente ID de UFS:', this.nuevoIdUfs);
   }
   
   crearNuevoUFS() {
     if (this.formCrearNuevoUfs.valid && this.ultimoContenidoUfs) {
+ // Verificar que tenemos un ID de subfunción válido
+        if (!this.subfuncionId) {
+          this.toastr.error('No se ha creado una subfunción válida.');
+          return;
+        }
+  
+           // Obtener valores del formulario de subfunción
+           const descripcionSubfuncion = this.formSubfuncion.get('descripcion').value || '';
+           const funcionSubfuncion = this.formSubfuncion.get('funcion').value;
+           const mantenimientoUnidadSubfuncion = this.formSubfuncion.get('mantenimientoUnidad').value;
+     
       const nuevoContenidoUfs: ContenidoUfs = {
         id: 0,
         nombreCaso: this.formCrearNuevoUfs.get('nombreCaso')?.value || null,
@@ -127,9 +183,13 @@ export class formularioUnidadFuncional implements OnInit {
         totalConstruccion: null,
         totalPruebas: null,
         esfuerzo: null,
-        funcion: this.formCrearNuevoUfs.get('funcionSeleccionada')?.value || null,
-        mantenimientoUnidad: this.formCrearNuevoUfs.get('mantenimientoUnidad')?.value || null,
-        ufs: {
+        subfuncion: {
+          id: this.subfuncionId,
+          descripcion: descripcionSubfuncion,
+          funcion: funcionSubfuncion,
+          mantenimientoUnidad: mantenimientoUnidadSubfuncion,
+        },
+         ufs: {
           id: this.nuevoIdUfs,
           nombre: `UFS ${this.nuevoIdUfs}`,
         },
@@ -167,28 +227,6 @@ export class formularioUnidadFuncional implements OnInit {
     this.ultimoIdUfsCreado = this.nuevoIdUfs;
   }
 
-  
-  
-  buildFuncionForm() {
-    this.formCreaFuncion = this.formBuilder.group({
-      funcion: ['', Validators.required],
-    });
-  }
-
-  buildForm() {
-    this.formCreaContenidoUfs = this.formBuilder.group({
-      nombreCaso: ['', Validators.required],
-      porcentajeConstruccion: ['', Validators.required],
-      porcentajeDiseno: ['', Validators.required],
-      porcentajePruebas: ['', Validators.required],
-      funcionSeleccionada: [''],
-      funcion: [''],
-      mantenimientoUnidad: ['', Validators.required],
-       });
-  }
-
-  get fc() { return this.formCreaContenidoUfs.controls; }
-
   getContenidoUfs() {
     this.contenidoUfsService.getContenidoUfs().subscribe(
       (data: ContenidoUfs[]) => {
@@ -211,8 +249,8 @@ export class formularioUnidadFuncional implements OnInit {
         porcentajeConstruccion: this.ultimoContenidoUfs.porcentajeConstruccion,
         porcentajeDiseno: this.ultimoContenidoUfs.porcentajeDiseno,
         porcentajePruebas: this.ultimoContenidoUfs.porcentajePruebas,
-        funcionSeleccionada: this.ultimoContenidoUfs.funcion,
-        mantenimientoUnidad: this.ultimoContenidoUfs.mantenimientoUnidad,
+        subfuncio: this.ultimoContenidoUfs.subfuncion,
+     
       });
 
       // Establecer el modo de edición a true
@@ -274,7 +312,7 @@ export class formularioUnidadFuncional implements OnInit {
   }
 
   actualizarValoresFormulario() {
-    if (this.formCreaContenidoUfs) { // Verificar si el formulario está inicializado
+    if (this.formCreaContenidoUfs && this.formCrearNuevoUfs ) { // Verificar si el formulario está inicializado
       this.fc.horaDiseno?.setValue(this.horasDiseno); // Usar el operador ? para acceder a setValue de manera segura
       this.fc.horaConstruccion?.setValue(this.horasConstruccion);
       this.fc.horaPruebas?.setValue(this.horasPruebas);
@@ -304,8 +342,6 @@ export class formularioUnidadFuncional implements OnInit {
       }
     );
   }
-
-  
 
   cancelCreateFunction() {
     this.showCreateFunctionForm = false;
@@ -350,11 +386,24 @@ export class formularioUnidadFuncional implements OnInit {
   }
   saveContenidoUfs() {
     this.submitted = true;
-
+  
+    // Verificar si el formulario es válido
     if (this.formCreaContenidoUfs.valid) {
-      if (this.ultimoContenidoUfs && (this.ultimoContenidoUfs.ufs && this.ultimoContenidoUfs.ufs.id) ||
-          (this.isNewUfs && this.nuevoUfsId)) {
-
+      // Verificar que tenemos el último contenido de UFS y su ID asociado
+      if (this.ultimoContenidoUfs && this.ultimoContenidoUfs.ufs && this.ultimoContenidoUfs.ufs.id) {
+  
+        // Verificar que tenemos un ID de subfunción válido
+        if (!this.subfuncionId) {
+          this.toastr.error('No se ha creado una subfunción válida.');
+          return;
+        }
+  
+        // Obtener valores del formulario de subfunción
+        const descripcionSubfuncion = this.formSubfuncion.get('descripcion').value || '';
+        const funcionSubfuncion = this.formSubfuncion.get('funcion').value;
+        const mantenimientoUnidadSubfuncion = this.formSubfuncion.get('mantenimientoUnidad').value;
+  
+        // Construir el objeto de ContenidoUfs a guardar
         const contenidoUfsData: ContenidoUfs = {
           id: this.isEditing ? this.ultimoContenidoUfs.id : 0,
           nombreCaso: this.fc.nombreCaso ? this.fc.nombreCaso.value || null : null,
@@ -365,11 +414,15 @@ export class formularioUnidadFuncional implements OnInit {
           totalConstruccion: null,
           totalPruebas: null,
           esfuerzo: null,
-          funcion: this.fc.funcionSeleccionada ? this.fc.funcionSeleccionada.value || null : (this.fc.funcion ? this.fc.funcion.value || null : null),
-          mantenimientoUnidad: this.fc.mantenimientoUnidad ? this.fc.mantenimientoUnidad.value || null : null,
+          subfuncion: {
+            id: this.subfuncionId,
+            descripcion: descripcionSubfuncion,
+            funcion: funcionSubfuncion,
+            mantenimientoUnidad: mantenimientoUnidadSubfuncion,
+          },
           ufs: {
-            id: this.isNewUfs ? this.nuevoUfsId : this.ultimoContenidoUfs.ufs.id,
-            nombre: this.isNewUfs ? 'Nuevo UFS ' + this.nuevoUfsId : this.ultimoContenidoUfs.ufs.nombre,
+            id: this.ultimoContenidoUfs.ufs.id,
+            nombre: this.ultimoContenidoUfs.ufs.nombre,
           },
           estimacionUfs: this.isNewUfs ? null : {
             id: this.ultimoContenidoUfs.estimacionUfs.id,
@@ -383,7 +436,10 @@ export class formularioUnidadFuncional implements OnInit {
             tipoProyecto: this.ultimoContenidoUfs.estimacionUfs.tipoProyecto
           }
         };
-
+  
+        console.log('ContenidoUfs Data:', contenidoUfsData); // Verifica en la consola que todos los datos estén correctos
+  
+        // Llamar al servicio para guardar el contenido de UFS
         this.contenidoUfsService.saveContenidoUfs(contenidoUfsData).subscribe(
           (response: any) => {
             console.log(response);
@@ -399,27 +455,62 @@ export class formularioUnidadFuncional implements OnInit {
           },
           (error: any) => {
             console.error('Error al guardar el contenido de UFS:', error);
-            this.handleSaveError(error);
+            this.toastr.error('Error al guardar el contenido de UFS. Por favor, intenta nuevamente.');
+            // Puedes agregar aquí un manejo de errores más específico si es necesario
           }
         );
       } else {
         this.toastr.error('No se pudo obtener el último contenido de UFS o no hay Ufs y/o Estimaciones asociadas.');
       }
     } else {
-      this.toastr.error('Por favor completa los campos requeridos.');
+      this.toastr.error('Por favor completa los campos requeridos en el formulario de Contenido UFS.');
     }
   }
+  
+  
+  
+  
+  
   toggleNuevoUfsForm() {
     this.showNuevoUfsForm = !this.showNuevoUfsForm;
+    // Ocultar el botón después de hacer clic
+    document.getElementById('botonCrearUfs').style.display = 'none';
   }
-
-
 handleSaveError(error: any) {
     if (error && error.error && error.error.message) {
         this.toastr.error(`Error: ${error.error.message}`);
     } else {
         this.toastr.error('Error al guardar el contenido de UFS. Por favor, intenta nuevamente más tarde.');
     }
+}
+saveSubfuncion() {
+  this.submitted = true;
+  if (this.formSubfuncion.valid) {
+    const subfuncionData = {
+      id: 0, // Asigna el ID adecuadamente según tu lógica de generación de IDs
+      descripcion: this.formSubfuncion.get('descripcion')?.value || '',
+      funcion: this.formSubfuncion.get('funcion').value,
+      mantenimientoUnidad: this.formSubfuncion.get('mantenimientoUnidad').value,
+    };
+
+    console.log(subfuncionData); // Verifica en la consola que todos los datos estén correctos
+
+    // Llama al servicio para guardar la Subfuncion
+    this.subfuncionService.createSubfuncion(subfuncionData).subscribe(
+      (response: any) => {
+        console.log(response);
+        this.subfuncionId = response.id; // Asignación de subfuncionId
+        this.toastr.success('Subfunción creada exitosamente.');
+        
+      },
+      (error: any) => {
+        console.error('Error al guardar la subfunción:', error);
+        this.toastr.error('Error al guardar la subfunción. Por favor, intenta nuevamente.');
+      }
+    );
+  } else {
+    this.toastr.error('Por favor completa todos los campos requeridos en el formulario de Subfunción.');
+  }
 }
 
 
