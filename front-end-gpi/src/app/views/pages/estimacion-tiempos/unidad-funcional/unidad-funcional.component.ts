@@ -38,6 +38,7 @@ export class formularioUnidadFuncional implements OnInit {
   subfuncion:SubFuncion[] = [];
   mantenimientos: MantenimientoUnidad[] = [];
   contenidoUfsList: ContenidoUfs[] = [];
+  contenidoUfsListf: ContenidoUfs[] = [];
   submitted: boolean = false;
   horasDiseno: number = 0;
   horasConstruccion: number = 0;
@@ -62,6 +63,10 @@ export class formularioUnidadFuncional implements OnInit {
   totalPrueba: number = 0;
   ultimoIdUfsCreado: number = 1;
   subfuncionId: number | undefined; 
+  ufsContenidoCounts: any[] = [];
+  mantenimientosPorUfs: any[] = [];
+  uniqueUfsIds: number[] = [];
+  mantenimientosList: MantenimientoUnidad[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -82,6 +87,9 @@ export class formularioUnidadFuncional implements OnInit {
     this.getEsfuerzos();
     this.cargarUltimoContenidoUfs();
     this.buildFormSubfun();
+    this.getContenidoUfslist();
+    this.getMantenimientosList();
+    this.calcularMantenimientosPorUfs();
 
   }
 
@@ -535,8 +543,58 @@ calcularTotalAjusteNu() {
     );
   }
   
+  getContenidoUfslist() {
+    this.contenidoUfsService.getContenidoUfsByUltimoIdEstimacion().subscribe(
+      (data: ContenidoUfs[]) => {
+        this.contenidoUfsListf = data;
   
+        // Obtener los IDs de UFS únicos creados en esta estimación
+        const uniqueUfsIds = [...new Set(this.contenidoUfsListf.map(c => c.ufs.id))];
   
+        // Guardar los IDs de UFS únicos
+        this.uniqueUfsIds = uniqueUfsIds;
+  
+        // Llamar función para obtener los mantenimientos
+        this.getMantenimientosList();
+      },
+      error => {
+        console.error(error);
+        this.toastr.error('Error al obtener los datos de contenido de unidades funcionales');
+      }
+    );
+  }
+  getMantenimientosList() {
+    this.mantenimientoUnidadService.getMantenimientos().subscribe(
+      (data: MantenimientoUnidad[]) => {
+        this.mantenimientosList = data;
+  
+        // Calcular mantenimientos por UFS
+        this.calcularMantenimientosPorUfs();
+      },
+      error => {
+        console.error(error);
+        this.toastr.error('Error al obtener los datos de mantenimiento de unidad');
+      }
+    );
+  }
+
+  
+  calcularMantenimientosPorUfs() {
+ 
+    this.mantenimientosPorUfs = this.mantenimientosList.map(mantenimiento => {
+      const ufsCounts = this.uniqueUfsIds.map(ufsId => {
+        const count = this.contenidoUfsListf.filter(c =>
+          c.ufs.id === ufsId && c.subfuncion?.mantenimientoUnidad?.id === mantenimiento.id
+        ).length;
+        return { ufsId, count };
+      });
+  
+      return {
+        nombre: mantenimiento.nombre,
+        peso: mantenimiento.peso,
+        ufsCounts
+      };
+    });}
   calcularTotalesCon() {
     this.totalDiseno = this.redondearHoras(Math.abs(this.horasDiseno - this.totalAjusteDiseno));
     this.totalConstruccion = this.redondearHoras(Math.abs(this.horasDiseno - this.totalAjusteConstruccion));

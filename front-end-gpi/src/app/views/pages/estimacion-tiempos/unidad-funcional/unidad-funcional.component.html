@@ -162,7 +162,7 @@
 
    <!-- Inicio del formulario de Subfuncion -->
    <form *ngIf="showNuevoUfsForm && ultimoContenidoUfs " [formGroup]="formSubfuncion" (ngSubmit)="saveSubfuncion()">
-    <button type="button" class="btn btn-secondary" (click)="crearSiguienteIdUfs()">Crear Siguiente ID UFS</button>
+    <button type="button" class="btn btn-primary mb-4 mr-3" (click)="crearSiguienteIdUfs()">Crear Siguiente ID UFS</button>
 
    
     <div *ngIf="nuevoIdUfs" class="alert alert-success mt-4">
@@ -301,28 +301,25 @@
     </div>
   </form>
   <!-- tu-componente.component.html -->
-
-<div class="table-responsive">
-  <table class="table table-bordered table-hover">
-    <thead>
-      <tr>
-        <th>Unidad de programación</th>
-        <th>Peso</th>
-        <th>UF1</th>
-        <th>Horas UF1</th>
-        <th>UF2</th>
-        <th>Horas UF2</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let mantenimiento of mantenimientos">
-        <td>{{ mantenimiento.nombre }}</td>
-        <td>{{ mantenimiento.peso }}</td>
-        
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Mantenimiento</th>
+          <th>Peso</th>
+          <th *ngFor="let ufsId of uniqueUfsIds">UFS {{ ufsId }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let mantenimiento of mantenimientosPorUfs">
+          <td>{{ mantenimiento.nombre }}</td>
+          <td>{{ mantenimiento.peso }}</td>
+          <td *ngFor="let ufs of mantenimiento.ufsCounts">{{ ufs.count }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+  
 
     </div>
   </div>
