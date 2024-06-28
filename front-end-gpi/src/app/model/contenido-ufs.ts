@@ -21,6 +21,10 @@ export class ContenidoUfs {
   ufs: Ufs;
   estimacionUfs: EstimacionTiempos;
 
+  horasConstruccion?: number;
+  horasDiseno?: number;
+  horas?: number;
+
   }
 
   

@@ -22,6 +22,9 @@ export class ContenidoUfsService {
   getContenidoUfs(): Observable<ContenidoUfs[]> {
     return this.httpClient.get<ContenidoUfs[]>(`${this.baseUrl}`, { headers: this.header });
   }
+  getContenidoUfsByUltimoIdEstimacion(): Observable<ContenidoUfs[]> {
+    return this.httpClient.get<ContenidoUfs[]>(`${this.baseUrl}/ultimo-id-estimacion`, { headers: this.header });
+  }
 
 
   obtenerHoras(peso: number): Observable<MantenimientoPesoHora | any> {
