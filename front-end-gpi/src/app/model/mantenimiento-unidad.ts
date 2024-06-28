@@ -4,5 +4,4 @@ export class MantenimientoUnidad {
     id: number;
     nombre: string;
     peso: number;
-    
 }
