@@ -20,7 +20,7 @@
           <div class="input-section">
               <div class="form-group col-12">
                   <label for="unit-name-1">Nombre de la nueva Unidad de Programación</label>
-                  <input [(ngModel)]="nombreUnidad" formControlName="nombreNuevo" type="text" name="nombreNuevo" class="form-control" 
+                  <input [(ngModel)]="unidadNueva.nombre" type="text" name="nombreNuevo" class="form-control" 
                       placeholder="Ingrese el nombre">
               </div>
           </div>
@@ -28,8 +28,8 @@
           <div class="input-section">
               <div class="form-group col-12">
                   <label for="unit-weight-1">Peso de la Unidad de Programación</label>
-                  <select [(ngModel)]="peso" formControlName="pesoNuevo" type="text" name="pesoNuevo" class="form-control">
-                      <option [ngValue]="null" [disabled]="true" [hidden]="true">Seleccione el peso</option>
+                  <select [(ngModel)]="unidadNueva.peso" type="text" name="pesoNuevo" class="form-control">
+                      <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccione el peso</option>
                       <option *ngFor="let p of pesos" [ngValue]="p">{{ p }}</option>
                   </select>
               </div>
@@ -45,8 +45,8 @@
           <div class="input-section">
               <div class="form-group col-12">
                   <label for="unit-weight-1">Nombre del mantenimiento</label>
-                  <select [(ngModel)]="mantenimientoSeleccionado" formControlName="mantenimientoSeleccionado" type="text" name="mantenimientoSeleccionado" class="form-control">
-                      <option [ngValue]="null" [disabled]="true" [hidden]="true">Seleccione la unidad</option>
+                  <select [(ngModel)]="mantenimientoSeleccionado" type="text" name="mantenimientoSeleccionado" class="form-control">
+                      <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccione la unidad</option>
                       <option *ngFor="let mantimiento of mantenimientosUnidad" [ngValue]="mantimiento">{{ mantimiento.nombre }}</option>
                   </select>
               </div>
@@ -59,22 +59,22 @@
       <form *ngIf="!validadorBuscar">
           <div class="form-group col-12">
               <label for="unit-name-1">Nombre de la nueva Unidad de Programación</label>
-              <input [(ngModel)]="unidadNueva.nombre" formControlName="nombreNuevo" type="text" name="nombreNuevo" class="form-control" 
+              <input [(ngModel)]="mantenimientoSeleccionado.nombre" type="text" name="nombreNuevo" class="form-control" 
                   placeholder="Ingrese el nombre">
           </div>
 
           <div class="input-section">
               <div class="form-group col-12">
                   <label for="unit-weight-1">Peso de la Unidad de Programación</label>
-                  <select [(ngModel)]="unidadNueva.peso" formControlName="pesoNuevo" type="text" name="pesoNuevo" class="form-control">
-                      <option [ngValue]="null" [disabled]="true" [hidden]="true">Seleccione el peso</option>
+                  <select [(ngModel)]="mantenimientoSeleccionado.peso" type="text" name="pesoNuevo" class="form-control">
+                      <option [ngValue]="undefined" [disabled]="true" [hidden]="true">Seleccione el peso</option>
                       <option *ngFor="let p of pesos" [ngValue]="p">{{ p }}</option>
                   </select>
               </div>
           </div>
 
           <div class="action-buttons">
-              <button class="btn btn-outline-primary" type="submit" (click)="guardarUnidad()">ACTUALIZAR</button>
+              <button class="btn btn-outline-primary" type="submit" (click)="actualizarUnidad()">ACTUALIZAR</button>
               <button class="btn btn-outline-primary" type="button" (click)="eliminarUnidad()">ELIMINAR</button>
           </div>
       </form>
